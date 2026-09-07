@@ -1,0 +1,2847 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!--
+  EL TEMPLO DE MIUT · divisibilidad, primos, mcd y mcm
+  (MIUT es la palabra egipcia para «gata»: miw en masculino, miut en
+  femenino. Era onomatopéyica — le pusieron nombre por el ruido que hace.)
+  Manipulativo para 1.º y 2.º de ESO · prototipo v0.3
+  © Andrés Asensio · CC BY-NC-SA 4.0
+
+  EL MODELO. Las baldosas SON la recta numérica, igual que la cinta de Liz
+  en la ciudad: es la misma columna vertebral de toda la casa. Y todo el
+  contenido se reduce a una sola idea —«saltos que caen justos»—, que es lo
+  que evita que el alumno acabe con cuatro reglas sueltas:
+    · múltiplos de n .... las baldosas donde cae quien salta de n en n
+    · divisores de n .... los saltos que llegan a n SIN pasarse
+    · mcm(a,b) .......... la primera baldosa donde coinciden dos gatas
+    · mcd(a,b) .......... el salto más grande que cae justo en las dos
+  El mcm es un SITIO y el mcd es un SALTO. Por eso se confunden en clase, y
+  por eso aquí se ven en el mismo suelo pero haciendo cosas distintas.
+
+  QUIÉN HABLA. Listahmes pregunta y anota; Miut contesta. El escriba
+  plantea el encargo y la gata explica lo que ha pasado en el suelo — el
+  mismo reparto que Jeff y Liz en la ciudad, con otro bicho.
+
+  DE DÓNDE SALE ESTO
+  · WU. La definición se ENUNCIA y después se usa para razonar: «b es
+    múltiplo de a cuando b = a·k». Y «a divide a b» no es un concepto nuevo,
+    es la misma frase mirada desde el otro lado — se dice así, con todas las
+    letras, porque es donde más se enreda el alumno. Nada de reglas caídas
+    del cielo: la de «los comunes al menor exponente» se lee en el collar,
+    no se recita. Y la coherencia se comprueba: mcd · mcm = a · b sale de
+    contar amuletos, no de memorizar una fórmula más.
+  · BASS Y BALL. Dos cosas suyas. Una, el HORIZONTE: el último encargo dice
+    para qué sirve esto río abajo —simplificar con el mcd es la grapadora de
+    Nick, y el mcm es el denominador común de la ciudad—, porque un tema que
+    no se conecta se olvida. Y dos, que el error del alumno es una idea
+    razonable mal aplicada: cada respuesta falsa dice en voz alta qué regla
+    hay detrás y se refuta con un contraejemplo, no con un «no».
+
+  LAS OCHO SALAS (v0.2)
+  1. EL PASILLO · la recta numérica en baldosas: múltiplos, mcm, y la
+     tercera gata que salta de mcm en mcm y cae exactamente en los
+     encuentros (Bass: los múltiplos comunes SON los múltiplos del mcm).
+  2. EL TALLER DEL RELOJERO · dos engranajes con un diente marcado: si los
+     dientes no son primos entre sí el diente vuelve siempre al mismo hueco
+     y se gasta; si lo son, los visita todos (Křížek, fig. 1.5).
+  3. EL GRANERO · el teorema de la división en granos: filas completas y
+     lo que sobra. Resto cero es «divide».
+  4. LA SALA · el suelo rectangular y la baldosa cuadrada que lo llena
+     justo. El mcd como tamaño, y los divisores comunes como intersección
+     de dos listas (Wu: D(a) ∩ D(b)).
+  5. LA ESCALERA DE EUCLIDES · cortar el cuadrado más grande y seguir con
+     lo que sobra: mcd(a,b) = mcd(b, resto) hecho con las manos, sin
+     factorizar. Sirve donde el collar no llega.
+  6. LOS RECTÁNGULOS · con n baldosas, ¿qué rectángulos salen? Si solo la
+     tira, primo. Y del lado corto sale el criterio de la raíz.
+  7. EL MURAL DE LOS CIEN · cada número, un anillo partido en sus factores
+     primos, un color por primo. Los primos son de un color entero. Y de
+     ahí, por qué el 1 no es primo: rompería que cada número tenga un solo
+     collar.
+  8. EL COLLAR · un amuleto por factor primo. Lo compartido es el mcd; todo
+     lo necesario para armar los dos, el mcm. Y mcd · mcm = a · b.
+  DE WEISSMAN (An Illustrated Theory of Numbers) salen cuatro cosas más:
+  9. LA RED DE DIVISORES · el diagrama de Hasse: el 1 abajo, cada escalón
+     es multiplicar por un primo. Dibujados dos números en la misma red, el
+     mcd es donde se juntan POR DEBAJO y el mcm POR ARRIBA — los dos en un
+     solo dibujo, y por fin se ve por qué son pareja. Y la red se ve igual
+     del derecho que del revés, porque los divisores van emparejados d ↔ N/d.
+  10. LA CRIBA · del 2 al 200, tachando de primo en primo. Lo que el mural
+     no enseña: cómo se ENCUENTRAN. Y se para en 13 por la misma razón que
+     los rectángulos: basta llegar a la raíz.
+  · FIBONACCI en la escalera de Euclides: 55 y 34 son el peor caso posible
+     —un solo cuadrado por corte— y la escalera sale en espiral.
+  · LA TABLA DE DIVISORES, en el papiro: si dos números no comparten nada,
+     los divisores del producto salen de multiplicar los de uno por los del
+     otro. Con dos que sí comparten, las repeticiones salen en rojo.
+
+  · LAS RUEDAS, DE VERDAD. Antes eran un círculo con palitos. Ahora cada
+    diente es un trapecio sobre la circunferencia primitiva, las dos ruedas
+    se colocan a la distancia exacta para engranar (la suma de los radios)
+    y la pequeña va desfasada MEDIA MUESCA, que es lo que hace que los
+    dientes caigan en los huecos y no se pisen. Con radios, corona y el
+    punto de engrane señalado.
+  · EL MURAL, PINTADO. La pintura egipcia es color plano con contorno
+    negro, así que cada anillo lleva su aro oscuro por fuera y por dentro.
+    Y al tocar un número se abre EL DETALLE: el mismo anillo en grande, sus
+    factores nombrados uno a uno y la lista de divisores — antes había que
+    adivinar los colores.
+  · La criba ya no dice «null · null» cuando se tacha hasta agotar la tira:
+    ahora distingue los dos finales, y el de haber seguido de más también
+    enseña algo (a partir del 17 no cayó nadie nuevo).
+
+  LA INTERFAZ COMÚN. Diez manipulativos distintos iban cada uno por su
+     lado. Ahora las diez salas tienen la misma estructura y en el mismo
+     orden —RÓTULO (qué se mide aquí), MANDOS (lo que se puede tocar),
+     ESCENA (el dibujo, en su marco) y LECTURA (lo que dice)—, y el vestido
+     se pone desde un solo sitio al arrancar, no bloque a bloque. El alumno
+     no reaprende la interfaz en cada sala: cambia el manipulativo, no el
+     sitio de las cosas.
+  · EL HUECO QUE SE APUNTABA NO ERA EL DEL ENGRANE. Se anotaba t mod B y
+    el que de verdad está en el punto de contacto es t−1 mod B: uno de más.
+    El recuento salía bien —los huecos distintos son los mismos— pero el
+    diente rojo y la muesca verde no coincidían nunca en pantalla, que es
+    justo lo que la sala quiere enseñar. Ahora el índice se DEDUCE del
+    ángulo con el que se dibuja, así que coinciden por construcción.
+  · DOS COSAS, DOS COLORES, en los engranajes. El diente marcado y los
+    huecos que va visitando iban los dos en rojo, y encima el hueco se
+    dibujaba como un punto: en la rueda grande el rojo era un DIENTE y en
+    la pequeña un CÍRCULO, sin que nada avisara de que son cosas distintas.
+    Ahora el hueco se dibuja como lo que es —la muesca entre dos dientes—,
+    en verdigrís, y hay leyenda debajo. Un diente sobresale y un hueco se
+    hunde: también se distinguen por la forma.
+  · LAS RUEDAS GIRAN DE VERDAD: posición con decimales y frenada suave, en
+    vez de saltar de diente en diente. El conteo sigue siendo entero. Y el
+    punto de engrane pasa de un aro pequeño a una BANDA sobre la línea de
+    centros, con su rótulo: es lo único que hay que mirar.
+  · LA RED, colocada por el vector de exponentes: la altura es el número de
+    primos y cada primo tiene su dirección, así que las aristas del mismo
+    primo salen PARALELAS y del mismo color. Los divisores del mcm que no
+    dividen a ninguno de los dos van apagados y el texto explica por qué
+    están. Y admite dos números cualesquiera, no solo los preajustes.
+
+  EL ÍNDICE DE SALAS (botón «Salas»). Nació para probar la app a fondo sin
+     recorrer los 25 encargos, y sirve igual en clase: abre cualquier sala
+     SUELTA —sin misión, con todos sus mandos— para proyectarla, salta a un
+     encargo concreto, abre el papiro sin la clave, y marca todo hecho o
+     empieza de cero. Abajo, el AUTODIAGNÓSTICO: trece comprobaciones que
+     prueban cada motor contra sí mismo —los siete generadores del taller
+     aceptan su solución y rechazan basura, las 17 reglas del papiro
+     conservan la divisibilidad, Euclides coincide con el mcd, los
+     múltiplos comunes son los del mcm, los engranajes tocan dientes/mcd
+     huecos, las 299 descomposiciones multiplican bien, y los 25 encargos
+     tienen sala válida, forma de corregirse y una sola respuesta correcta
+     con su explicación—. Lo que salga en rojo, está roto.
+
+  EL TALLER · los ejercicios de sí/no van con BOTONES, no con campo: el
+     teclado numérico de un móvil no tiene letras y esas preguntas eran
+     imposibles de contestar. Y cada tipo pide el teclado que le sirve.
+  EL TALLER · práctica libre con siete tipos de ejercicio generados al
+     azar, corrección con explicación, racha, «verlo en la sala», y una
+     hoja de diez imprimible con la clave aparte.
+  EL PAPIRO SECRETO · se abre con 1001. Está montado sobre UNA idea, la
+     de Weissman y Bass: cada posición tiene un PESO —el resto de 10^k al
+     dividir entre m— y el número deja el mismo resto que la suma de
+     cifra × peso. La máquina de los pesos lo enseña con cualquier m: con 3
+     y 9 todos los pesos son 1 (suma de cifras); con 11 alternan ±1; con 7
+     y 13 se repiten cada seis y el de tres posiciones más allá es el mismo
+     cambiado de signo. ESO es Elefanti: quitar la primera cifra y restarla
+     tres casillas a la derecha. Su máquina va en COLUMNA, como una resta
+     escrita a mano, paso a paso. Y su tabla de primos no se copia del
+     escaneo (tenía un error de OCR): se DERIVA —para cada primo el 10^s ± k
+     que lo divide— y se verifica; cada regla se puede probar en la máquina.
+
+-->
+<title>El templo de Miut</title>
+<link href="https://fonts.googleapis.com/css2?family=Rokkitt:wght@500;700&family=Space+Mono:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Morados de amatista, arenisca y oro: la paleta del templo. En papel
+     todo se aclara con las mismas variables, sin tocar una sola regla. */
+  --noche:#1A1226; --panel:#241A33; --panel2:#2E2240; --linea:#43335C;
+  --tinta:#F3ECDF; --tenue:#A897BC;
+  --morado:#A98BBC; --moradoF:#8A6A9E; --oro:#E0B24A; --rojo:#C4553F;
+  --arena:#C9A87C; --arenaO:#A8875C; --junta:#6B4E7A;
+  --verde:#7FA35C; --sombra:rgba(0,0,0,.5);
+  --pataA:#5B3F73; --pataB:#9E3320; --pataC:#3F6B2E;  /* contra la arenisca */
+  --pata:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><ellipse cx='7' cy='9.6' rx='4.4' ry='3.6'/><ellipse cx='2.4' cy='5.6' rx='1.7' ry='2'/><ellipse cx='5.6' cy='3' rx='1.8' ry='2.1'/><ellipse cx='9' cy='3.2' rx='1.8' ry='2.1'/><ellipse cx='11.9' cy='6' rx='1.6' ry='1.9'/></svg>");
+}
+[data-modo="papel"]{
+  --noche:#FBF7EF; --panel:#FFFFFF; --panel2:#F5EFE2; --linea:#C9BBA6;
+  --tinta:#2E2436; --tenue:#6E6076;
+  --morado:#8A6A9E; --moradoF:#6B4E7A; --oro:#B08430; --rojo:#A8442F;
+  --arena:#E6D3B4; --arenaO:#C0A57F; --junta:#A08CB4;
+  --pataA:#4E3565; --pataB:#8A2C1B; --pataC:#31562A;
+  --sombra:rgba(0,0,0,.12);
+}
+*{box-sizing:border-box}
+/* `hidden` es una promesa del HTML y cualquier display de autor la
+   rompe sin avisar. Se blinda una vez y para siempre. */
+[hidden]{display:none !important}
+html{background:var(--noche)}
+body{margin:0;color:var(--tinta);
+  background:
+    radial-gradient(ellipse 120% 60% at 50% -10%, rgba(224,178,74,.10), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 4px),
+    var(--noche);
+  background-attachment:fixed}
+body{font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-size:15px;line-height:1.55;
+  padding:12px 12px 40px;max-width:560px;margin:0 auto;-webkit-text-size-adjust:100%}
+/* una cenefa de lotos, dibujada una vez y repetida: el remate de arriba,
+   como el canto de regla de la portada de la casa */
+.cenefa{height:13px;margin:0 -12px 9px;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='34' height='16'><g fill='none' stroke='%23A98BBC' stroke-width='1.4' stroke-linecap='round'><path d='M4 15 V9'/><path d='M4 9 Q0.5 5 2 1'/><path d='M4 9 Q7.5 5 6 1'/><path d='M4 9 V2'/><path d='M21 15 V11'/><path d='M17 15 Q21 6 25 15'/></g><circle cx='21' cy='9.6' r='1.5' fill='%23E0B24A'/></svg>") repeat-x center / 34px 16px;
+  opacity:.5}
+h1{font-family:'Rokkitt',serif;font-weight:700;font-size:25px;letter-spacing:.5px;
+  margin:0;color:var(--oro);line-height:1.08}
+.sub{font-family:'Rokkitt',serif;font-weight:500;font-size:11.5px;letter-spacing:1.3px;
+  text-transform:uppercase;color:var(--tenue);margin:2px 0 0;opacity:.85}
+.barra{display:flex;gap:4px 14px;align-items:center;flex-wrap:wrap;
+  padding-top:7px;margin-top:7px;border-top:1px solid var(--linea)}
+.barra a,.barra button{font-family:'Rokkitt',serif;font-weight:500;font-size:12.5px;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--tenue);background:none;border:0;padding:3px 0;
+  cursor:pointer;text-decoration:none;border-bottom:1px solid transparent}
+.barra a:hover,.barra button:hover{color:var(--tinta);border-bottom-color:var(--oro)}
+.panel{position:relative;background:linear-gradient(180deg, var(--panel2), var(--panel));
+  border:1px solid var(--linea);border-radius:13px;padding:14px;margin-top:13px;
+  box-shadow:0 6px 18px var(--sombra)}
+/* el filo de oro de la cornisa: una línea que se apaga hacia los lados */
+.panel::before{content:'';position:absolute;left:14px;right:14px;top:-1px;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(224,178,74,.55), transparent)}
+
+/* ── EL ENCARGO. Listahmes pregunta, y su retrato va al lado, como en las
+   demás apps de la casa. ── */
+.encargo{position:relative;padding-left:74px;min-height:76px;
+  border-left:4px solid var(--morado)}
+.cara{position:absolute;left:8px;top:6px;width:58px}
+.cara svg{width:100%;height:auto;display:block}
+.quien{font-family:'Rokkitt',serif;font-weight:700;font-size:12.5px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--morado);margin-bottom:2px}
+.encTxt{margin:0}
+.fila{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:11px}
+.paso{font-family:'Rokkitt',serif;font-weight:500;font-size:12px;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--tenue)}
+button.b{font-family:'Rokkitt',serif;font-weight:700;font-size:14px;letter-spacing:1.2px;
+  text-transform:uppercase;padding:8px 12px;min-height:40px;border-radius:9px;
+  border:1px solid var(--linea);background:linear-gradient(180deg, var(--panel2), var(--panel));
+  color:var(--tinta);cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.28);
+  transition:transform .12s, border-color .15s, background .15s}
+button.b:hover{border-color:var(--morado)}
+button.b:active{transform:translateY(2px);box-shadow:none}
+button.b[aria-pressed="true"]{background:linear-gradient(180deg,#F0C765,var(--oro));
+  color:#2A1D06;border-color:#B08430;box-shadow:0 2px 0 #8A6520}
+button.b.ok{background:linear-gradient(180deg,#F0C765,var(--oro));color:#2A1D06;
+  border-color:#B08430;box-shadow:0 2px 0 #8A6520}
+button.b:disabled{opacity:.4;cursor:default}
+.etq{font-family:'Rokkitt',serif;font-weight:700;font-size:12px;letter-spacing:1.8px;
+  text-transform:uppercase;color:var(--tenue)}
+.informe{border-left:4px solid var(--oro);margin-top:11px}
+.informe.mal{border-left-color:var(--rojo)}
+.op{display:block;width:100%;text-align:left;margin-bottom:6px;
+  font-family:inherit;font-size:14.5px;text-transform:none;letter-spacing:0}
+.op.fallada{border-color:var(--rojo);color:var(--rojo)}
+</style>
+<style>
+/* ── EL PASILLO. Una fila de baldosas numeradas: es la recta numérica del
+   templo. Las gatas saltan por encima y dejan huella donde caen; donde
+   coinciden las dos, la baldosa se enciende. ── */
+.pasillo{position:relative;background:var(--panel2);border:1px solid var(--linea);border-radius:10px;
+  padding:10px 8px 8px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth;
+  /* dos sombras pegadas a los bordes que solo se ven si hay suelo fuera:
+     así se sabe que el pasillo sigue sin tener que probar a arrastrar */
+  background-image:linear-gradient(90deg, var(--panel2), transparent 22px),
+    linear-gradient(270deg, var(--panel2), transparent 22px),
+    linear-gradient(90deg, rgba(0,0,0,.35), transparent 16px),
+    linear-gradient(270deg, rgba(0,0,0,.35), transparent 16px);
+  background-repeat:no-repeat;
+  background-size:26px 100%, 26px 100%, 18px 100%, 18px 100%;
+  background-position:0 0, 100% 0, 0 0, 100% 0;
+  background-attachment:local, local, scroll, scroll}
+.suelo{display:flex;gap:2px;min-width:min-content;padding-bottom:2px}
+.bald{position:relative;flex:0 0 auto;width:30px;height:56px;border-radius:3px;
+  background:var(--arena);border:1px solid var(--junta);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28), inset 0 -2px 3px rgba(90,60,30,.18);
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:1px;
+  font-family:'Space Mono',monospace;font-size:10px;color:#5A4630;transition:background .18s}
+.bald:nth-child(even){background:var(--arenaO)}
+.bald::after{content:'';position:absolute;inset:0;border-radius:3px;pointer-events:none;
+  background:repeating-linear-gradient(97deg, rgba(120,85,45,.06) 0 2px, transparent 2px 7px)}
+.bald.cero{background:var(--panel);color:var(--tenue);border-color:var(--linea)}
+/* las huellas: la de oro es la gata A, la roja la gata B */
+/* La huella es una PATA: almohadilla y cuatro dedos, recortada con una
+   máscara para que el color venga de la variable y cambie solo en papel.
+   Ladeadas y alternando el lado, como anda un gato de verdad. */
+.bald .hA,.bald .hB{position:absolute;left:50%;width:14px;height:14px;opacity:0;
+  transition:opacity .22s;
+  -webkit-mask:var(--pata) center/contain no-repeat;
+  mask:var(--pata) center/contain no-repeat}
+.bald .hA{top:3px;background:var(--pataA);transform:translateX(-50%) rotate(-14deg);
+  filter:drop-shadow(0 0 1.2px rgba(255,255,255,.5))}
+.bald .hB{top:19px;background:var(--pataB);transform:translateX(-50%) rotate(13deg);
+  filter:drop-shadow(0 0 1.2px rgba(255,255,255,.45))}
+.bald:nth-child(4n) .hA{transform:translateX(-50%) rotate(11deg)}
+.bald:nth-child(4n+2) .hB{transform:translateX(-50%) rotate(-12deg)}
+.bald.pA .hA,.bald.pB .hB{opacity:1}
+.bald.ambas{background:var(--oro);color:#3A2A06;
+  box-shadow:0 0 0 2px var(--pataA) inset, 0 0 14px rgba(224,178,74,.45)}
+.bald.meta{outline:2px solid var(--oro);outline-offset:1px}
+/* Con TRES gatas hace falta una fila más de huellas: la baldosa crece y
+   cada una tiene su altura. La tercera es la del mcm — salta justo en los
+   encuentros de las otras dos, y en ninguna más. */
+.suelo.tres .bald{height:70px}
+.bald .hC{position:absolute;left:50%;top:35px;width:14px;height:14px;opacity:0;
+  transition:opacity .22s;background:var(--pataC);
+  transform:translateX(-50%) rotate(-9deg);
+  filter:drop-shadow(0 0 1.2px rgba(255,255,255,.5));
+  -webkit-mask:var(--pata) center/contain no-repeat;
+  mask:var(--pata) center/contain no-repeat}
+.bald.pC .hC{opacity:1}
+@media (max-width:420px){ .suelo.tres .bald{height:64px} .bald .hC{top:31px;width:12px;height:12px} }
+@media (max-width:420px){ .bald{width:26px;height:52px;font-size:9px}
+  .bald .hA,.bald .hB{width:12px;height:12px} .bald .hB{top:17px} }
+
+/* ── LA SALA. Un suelo rectangular a·b y una baldosa cuadrada de lado k:
+   si sobra recorte, k no vale. La más grande que no deja recorte es el
+   mcd, y aquí se ve como tamaño, no como resultado de una receta. ── */
+.sala{display:flex;justify-content:center;padding:8px 0}
+.sala svg{width:100%;max-width:330px;height:auto}
+.recorte{font-family:'Space Mono',monospace;font-size:11px;color:var(--rojo)}
+.justo{color:var(--verde)}
+
+/* ── EL COLLAR. Un amuleto por factor primo. Dos collares uno encima del
+   otro: lo que comparten es el mcd; todo lo que hay entre los dos, el mcm.
+   Los amuletos compartidos se marcan con un aro de oro. ── */
+.collares{display:flex;flex-direction:column;gap:10px;padding:6px 0}
+.collar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.collar .n{font-family:'Rokkitt',serif;font-size:19px;min-width:34px;color:var(--tinta)}
+.amu{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-family:'Space Mono',monospace;font-weight:700;font-size:13px;
+  background:var(--panel2);border:2px solid var(--linea);color:var(--tenue)}
+.amu.p2{border-color:#6FB7E0;color:#6FB7E0} .amu.p3{border-color:#9BC26A;color:#9BC26A}
+.amu.p5{border-color:#F0C75E;color:#F0C75E} .amu.p7{border-color:#F08A6B;color:#F08A6B}
+.amu.p11{border-color:#5FD0C0;color:#5FD0C0} .amu.p13{border-color:#E89AC7;color:#E89AC7}
+.amu.comun{box-shadow:0 0 0 3px rgba(224,178,74,.45)}
+.leyenda{font-size:12.5px;color:var(--tenue);margin:2px 0 0}
+
+.lectura{display:flex;gap:8px 18px;flex-wrap:wrap;font-size:14px;margin-top:9px;color:var(--tenue)}
+.lectura b{color:var(--tinta);font-family:'Space Mono',monospace}
+.veredicto{margin-top:9px;padding:9px 11px;border:1px solid var(--linea);border-radius:9px;
+  background:var(--panel2);font-size:14px}
+.veredicto.bien{border-color:var(--oro)}
+.pista{font-size:12.5px;color:var(--tenue);margin:8px 0 0}
+.sellazo{font-family:'Rokkitt',serif;font-weight:700;font-size:18px;letter-spacing:3px;color:var(--oro);
+  border:2px solid var(--oro);border-radius:5px;padding:4px 10px;transform:rotate(-4deg);
+  display:inline-block;margin-top:10px}
+@media print{
+  .barra,.fila,button{display:none !important}
+  .panel{break-inside:avoid}
+}
+
+/* ── EL PAPIRO SECRETO. No es un extra decorativo: es la adaptación hacia
+   arriba de esta sala. Se abre tecleando 1001 —el número que abre el 7, el
+   11 y el 13 a la vez—, así que el gesto de entrar ya enseña algo. Va sobre
+   papiro claro incluso de noche, porque es un documento, no una pantalla. */
+.papiro{background:linear-gradient(180deg,#F4E6C6,#E8D6AF);color:#3A2A16;
+  border:1px solid #B79A6A;border-radius:13px;padding:16px 15px;margin-top:13px;
+  box-shadow:0 8px 22px rgba(0,0,0,.45)}
+.papiro::before{display:none}
+.papiro h2{font-family:'Rokkitt',serif;font-weight:700;font-size:21px;margin:0;color:#7A4B12}
+.papiro .lema{font-family:'Rokkitt',serif;font-size:12.5px;letter-spacing:1.6px;
+  text-transform:uppercase;color:#8A6A3C;margin:2px 0 12px}
+.papiro h3{font-family:'Rokkitt',serif;font-weight:700;font-size:15.5px;letter-spacing:.6px;
+  margin:16px 0 4px;color:#5E3A0E;border-top:1px solid rgba(122,75,18,.25);padding-top:11px}
+.papiro p{margin:0 0 7px;font-size:14.5px;line-height:1.55}
+.papiro b{color:#7A4B12}
+.papiro .clave{font-family:'Space Mono',monospace;background:rgba(122,75,18,.12);
+  border-radius:5px;padding:1px 6px}
+.papiro .elefante{width:120px;height:auto;float:right;margin:-6px -4px 4px 10px}
+.papiro .prueba{background:rgba(255,255,255,.5);border:1px solid #C4A876;border-radius:9px;
+  padding:11px;margin-top:10px}
+.papiro input{font-family:'Space Mono',monospace;font-size:16px;width:150px;padding:7px 9px;
+  border:1px solid #B79A6A;border-radius:7px;background:#FFFDF6;color:#3A2A16}
+.papiro .cadena{font-family:'Space Mono',monospace;font-size:14px;line-height:1.9;
+  margin-top:9px;word-break:break-word}
+.papiro .cadena b{color:#7A4B12}
+.papiro .fallo{color:#9E3320}
+.papiro .tabla{font-family:'Space Mono',monospace;font-size:13px;line-height:1.8;
+  columns:2;column-gap:18px;margin-top:6px}
+.papiro .fuente{font-size:12px;color:#7A5A2E;margin-top:14px;font-style:italic}
+.papiro button{font-family:'Rokkitt',serif;font-weight:700;font-size:13px;letter-spacing:1.2px;
+  text-transform:uppercase;background:#7A4B12;color:#F4E6C6;border:0;border-radius:7px;
+  padding:8px 12px;cursor:pointer}
+
+/* ── EL RESTO, EN PUNTOS. Lo que en el pasillo era «no cae justo» aquí se
+   mide: las filas completas son el cociente y lo que sobra es el resto.
+   Es el teorema de la división puesto en granos, y el paso previo a
+   entender por qué el algoritmo de Euclides funciona. ── */
+.granero{background:var(--panel2);border:1px solid var(--linea);border-radius:10px;padding:10px}
+.filas{display:flex;flex-direction:column;gap:3px}
+.granero .f{display:flex;gap:3px;flex-wrap:nowrap}
+.granero .g{width:11px;height:11px;border-radius:50%;background:var(--arena);
+  border:1px solid var(--arenaO);flex:0 0 auto}
+.granero .f.suelta .g{background:var(--rojo);border-color:#7A2415}
+.granero .rot{font-family:'Space Mono',monospace;font-size:10px;color:var(--tenue);
+  margin-left:6px;align-self:center;white-space:nowrap}
+@media (max-width:420px){ .granero .g{width:9px;height:9px} }
+
+/* ── LOS RECTÁNGULOS. Con n baldosas, ¿qué rectángulos se pueden armar?
+   Si el único es la tira de 1 por n, el número es primo. Es la definición
+   de primo convertida en una forma que se ve. ── */
+.rects{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:6px 0}
+.rects figure{margin:0;text-align:center}
+.rects .rj{display:grid;gap:2px;justify-content:center}
+.rects .rj i{width:11px;height:11px;border-radius:2px;background:var(--arena);
+  border:1px solid var(--arenaO);display:block}
+.rects figure.tira .rj i{background:var(--morado);border-color:var(--moradoF)}
+.rects figcaption{font-family:'Space Mono',monospace;font-size:10.5px;color:var(--tenue);margin-top:4px}
+
+/* ── EL MURAL DE LOS CIEN. Cada número, un anillo partido en sus factores
+   primos, con un color por primo: es el collar de Miut, pero los cien
+   a la vez. Los primos saltan solos, porque son de un color entero. ── */
+.mural{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;padding:4px 0}
+.mural button{padding:0;min-height:0;border:0;background:none;cursor:pointer;
+  box-shadow:none;border-radius:50%}
+.mural button:hover{transform:none}
+.mural svg{width:100%;height:auto;display:block}
+.mural button[aria-pressed="true"] svg{outline:2px solid var(--oro);border-radius:50%}
+.muralPie{font-family:'Space Mono',monospace;font-size:13px;margin-top:8px;min-height:22px}
+.leyPrimos{display:flex;gap:8px 12px;flex-wrap:wrap;font-family:'Space Mono',monospace;
+  font-size:10.5px;color:var(--tenue);margin-top:6px}
+.leyPrimos i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}
+
+/* ── LA ESCALERA DE EUCLIDES. Del rectángulo a·b se corta el cuadrado más
+   grande que cabe, y se sigue con lo que sobra. Cuando lo que sobra es
+   cero, el último cuadrado es el mcd. Es mcd(a,b) = mcd(b, resto) hecho
+   con las manos, y funciona con números que el collar no alcanza. ── */
+.escalera{display:flex;justify-content:center;padding:8px 0}
+.escalera svg{width:100%;max-width:340px;height:auto}
+.escalera .q{transition:opacity .35s, transform .35s;transform-origin:center}
+.escalera .q.nuevo{animation:corta .45s cubic-bezier(.3,1.4,.5,1)}
+@keyframes corta{from{opacity:0;transform:scale(.6)}}
+.pasosEu{font-family:'Space Mono',monospace;font-size:13px;line-height:1.8;margin-top:8px}
+.pasosEu b{color:var(--oro)}
+
+/* ── LOS ENGRANAJES. Dos ruedas dentadas con un diente marcado. Si los
+   dientes no son primos entre sí, el diente marcado vuelve siempre al
+   mismo hueco y ese hueco se desgasta; si lo son, visita todos. ── */
+.taller-eng{display:flex;justify-content:center;padding:6px 0}
+.taller-eng svg{width:100%;max-width:360px;height:auto}
+.eng-lect{display:flex;gap:8px 16px;flex-wrap:wrap;font-family:'Space Mono',monospace;font-size:12.5px;
+  color:var(--tenue);margin-top:6px}
+.eng-lect b{color:var(--tinta)}
+
+/* ── LAS MÁQUINAS DEL PAPIRO. Cada criterio deja de ser un párrafo y pasa a
+   ser un aparato: escribes un número y se ve QUÉ CIFRAS se cogen y qué se
+   hace con ellas, paso a paso. Es lo que Elefanti no podía hacer en 1860. ── */
+.maquina{background:rgba(255,255,255,.55);border:1px solid #C4A876;border-radius:10px;
+  padding:11px;margin-top:10px}
+.maquina .fila{margin-top:0}
+.maquina input{font-family:'Space Mono',monospace;font-size:17px;width:170px;padding:7px 9px;
+  border:1px solid #B79A6A;border-radius:7px;background:#FFFDF6;color:#3A2A16;letter-spacing:2px}
+.maquina button{font-family:'Rokkitt',serif;font-weight:700;font-size:13px;letter-spacing:1.2px;
+  text-transform:uppercase;background:#7A4B12;color:#F4E6C6;border:0;border-radius:7px;
+  padding:8px 12px;cursor:pointer}
+.maquina button.sec{background:transparent;color:#7A4B12;border:1px solid #B79A6A}
+.maquina button[aria-pressed="true"]{background:#B08430}
+.cifras{display:flex;gap:4px;flex-wrap:wrap;margin:10px 0 6px;font-family:'Space Mono',monospace}
+.cifras .c{width:30px;height:38px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:19px;font-weight:700;background:#FFFDF6;border:1.5px solid #C4A876;color:#3A2A16;
+  transition:all .3s;position:relative}
+.cifras .c.apag{opacity:.28}
+.cifras .c.mira{background:#F0C765;border-color:#B08430;transform:translateY(-3px)}
+.cifras .c.mas{background:#DCE9CF;border-color:#6E8F45} .cifras .c.menos{background:#F2D2C8;border-color:#B0392C}
+.cifras .c small{position:absolute;top:-16px;font-size:11px;color:#7A4B12;font-weight:700}
+.cifras .c.sale{animation:sale .5s ease both}
+@keyframes sale{to{transform:translateY(-28px) scale(.7);opacity:0}}
+.lect{font-family:'Space Mono',monospace;font-size:14px;line-height:1.8;margin-top:6px;color:#3A2A16}
+.lect b{color:#7A4B12}
+.lect .paso{display:block;padding:3px 0;border-top:1px dashed rgba(122,75,18,.25);
+  font-family:'Space Mono',monospace;font-size:14px;letter-spacing:0;text-transform:none;color:#3A2A16}
+.lect .paso.nuevo{animation:aparece .4s ease both}
+@keyframes aparece{from{opacity:0;transform:translateX(-6px)}}
+.si{color:#3E7A2A;font-weight:700} .no{color:#9E3320;font-weight:700}
+@media (prefers-reduced-motion:reduce){ .cifras .c,.cifras .c.sale,.lect .paso.nuevo{animation:none;transition:none} }
+
+/* ── ANIMACIONES. Cada una cuenta algo: la gata SALTA de baldosa en baldosa
+   —las huellas aparecen por orden, no todas a la vez—; los granos CAEN en
+   sus filas; los anillos del mural se ENCIENDEN barriendo la pared; el sello
+   CAE sobre el papel. Y todo se apaga si el aparato pide menos movimiento. */
+.bald .hA,.bald .hB,.bald .hC{transition:opacity .25s ease var(--tarda, 0s)}
+.granero .g{animation:cae .35s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:var(--tarda,0s)}
+@keyframes cae{from{transform:translateY(-14px);opacity:0}}
+.mural button{animation:prende .4s ease both;animation-delay:var(--tarda,0s)}
+@keyframes prende{from{opacity:0;transform:scale(.6)}}
+.rects figure{animation:prende .4s ease both;animation-delay:var(--tarda,0s)}
+.sellazo{animation:sella .5s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes sella{from{transform:rotate(-4deg) scale(1.8);opacity:0}}
+.informe{animation:aparece .35s ease both}
+.veredicto.bien{animation:brilla .6s ease}
+@keyframes brilla{50%{box-shadow:0 0 0 3px rgba(240,199,94,.35)}}
+.taller-eng svg g{transition:transform .12s linear}
+@media (prefers-reduced-motion:reduce){
+  .bald .hA,.bald .hB,.bald .hC{transition:none}
+  .granero .g,.mural button,.rects figure,.sellazo,.informe,.veredicto.bien,.escalera .q.nuevo{animation:none}
+}
+
+/* ── EL TALLER. Lo que convierte una lección en material de práctica:
+   ejercicios generados al azar, corrección inmediata, racha, y una hoja de
+   diez para imprimir con su clave aparte. Cada ejercicio tiene un botón
+   «verlo» que lo lleva a la sala donde se entiende. ── */
+.taller{border-left:4px solid var(--oro)}
+.tipos{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tipos button.b{font-size:12.5px;padding:6px 10px;min-height:34px}
+.ejer{font-size:19px;font-family:'Space Mono',monospace;margin:14px 0 8px;line-height:1.5}
+.ejer b{color:var(--oro)}
+.resp{font-family:'Space Mono',monospace;font-size:18px;width:100%;max-width:260px;padding:9px 11px;
+  border:1px solid var(--linea);border-radius:9px;background:var(--panel2);color:var(--tinta)}
+button.b.si,button.b.no{font-size:17px;padding:10px 22px;min-height:48px}
+button.b.si{border-color:#6E8F45;color:#B6D68C} button.b.si:hover{background:rgba(110,143,69,.2)}
+button.b.no{border-color:#B0392C;color:#E8A192} button.b.no:hover{background:rgba(176,57,44,.2)}
+.marcador{display:flex;gap:8px 16px;flex-wrap:wrap;font-family:'Rokkitt',serif;font-size:13px;
+  letter-spacing:1.4px;text-transform:uppercase;color:var(--tenue);margin-top:10px}
+.marcador b{color:var(--oro)}
+.barra button[aria-pressed="true"]{color:var(--oro);border-bottom-color:var(--oro)}
+
+/* la hoja de diez: solo existe para imprimirse */
+.hoja{display:none}
+body.imprimiendo .hoja{display:block;background:#fff;color:#222;padding:20px;font-family:Georgia,serif}
+body.imprimiendo > *:not(.hoja){display:none !important}
+.hoja h2{font-family:'Rokkitt',serif;font-size:20px;margin:0 0 4px}
+.hoja .cab{font-size:12px;color:#666;margin-bottom:14px}
+.hoja ol{padding-left:22px;font-size:15px;line-height:2.1}
+.hoja .clave{break-before:page;page-break-before:always;margin-top:30px;border-top:1px solid #999;padding-top:10px}
+.hoja .clave ol{line-height:1.7;font-size:13px}
+@media print{ .hoja{display:block} }
+
+/* ── LA MÁQUINA DE LOS PESOS. Cada posición lleva su peso —el resto que
+   deja 10^k al dividir entre m— escrito encima. El número deja el mismo
+   resto que la suma de cifra × peso. Es la idea de la que salen TODOS los
+   criterios, y aquí se ve con cualquier m. ── */
+.pesos{display:grid;gap:3px;margin:10px 0 6px;overflow-x:auto;padding-bottom:2px}
+.pesos > div{display:contents}
+.pesos .w,.pesos .d,.pesos .m{width:34px;height:30px;display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;border-radius:5px}
+.pesos .w{font-size:11px;color:#7A4B12;background:rgba(122,75,18,.10);font-weight:700}
+.pesos .w.neg{color:#9E3320;background:rgba(158,51,32,.10)}
+.pesos .d{font-size:19px;font-weight:700;color:#3A2A16;background:#FFFDF6;border:1.5px solid #C4A876;height:38px}
+.pesos .m{font-size:12px;color:#3A2A16;background:rgba(255,255,255,.4);height:26px}
+.pesos .m.neg{color:#9E3320}
+
+/* ── ELEFANTI, EN COLUMNA. Como una resta escrita a mano: el número
+   arriba, la cifra que se baja debajo —tres casillas a la derecha—, la
+   raya, y el resultado. Cada paso se apila sobre el anterior. ── */
+.columna{font-family:'Space Mono',monospace;overflow-x:auto;padding:4px 0}
+.paso-el{display:grid;gap:2px;margin-bottom:10px;padding:8px 0 4px;border-top:1px dashed rgba(122,75,18,.3)}
+.paso-el:first-child{border-top:0}
+.paso-el .cel{width:30px;height:34px;display:flex;align-items:center;justify-content:center;
+  font-size:19px;color:#3A2A16;border-radius:5px}
+.paso-el .cel.num{background:#FFFDF6;border:1.5px solid #D8C5A0}
+.paso-el .cel.sube{background:#F0C765;border-color:#B08430;font-weight:700}
+.paso-el .cel.baja{color:#9E3320;font-weight:700;background:#F2D2C8;border:1.5px solid #B0392C}
+.paso-el .cel.res{font-weight:700;background:#E6EFD8;border:1.5px solid #6E8F45}
+.paso-el .cel.vacia{border:0;background:transparent}
+.paso-el .raya{grid-column:1/-1;height:2px;background:#7A4B12;margin:2px 0}
+.paso-el .cel.baja.mueve{animation:baja .55s cubic-bezier(.3,.9,.4,1) both}
+@keyframes baja{from{transform:translate(var(--dx,0), -40px);opacity:.2}}
+.paso-el.viejo .cel{height:26px;font-size:14px;width:24px}
+.paso-el.viejo .cel.sube{background:#F6E2B1}
+.nota-el{font-family:'Atkinson Hyperlegible',sans-serif;font-size:14px;margin:4px 0 0}
+.reglas{font-family:'Space Mono',monospace;font-size:12.5px;line-height:1.75;margin-top:6px}
+.reglas b{color:#7A4B12}
+.reglas .fila-r{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;padding:3px 0;border-top:1px dashed rgba(122,75,18,.2)}
+.reglas .fila-r button{font-size:11px;padding:4px 8px}
+/* la tabla de doble entrada: divisores de a en columnas, de b en filas, y
+   en cada cruce el producto. Si no comparten nada, ahí están TODOS los
+   divisores del producto, cada uno una sola vez. */
+.tablaDiv{overflow-x:auto;margin-top:10px}
+.tablaDiv table{border-collapse:collapse;font-family:'Space Mono',monospace;font-size:13px}
+.tablaDiv th,.tablaDiv td{border:1px solid #C4A876;padding:5px 8px;text-align:center;min-width:38px}
+.tablaDiv th{background:rgba(122,75,18,.14);color:#7A4B12;font-weight:700}
+.tablaDiv td{background:#FFFDF6;color:#3A2A16}
+.tablaDiv td.rep{background:#F2D2C8;color:#9E3320}
+@media (prefers-reduced-motion:reduce){ .paso-el .cel.baja.mueve{animation:none} }
+
+/* ── EL DIAGRAMA DE DIVISORES (la red de Hasse, de Weissman). El 1 abajo,
+   el número arriba, y cada arista es multiplicar por un primo. Dibujados
+   dos números en la misma red, el mcd es donde se juntan por DEBAJO y el
+   mcm donde se juntan por ARRIBA: los dos conceptos en un solo dibujo, y
+   por fin se ve por qué son pareja. ── */
+.red{display:flex;justify-content:center;padding:6px 0}
+.red svg{width:100%;max-width:340px;height:auto}
+.red .arista{stroke:var(--linea);stroke-width:2}
+.red .arista.a{stroke:var(--pataA);stroke-width:3}
+.red .arista.b{stroke:var(--pataB);stroke-width:3}
+.red .arista.dos{stroke:var(--oro);stroke-width:3.4}
+.red .nodo{fill:var(--panel2);stroke:var(--linea);stroke-width:2}
+.red .nodo.a{fill:rgba(91,63,115,.55);stroke:var(--pataA)}
+.red .nodo.b{fill:rgba(158,51,32,.45);stroke:var(--pataB)}
+.red .nodo.dos{fill:rgba(224,178,74,.45);stroke:var(--oro);stroke-width:3}
+.red .nodo.ni{fill:var(--noche);stroke:var(--linea);opacity:.45}
+.red text.flojo{opacity:.5}
+.red .nodo.hito{stroke:var(--oro);stroke-width:3.4}
+.red text{font-family:'Space Mono',monospace;font-size:11px;fill:var(--tinta);text-anchor:middle;dominant-baseline:central}
+.red .rot{font-size:9.5px;fill:var(--oro)}
+.red .nodo,.red .arista{transition:opacity .4s;animation:prende .4s ease both;animation-delay:var(--tarda,0s)}
+@media (prefers-reduced-motion:reduce){ .red .nodo,.red .arista{animation:none} }
+
+/* ── LA CRIBA EN TIRA. Del 2 al 200, tachando de primo en primo. Lo que
+   queda son los primos, y se ve que a partir de la raíz ya no se tacha
+   nada nuevo. ── */
+.criba{display:grid;grid-template-columns:repeat(20,1fr);gap:2px;padding:4px 0}
+.criba i{aspect-ratio:1;border-radius:3px;background:var(--arena);display:block;
+  transition:background .3s, transform .3s}
+.criba i{position:relative}
+.criba i.fuera{background:var(--panel2);opacity:.45;box-shadow:inset 0 0 0 1px var(--linea)}
+.criba i.fuera::after{content:'';position:absolute;inset:22% 8%;border-top:1.5px solid var(--tenue);
+  transform:rotate(-45deg);transform-origin:center}
+.criba i.enPie{background:var(--arena);box-shadow:0 0 0 1px var(--arenaO) inset}
+.criba i.p2{background:#6FB7E0} .criba i.p3{background:#9BC26A} .criba i.p5{background:#F0C75E}
+.criba i.p7{background:#F08A6B} .criba i.p11{background:#5FD0C0} .criba i.p13{background:#E89AC7}
+.criba i.primo{background:#E8DCC8;box-shadow:0 0 0 1.5px var(--oro)}
+.cribaPie{font-family:'Space Mono',monospace;font-size:12.5px;margin-top:8px}
+
+/* ── EL ÍNDICE DE SALAS. Nació para probar la app a fondo, pero sirve
+   igual en clase: saltar a la sala que se quiere proyectar sin pasar por
+   los encargos. Y abajo, el autodiagnóstico: cada generador se prueba
+   contra sí mismo y dice si algo falla. ── */
+.indice{border-left:4px solid var(--morado)}
+.rejilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:6px;margin-top:8px}
+.rejilla button{font-size:12.5px;padding:8px 6px;min-height:38px;text-align:left}
+.listaEnc{margin-top:8px;max-height:280px;overflow-y:auto;border:1px solid var(--linea);
+  border-radius:9px;padding:6px}
+.listaEnc button{display:block;width:100%;text-align:left;background:none;border:0;
+  color:var(--tenue);font-family:'Atkinson Hyperlegible',sans-serif;font-size:13px;
+  padding:6px 8px;border-radius:6px;cursor:pointer;box-shadow:none}
+.listaEnc button:hover{background:var(--panel2);color:var(--tinta)}
+.listaEnc button b{color:var(--oro);font-family:'Space Mono',monospace;font-size:11px;margin-right:6px}
+.listaEnc button.hecho b{color:var(--verde)}
+.diag{font-family:'Space Mono',monospace;font-size:12.5px;line-height:1.7;margin-top:8px;
+  max-height:220px;overflow-y:auto;background:var(--panel2);border-radius:8px;padding:9px}
+.diag .ok{color:#9BC26A} .diag .ko{color:#F08A6B;font-weight:700}
+.salaLibre{border-left:4px solid var(--oro);font-family:'Rokkitt',serif;font-weight:700;
+  font-size:13px;letter-spacing:1.6px;text-transform:uppercase;color:var(--oro);
+  padding:8px 0 0}
+
+/* ── EL MURAL, CON AIRE EGIPCIO. La pintura egipcia es color plano con
+   contorno negro: cada anillo lleva ahora su aro oscuro por fuera y por
+   dentro, como un collar de fayenza pintado en una pared. Y al tocar un
+   número se abre EL DETALLE: el mismo anillo en grande, con cada trozo
+   nombrado, para que se vea de qué está hecho sin adivinar colores. */
+.detalle{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center;
+  background:var(--panel2);border:1px solid var(--linea);border-radius:11px;
+  padding:11px;margin-top:10px;animation:aparece .35s ease both}
+.detalle svg{width:120px;height:120px;display:block}
+.detalle .quien{color:var(--morado);margin-bottom:3px}
+.detalle .factores{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.detalle .factores span{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;
+  padding:3px 9px;border-radius:20px;border:2px solid currentColor}
+.detalle .txt{font-size:13.5px;line-height:1.5;color:var(--tenue)}
+.detalle .txt b{color:var(--tinta)}
+@media (max-width:430px){ .detalle{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .detalle .factores{justify-content:center} }
+@media (prefers-reduced-motion:reduce){ .detalle{animation:none} }
+
+/* ═══ LA INTERFAZ COMÚN DE LAS SALAS ════════════════════════════════════
+   Diez manipulativos distintos que hasta ahora iban cada uno por su lado:
+   unos con marco, otros sin él, los mandos con estilos diferentes. Ahora
+   todas las salas tienen la MISMA estructura, siempre en el mismo orden:
+
+      RÓTULO  ·  qué se mide aquí
+      MANDOS  ·  lo que se puede tocar
+      ESCENA  ·  el dibujo, en su marco
+      LECTURA ·  lo que dice el dibujo
+
+   Así el alumno no tiene que reaprender la interfaz en cada sala: cambia
+   el manipulativo, no el sitio de las cosas. */
+.salaRot{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:-2px 0 10px}
+.salaRot b{font-family:'Rokkitt',serif;font-weight:700;font-size:15px;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--oro)}
+.salaRot span{font-family:'Rokkitt',serif;font-size:13px;letter-spacing:.4px;color:var(--tenue)}
+.salaRot::before{content:'';width:9px;height:9px;border-radius:50%;background:var(--oro);
+  align-self:center;flex:0 0 9px;box-shadow:0 0 8px rgba(224,178,74,.5)}
+
+/* los mandos: siempre una etiqueta a la izquierda y sus botones al lado */
+.panel .fila.mandos{gap:6px 9px;margin-top:8px}
+.panel .fila.mandos .etq{min-width:104px}
+@media (max-width:430px){ .panel .fila.mandos .etq{min-width:0;width:100%;margin-bottom:-3px} }
+
+/* la escena: el mismo marco para los diez dibujos */
+.escena{background:var(--panel2);border:1px solid var(--linea);border-radius:11px;
+  padding:10px;margin-top:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.escena > .pasillo,.escena > .granero{background:none;border:0;border-radius:0;padding:0;box-shadow:none}
+.escena > .sala,.escena > .escalera,.escena > .taller-eng,.escena > .red{padding:0}
+.escena > .mural,.escena > .criba,.escena > .rects,.escena > .collares{padding:0}
+.pista.secreto{opacity:.5;font-size:11.5px}
+/* la cerradura: a pie de página, en letra pequeña. Que se vea sin gritar */
+.cerradura{margin-top:22px;padding-top:13px;border-top:1px solid var(--linea);opacity:.75}
+.cerradura label{font-family:'Rokkitt',serif;font-weight:500;font-size:12.5px;
+  letter-spacing:1.2px;text-transform:uppercase;color:var(--tenue)}
+.cerradura input{font-family:'Space Mono',monospace;font-size:17px;width:110px;
+  letter-spacing:4px;text-align:center;padding:8px;border:1px solid var(--linea);
+  border-radius:9px;background:var(--panel2);color:var(--tinta)}
+.cerradura.abierta{display:none}
+</style>
+</head><body>
+<header>
+  <div class="cenefa" aria-hidden="true"></div>
+  <h1>El templo de Miut</h1>
+  <p class="sub">Divisibilidad · primos · mcd y mcm</p>
+  <nav class="barra">
+    <!-- Enlace ABSOLUTO a propósito: la línea del tiempo vive en el
+       repositorio terminal-jl y esta app en el suyo, así que un enlace
+       relativo la buscaría aquí dentro y no existe. Entre apps de la
+       casa, siempre la URL entera. -->
+    <a href="https://diazepamina-creator.github.io/terminal-jl/linea.html">← Materiales</a>
+    <button id="bTaller" aria-pressed="false">Taller</button>
+    <button id="bIndice" aria-pressed="false">Salas</button>
+    <span style="flex:1"></span>
+    <button id="bModo">Modo papel</button>
+  </nav>
+</header>
+
+<div class="panel encargo">
+  <div class="cara" id="cara"></div>
+  <div class="quien">Listahmes, escriba</div>
+  <p class="encTxt" id="encTxt"></p>
+  <div class="ops" id="ops" hidden></div>
+  <div class="fila">
+    <button class="b" id="atras" aria-label="Encargo anterior">◀</button>
+    <button class="b ok" id="comprobar">Comprobar</button>
+    <span class="paso" id="cual"></span>
+  </div>
+</div>
+<div class="panel informe encargo" id="informe" hidden>
+  <div class="cara" id="caraGata"></div>
+  <div class="quien" style="color:var(--oro)">Miut</div>
+  <p class="encTxt" id="infTxt"></p>
+</div>
+
+<!-- ═══ EL ÍNDICE DE SALAS ═══ -->
+<div class="panel indice" id="pIndice" hidden>
+  <div class="quien" style="color:var(--morado)">Índice de salas</div>
+  <p class="pista" style="margin-top:4px">Abre cualquier sala suelta, o salta a un encargo concreto.</p>
+  <div class="rejilla" id="rejSalas"></div>
+  <div class="fila">
+    <button class="b" id="ixPapiro">Abrir el papiro</button>
+    <button class="b" id="ixTodo">Marcar todo hecho</button>
+    <button class="b" id="ixCero">Empezar de cero</button>
+  </div>
+  <div class="etq" style="margin-top:10px">los 25 encargos</div>
+  <div class="listaEnc" id="listaEnc"></div>
+  <div class="fila">
+    <button class="b" id="ixDiag">Autodiagnóstico</button>
+    <span class="etq">prueba los generadores contra sí mismos</span>
+  </div>
+  <div class="diag" id="diag" hidden></div>
+</div>
+<p class="salaLibre" id="rotuloLibre" hidden></p>
+
+<!-- ═══ EL TALLER ═══ -->
+<div class="panel taller" id="pTaller" hidden>
+  <div class="quien" style="color:var(--oro)">El taller · práctica libre</div>
+  <div class="tipos" id="tipos"></div>
+  <div class="ejer" id="ejer"></div>
+  <div class="fila" style="margin-top:6px" id="filaSiNo" hidden>
+    <button class="b si" id="bSi">Sí</button>
+    <button class="b no" id="bNo">No</button>
+  </div>
+  <div class="fila" style="margin-top:6px" id="filaResp">
+    <input class="resp" id="resp" type="text" inputmode="numeric" autocomplete="off" placeholder="tu respuesta">
+    <button class="b ok" id="corrige">Corregir</button>
+  </div>
+  <div class="fila" style="margin-top:6px">
+    <button class="b" id="otro">Otro</button>
+    <button class="b" id="verlo" hidden>Verlo en la sala</button>
+  </div>
+  <div class="veredicto" id="verTaller" hidden></div>
+  <div class="marcador">
+    <span>aciertos <b id="tAc">0</b></span><span>racha <b id="tRacha">0</b></span>
+    <span>mejor racha <b id="tMejor">0</b></span>
+  </div>
+  <div class="fila">
+    <button class="b" id="hojaDiez">Imprimir una hoja de diez</button>
+    <span class="etq">con la clave en hoja aparte</span>
+  </div>
+</div>
+<div class="hoja" id="hoja"></div>
+
+<!-- ═══ EL PASILLO ═══ -->
+<div class="panel" id="pPasillo">
+  <div class="fila" style="margin-top:0">
+    <span class="etq">salto de Miut</span>
+    <span id="botA"></span>
+  </div>
+  <div class="fila" id="filaB">
+    <span class="etq">salto de la otra gata</span>
+    <span id="botB"></span>
+  </div>
+  <div class="pasillo"><div class="suelo" id="suelo"></div></div>
+  <p class="pista" id="pistaPasillo">Cada huella es una baldosa donde cae la gata; donde caen las dos, la baldosa se enciende. <b>El pasillo es largo: se arrastra de lado.</b></p>
+  <div class="lectura">
+    <span>Miut, de <b id="lecA">3</b> en <b id="lecA2">3</b>: <b id="mulA"></b></span>
+    <span id="wrapB">La otra, de <b id="lecB">4</b> en <b id="lecB2">4</b>: <b id="mulB"></b></span>
+  </div>
+  <div class="veredicto" id="verPasillo"></div>
+</div>
+
+<!-- ═══ EL GRANERO · el resto ═══ -->
+<div class="panel" id="pResto" hidden>
+  <div class="fila" style="margin-top:0">
+    <span class="etq">granos</span><span id="botN"></span>
+  </div>
+  <div class="fila">
+    <span class="etq">en filas de</span><span id="botD"></span>
+  </div>
+  <div class="granero"><div class="filas" id="filas"></div></div>
+  <p class="pista">Las filas completas son el <b>cociente</b>. Lo que sobra, el <b>resto</b>.</p>
+  <div class="veredicto" id="verResto"></div>
+</div>
+
+<!-- ═══ LOS RECTÁNGULOS · primos ═══ -->
+<div class="panel" id="pRect" hidden>
+  <div class="fila" style="margin-top:0">
+    <span class="etq">baldosas</span><span id="botR"></span>
+  </div>
+  <div class="rects" id="rects"></div>
+  <div class="veredicto" id="verRect"></div>
+</div>
+
+<!-- ═══ EL MURAL DE LOS CIEN ═══ -->
+<div class="panel" id="pMural" hidden>
+  <div class="mural" id="mural"></div>
+  <p class="muralPie" id="muralPie">Toca un número para ver de qué está hecho.</p>
+  <div id="detalle"></div>
+  <div class="leyPrimos" id="leyPrimos"></div>
+  <div class="veredicto" id="verMural"></div>
+</div>
+
+<!-- ═══ LA ESCALERA DE EUCLIDES ═══ -->
+<div class="panel" id="pEuclides" hidden>
+  <div class="fila" style="margin-top:0">
+    <span class="etq">suelo</span><span id="botEu"></span>
+  </div>
+  <div class="escalera"><svg id="svgEu" viewBox="0 0 340 200" aria-hidden="true"></svg></div>
+  <div class="fila">
+    <button class="b" id="euCorta">Cortar el cuadrado más grande</button>
+    <button class="b" id="euReset">Empezar</button>
+  </div>
+  <div class="pasosEu" id="pasosEu"></div>
+  <div class="veredicto" id="verEu"></div>
+</div>
+
+<!-- ═══ LOS ENGRANAJES ═══ -->
+<div class="panel" id="pEng" hidden>
+  <div class="fila" style="margin-top:0">
+    <span class="etq">dientes de la rueda grande</span><span id="botEA"></span>
+  </div>
+  <div class="fila">
+    <span class="etq">dientes de la pequeña</span><span id="botEB"></span>
+  </div>
+  <div class="taller-eng"><svg id="svgEng" viewBox="0 0 360 200" aria-hidden="true"></svg></div>
+  <div class="leyPrimos" id="engLey"></div>
+  <div class="fila">
+    <button class="b" id="engPaso">Avanzar un diente</button>
+    <button class="b" id="engGira">Girar hasta que se encuentren</button>
+    <button class="b" id="engReset">Reiniciar</button>
+  </div>
+  <div class="eng-lect">
+    <span>dientes pasados: <b id="engN">0</b></span>
+    <span>huecos distintos que ha tocado el diente marcado: <b id="engH">0</b></span>
+  </div>
+  <div class="veredicto" id="verEng"></div>
+</div>
+
+<!-- ═══ LA SALA ═══ -->
+<div class="panel" id="pSala" hidden>
+  <div class="fila" style="margin-top:0">
+    <span class="etq">baldosa cuadrada de lado</span>
+    <span id="botK"></span>
+  </div>
+  <div class="sala"><svg id="svgSala" viewBox="0 0 300 200" aria-hidden="true"></svg></div>
+  <p class="pista">Una baldosa cuadrada solo vale si llena el suelo <b>sin recortar ninguna</b>.</p>
+  <div class="veredicto" id="verSala"></div>
+</div>
+
+
+<div class="panel papiro" id="papiro" hidden>
+  <svg viewBox="0 0 124 92" class="elefante" aria-label="Jeroglífico de elefante">
+  <!-- EL ELEFANTE. Existe el jeroglífico: es el signo E26 de Gardiner,
+       «abu», que significa elefante y también marfil, y de él le viene el
+       nombre a la isla de Elefantina, junto a Asuán. Así que en un papiro
+       egipcio es tan de casa como un anj — y aquí, además, firma la sala.
+       Dibujado como se dibujaba allí: de perfil, plano, sin sombras, y con
+       el ojo entero mirando de frente aunque la cabeza vaya de lado. -->
+  <g fill="#C9A87C" stroke="#241C36" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+    <!-- el cuerpo y las patas, de una pieza -->
+    <path d="M46 30 Q56 16 80 16 Q104 16 110 34 Q114 48 110 62 L110 80 L98 80 L98 66
+             Q86 70 74 70 L66 70 L66 80 L54 80 L54 64 Q44 54 44 42 Z"/>
+    <!-- la cabeza -->
+    <path d="M46 30 Q28 30 24 44 Q22 54 28 60 L44 60 Q46 46 46 30 Z"/>
+    <!-- la trompa: baja recta y la punta se enrosca HACIA DELANTE -->
+    <path d="M27 58 Q20 70 24 80 Q28 87 36 84 Q30 80 31 73 Q32 66 37 62 Z"/>
+    <!-- la cola -->
+    <path d="M110 42 Q120 45 117 58 L112 58 Q115 49 108 48 Z"/>
+  </g>
+  <!-- la oreja, más clara y por encima: es lo que hace elefante a un elefante -->
+  <path d="M48 24 Q66 21 68 39 Q69 53 54 55 Q45 50 45 36 Z"
+        fill="#D9BC96" stroke="#241C36" stroke-width="2.4" stroke-linejoin="round"/>
+  <!-- el colmillo, por delante de la trompa y bien a la vista -->
+  <path d="M34 56 Q22 62 14 74 Q24 72 32 63 Z"
+        fill="#F4ECDC" stroke="#241C36" stroke-width="2.2" stroke-linejoin="round"/>
+  <!-- el ojo, de frente aunque la cabeza vaya de perfil -->
+  <ellipse cx="34" cy="40" rx="5" ry="3.6" fill="#F4ECDC" stroke="#241C36" stroke-width="2"/>
+  <circle cx="34" cy="40" r="1.9" fill="#241C36"/>
+  <path d="M28.6 35.6 Q34 32.4 39.4 35.6" stroke="#241C36" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- trazos de relieve, como los de una pared -->
+  <g stroke="#A8875C" stroke-width="1.8" fill="none" stroke-linecap="round">
+    <path d="M84 24 Q86 36 84 48"/><path d="M96 27 Q98 38 96 49"/>
+    <path d="M27 66 Q31 72 28 78"/>
+  </g>
+</svg>
+  <h2>El papiro secreto</h2>
+  <p class="lema">Un solo motivo · muchas reglas · escribe un número y mira</p>
+  <p>Los criterios de divisibilidad se aprenden como trucos sueltos y no lo son: casi todos salen
+  de la misma pregunta, <b>qué resto deja 10 —o 100, o 1000— al dividir entre el número que te
+  interesa</b>. Aquí cada regla es una máquina: escribe un número y observa qué cifras coge.</p>
+
+  <h3>1 · Los que solo miran el final</h3>
+  <p>10 es múltiplo de 2 y de 5; 100 lo es de 4 y de 25; 1000, de 8. Todo lo que hay por delante
+  de las últimas cifras ya es múltiplo y no puede estorbar: <b>las demás cifras se apagan</b>.</p>
+  <div class="maquina" id="mFinal">
+    <div class="fila"><input inputmode="numeric" value="7315624" autocomplete="off">
+      <button data-d="2">÷2</button><button data-d="5">÷5</button><button data-d="4">÷4</button>
+      <button data-d="8">÷8</button><button data-d="25">÷25</button></div>
+    <div class="cifras"></div><div class="lect"></div>
+  </div>
+
+  <h3>2 · La idea que vale para todos: los pesos</h3>
+  <p>Un número es sus cifras multiplicadas por 1, por 10, por 100, por 1000… Al dividir entre
+  <b>m</b>, cada uno de esos multiplicadores deja un resto: ese es el <b>peso</b> de la posición.
+  Y el número entero deja el mismo resto que <b>la suma de cifra × peso</b>. Elige un divisor y
+  mira los pesos encima de cada cifra.</p>
+  <div class="maquina" id="mPesos">
+    <div class="fila"><input inputmode="numeric" value="7315624" autocomplete="off">
+      <button data-m="3">÷3</button><button data-m="9">÷9</button><button data-m="11">÷11</button>
+      <button data-m="7">÷7</button><button data-m="13">÷13</button><button data-m="37">÷37</button></div>
+    <div class="pesos"></div><div class="lect"></div>
+  </div>
+  <p>Con el <b>3</b> y el <b>9</b> todos los pesos son 1: por eso basta sumar las cifras. Con el
+  <b>11</b> alternan +1 y −1, y da igual leer desde un lado que desde el otro (solo cambia el
+  signo del total). Con el <b>7</b> y el <b>13</b> los pesos se repiten cada seis, y <b>el peso de
+  tres posiciones más allá es el mismo con el signo cambiado</b>: guarda ese detalle.</p>
+
+  <h3>3 · Elefanti: un solo gesto para 7, 11 y 13</h3>
+  <p>Ese detalle es todo el método que publicó <b>Francis Elefanti</b> en 1860. Como 1000 pesa
+  <b>−1</b> para el 7, el 11 y el 13 (porque 1001 = 7 · 11 · 13), <b>una cifra vale lo mismo que
+  su contraria tres posiciones a la derecha</b>. Así que se puede quitar la primera cifra y
+  restarla tres casillas más allá, y el resto no cambia. Se repite hasta que quedan tres cifras.</p>
+  <div class="maquina" id="mElef">
+    <div class="fila"><input inputmode="numeric" value="1183530803" autocomplete="off">
+      <button data-acc="paso">Un paso</button><button data-acc="todo" class="sec">Hasta el final</button>
+      <button data-acc="reset" class="sec">Otra vez</button></div>
+    <div class="columna"></div><p class="nota-el"></p>
+  </div>
+
+  <h3>4 · Y lo mismo para cualquier primo</h3>
+  <p>Elefanti dio reglas para todos los primos hasta el 107, con letras que hoy cuesta leer. Pero
+  todas salen del mismo molde: <b>buscar un número de la forma 10<sup>s</sup> ± k que sea múltiplo
+  del primo</b>. Entonces se quita la primera cifra y, <b>s</b> casillas a la derecha, se le resta
+  o se le suma <b>k</b> veces esa cifra. Aquí están, ya traducidas, y cada una se puede probar
+  en la máquina de arriba:</p>
+  <div class="reglas" id="reglas"></div>
+
+  <h3>5 · De propina: por qué se multiplican los divisores</h3>
+  <p>Si dos números <b>no comparten nada</b>, los divisores de su producto salen de multiplicar
+  los de uno por los de otro, todos con todos. Por eso el número de divisores se multiplica: el 60
+  tiene 12 porque el 4 tiene 3 y el 15 tiene 4. Weissman lo dibuja como una tabla, y así se ve que
+  no falta ni sobra ninguno. Cambia los números y prueba con dos que sí compartan algo.</p>
+  <div class="maquina" id="mTabla">
+    <div class="fila">
+      <span class="etq" style="color:#7A4B12">a</span><span id="tblA"></span>
+      <span class="etq" style="color:#7A4B12">b</span><span id="tblB"></span>
+    </div>
+    <div class="tablaDiv" id="tablaDiv"></div>
+    <div class="lect" id="tablaLect"></div>
+  </div>
+  <p class="fuente">F. Elefanti, «Problem on the Divisibility of Numbers», <i>Proc. R. Soc. Lond.</i> 10 (1860), 208–214.</p>
+  <div class="fila"><button id="papCerrar">Cerrar el papiro</button></div>
+</div>
+</div>
+
+<div class="cerradura" id="cerradura">
+  <label for="clave">El templo guarda un papiro. Se abre con un número.</label>
+  <div class="fila" style="margin-top:6px">
+    <input id="clave" type="text" inputmode="numeric" maxlength="6"
+           placeholder="· · · ·" autocomplete="off" aria-label="Clave del papiro">
+    <button class="b" id="claveVa">Probar</button>
+  </div>
+  <p class="pista" id="clavePista" style="margin-top:6px"></p>
+</div>
+
+<!-- ═══ LA RED DE DIVISORES ═══ -->
+<div class="panel" id="pRed" hidden>
+  <div class="fila" style="margin-top:0">
+    <span class="etq">dos números</span><span id="botRed"></span>
+  </div>
+  <div class="fila">
+    <span class="etq">o los tuyos</span>
+    <input class="resp" id="redA" type="text" inputmode="numeric" value="12" style="width:78px">
+    <input class="resp" id="redB" type="text" inputmode="numeric" value="18" style="width:78px">
+    <button class="b" id="redVa">Montar la red</button>
+  </div>
+  <div class="red"><svg id="svgRed" viewBox="0 0 340 240" aria-hidden="true"></svg></div>
+  <p class="pista">Cada escalón es multiplicar por un primo. Abajo el 1; arriba, el mcm.</p>
+  <div class="veredicto" id="verRed"></div>
+</div>
+
+<!-- ═══ LA CRIBA ═══ -->
+<div class="panel" id="pCriba" hidden>
+  <div class="criba" id="criba"></div>
+  <div class="fila">
+    <button class="b" id="cribaPaso">Tachar los múltiplos del siguiente</button>
+    <button class="b" id="cribaReset">Empezar</button>
+  </div>
+  <p class="cribaPie" id="cribaPie"></p>
+  <div class="veredicto" id="verCriba"></div>
+</div>
+
+<!-- ═══ EL COLLAR ═══ -->
+<div class="panel" id="pCollar" hidden>
+  <div class="collares" id="collares"></div>
+  <p class="leyenda">Cada amuleto es un factor primo. Los que llevan aro de oro están en los dos collares.</p>
+  <div class="veredicto" id="verCollar"></div>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const mcd = (a, b) => b ? mcd(b, a % b) : a;
+const mcm = (a, b) => a / mcd(a, b) * b;
+const divisores = n => { const d = []; for(let k = 1; k <= n; k++) if(n % k === 0) d.push(k); return d; };
+function primos(n){                      // la descomposición, como lista
+  const f = []; let m = n;
+  for(let p = 2; p * p <= m; p++) while(m % p === 0){ f.push(p); m /= p; }
+  if(m > 1) f.push(m);
+  return f;
+}
+$('cara').innerHTML = `<svg viewBox="0 0 46 48" aria-hidden="true">
+  <!-- LISTAHMES · el escriba de la obra. De Ahmes, el que copió el papiro
+       Rhind y lo firmó con su nombre. Segunda versión: la primera era una
+       cabeza pequeña flotando sobre el papiro extendido de lado a lado, que
+       se leía como una bandeja, y una raya de kohl que le cruzaba la cara
+       como un antifaz. Ahora tiene lo que tienen los demás de su estirpe:
+       CUERPO, cabeza y un objeto en la mano. El papiro va enrollado y de
+       pie, sujeto con un ala; el collar usej se ve; y el kohl es un rabillo
+       corto, que es como se pintaba. -->
+  <path d="M8 46 Q9 33 19 30 L27 30 Q37 33 38 46 Z" fill="#EFE7D6" stroke="#241C36" stroke-width="1.4"/>
+  <path d="M8 46 Q9 33 19 30 L21 30 Q15 36 15 46 Z" fill="#DCD3BE" opacity=".85"/>
+  <!-- el collar usej, ancho y de oro -->
+  <path d="M15 30.4 Q23 37.4 31 30.4 L32.8 32.2 Q23 40.4 13.2 32.2 Z"
+        fill="#E0B24A" stroke="#241C36" stroke-width="1.3" stroke-linejoin="round"/>
+  <path d="M16.6 32.2 Q23 37.8 29.4 32.2" stroke="#B0392C" stroke-width="1.6" fill="none"/>
+  <!-- el brazo que sujeta el rollo -->
+  <path d="M17 33 Q11.6 34.6 10.6 39" fill="none" stroke="#241C36" stroke-width="5.4" stroke-linecap="round"/>
+  <path d="M17 33 Q11.6 34.6 10.6 39" fill="none" stroke="#5FA0BE" stroke-width="3.8" stroke-linecap="round"/>
+  <!-- el papiro, ENROLLADO y de pie: así se lee como rollo y no como bandeja -->
+  <rect x="5.6" y="24" width="9.4" height="22" rx="2.4" fill="#F2E3C4" stroke="#241C36" stroke-width="1.4"/>
+  <path d="M5.6 27.4 H15" stroke="#241C36" stroke-width="1.2"/>
+  <path d="M5.6 42.6 H15" stroke="#241C36" stroke-width="1.2"/>
+  <g stroke="#B09A6E" stroke-width="1"><path d="M7.6 31 H13"/><path d="M7.6 34 H12"/><path d="M7.6 37 H13"/></g>
+  <ellipse cx="10.3" cy="24" rx="4.7" ry="1.9" fill="#DCC9A4" stroke="#241C36" stroke-width="1.3"/>
+  <!-- la cabeza -->
+  <circle cx="24" cy="19.6" r="9.2" fill="#5FA0BE" stroke="#241C36" stroke-width="1.4"/>
+  <path d="M24 10.4 a9.2 9.2 0 0 0 0 18.4 a6 9.2 0 0 1 0 -18.4 z" fill="#7FC9E2" opacity=".5"/>
+  <path d="M29.6 18.8 L37.2 21.2 L29.6 23.6 Z" fill="#E0B24A" stroke="#241C36" stroke-width="1.2" stroke-linejoin="round"/>
+  <circle cx="26.4" cy="18.6" r="2.2" fill="#f2f6fb"/><circle cx="21.4" cy="18.6" r="2" fill="#f2f6fb"/>
+  <circle cx="26.7" cy="18.8" r="1" fill="#140F1F"/><circle cx="21.7" cy="18.8" r=".9" fill="#140F1F"/>
+  <!-- el kohl: un rabillo corto hacia fuera, no una banda -->
+  <path d="M19.2 17.6 L16.6 16.6" stroke="#241C36" stroke-width="1.3" stroke-linecap="round"/>
+  <path d="M19.4 20.2 L17 21" stroke="#241C36" stroke-width="1.1" stroke-linecap="round" opacity=".7"/>
+  <!-- la cinta roja de la frente, con su cola -->
+  <path d="M15.4 14.4 Q24 9.6 32.6 14.4 L32 16.6 Q24 12.4 16 16.6 Z"
+        fill="#B0392C" stroke="#241C36" stroke-width="1.3" stroke-linejoin="round"/>
+  <path d="M32.2 15.4 Q36.6 16.6 36 20.6" fill="none" stroke="#B0392C" stroke-width="2" stroke-linecap="round"/>
+  <!-- el cálamo detrás de la oreja: el escriba siempre lleva uno -->
+  <path d="M16.4 12.6 L12 8.4" stroke="#C08A5E" stroke-width="2" stroke-linecap="round"/>
+  <path d="M12.4 8.8 L11 7.4" stroke="#241C36" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- la paleta de dos tintas, colgada al cinto -->
+  <rect x="27" y="37" width="12" height="5" rx="1.6" fill="#C08A5E" stroke="#241C36" stroke-width="1.3"/>
+  <circle cx="30.4" cy="39.5" r="1.2" fill="#241C36"/><circle cx="35.6" cy="39.5" r="1.2" fill="#B0392C"/>
+</svg>`;
+$('caraGata').innerHTML = `<svg viewBox="0 0 46 48" aria-hidden="true">
+  <!-- MIUT · la gata del templo. Por Chapas, la gata de Andrés, y por
+       Bastet, que en Egipto era gata y era diosa: es el único sitio de esta
+       línea donde un gato manda más que cualquiera. Va en morados de
+       amatista —piedra que los egipcios sacaban de sus propias minas— con
+       el collar usej de oro y los ojos perfilados de kohl. Sentada y muy
+       recta, como se sientan ellas cuando saben que las miras. -->
+  <ellipse cx="23" cy="45.4" rx="13" ry="2.6" fill="#140F1F" opacity=".45"/>
+  <!-- la cola, enroscada por delante de las patas -->
+  <path d="M33 42 Q41 42 40 36 Q39 31 34 33" fill="none" stroke="#241C36" stroke-width="5.6" stroke-linecap="round"/>
+  <path d="M33 42 Q41 42 40 36 Q39 31 34 33" fill="none" stroke="#8A6A9E" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#6B4E7A" stroke-width="1.2"><path d="M37.6 41 L38.4 43"/><path d="M40 37.6 L42 38"/></g>
+  <!-- el cuerpo -->
+  <path d="M13 45 Q13 27 23 27 Q33 27 33 45 Z" fill="#8A6A9E" stroke="#241C36" stroke-width="1.4" stroke-linejoin="round"/>
+  <path d="M13 45 Q13 27 23 27 Q18 32 17.6 45 Z" fill="#A98BBC" opacity=".55"/>
+  <!-- las patas delanteras, juntas -->
+  <g fill="#A98BBC" stroke="#241C36" stroke-width="1.3" stroke-linejoin="round">
+    <path d="M17 45 Q17 38 20 38 Q23 38 23 45 Z"/>
+    <path d="M23 45 Q23 38 26 38 Q29 38 29 45 Z"/></g>
+  <g stroke="#6B4E7A" stroke-width="1"><path d="M18.6 43.4 H21.4"/><path d="M24.6 43.4 H27.4"/></g>
+  <!-- el collar usej -->
+  <path d="M15.4 29 Q23 35.6 30.6 29 L32 30.8 Q23 39 14 30.8 Z"
+        fill="#E0B24A" stroke="#241C36" stroke-width="1.3" stroke-linejoin="round"/>
+  <path d="M16.8 30.6 Q23 36 29.2 30.6" stroke="#B0392C" stroke-width="1.5" fill="none"/>
+  <!-- el escarabajo del collar -->
+  <ellipse cx="23" cy="35.6" rx="2.4" ry="2.8" fill="#3E7FA0" stroke="#241C36" stroke-width="1"/>
+  <!-- las orejas -->
+  <g fill="#8A6A9E" stroke="#241C36" stroke-width="1.4" stroke-linejoin="round">
+    <path d="M13.4 15.6 L12.4 5.4 L21 11 Z"/>
+    <path d="M32.6 15.6 L33.6 5.4 L25 11 Z"/></g>
+  <path d="M14.6 13.6 L14 8.4 L18.6 11.4 Z" fill="#E8B0C0"/>
+  <path d="M31.4 13.6 L32 8.4 L27.4 11.4 Z" fill="#E8B0C0"/>
+  <!-- los pendientes de oro, que Bastet los lleva -->
+  <circle cx="12.4" cy="19.4" r="1.9" fill="#E0B24A" stroke="#241C36" stroke-width="1"/>
+  <circle cx="33.6" cy="19.4" r="1.9" fill="#E0B24A" stroke="#241C36" stroke-width="1"/>
+  <!-- la cabeza -->
+  <ellipse cx="23" cy="18.6" rx="10.6" ry="9.4" fill="#8A6A9E" stroke="#241C36" stroke-width="1.4"/>
+  <path d="M12.6 16.6 Q13 25 17.6 27.6 Q14 22.6 13.6 15.6 Z" fill="#6B4E7A" opacity=".7"/>
+  <!-- los ojos, perfilados de kohl -->
+  <path d="M14.8 17.6 Q18.4 14.4 22 17.6 Q18.4 21.4 14.8 17.6 Z" fill="#F2EDE2" stroke="#241C36" stroke-width="1.2" stroke-linejoin="round"/>
+  <path d="M24 17.6 Q27.6 14.4 31.2 17.6 Q27.6 21.4 24 17.6 Z" fill="#F2EDE2" stroke="#241C36" stroke-width="1.2" stroke-linejoin="round"/>
+  <ellipse cx="18.4" cy="17.9" rx="1.5" ry="2.4" fill="#4E8B3E"/>
+  <ellipse cx="27.6" cy="17.9" rx="1.5" ry="2.4" fill="#4E8B3E"/>
+  <ellipse cx="18.4" cy="17.9" rx=".6" ry="2" fill="#241C36"/>
+  <ellipse cx="27.6" cy="17.9" rx=".6" ry="2" fill="#241C36"/>
+  <path d="M13.6 17" stroke="#241C36"/>
+  <path d="M14.4 17.2 L11.4 16" stroke="#241C36" stroke-width="1.4" stroke-linecap="round"/>
+  <path d="M31.6 17.2 L34.6 16" stroke="#241C36" stroke-width="1.4" stroke-linecap="round"/>
+  <!-- el hocico -->
+  <path d="M21.4 21.6 L24.6 21.6 L23 23.4 Z" fill="#E8B0C0" stroke="#241C36" stroke-width="1.1" stroke-linejoin="round"/>
+  <path d="M23 23.4 V24.6" stroke="#241C36" stroke-width="1.1"/>
+  <path d="M23 24.6 Q20.6 26.6 19 24.8" fill="none" stroke="#241C36" stroke-width="1.1" stroke-linecap="round"/>
+  <path d="M23 24.6 Q25.4 26.6 27 24.8" fill="none" stroke="#241C36" stroke-width="1.1" stroke-linecap="round"/>
+  <g stroke="#F2EDE2" stroke-width=".9" stroke-linecap="round" opacity=".85">
+    <path d="M19 22.4 Q13.6 21.6 11 22.6"/><path d="M19.2 24.4 Q14 25 11.8 26.6"/>
+    <path d="M27 22.4 Q32.4 21.6 35 22.6"/><path d="M26.8 24.4 Q32 25 34.2 26.6"/></g>
+  <!-- el anj entre las orejas: es del templo, no de la calle -->
+  <g transform="translate(23 5.6)">
+    <ellipse cx="0" cy="-2.6" rx="2.2" ry="2.6" fill="none" stroke="#E0B24A" stroke-width="1.6"/>
+    <path d="M0 0 V5" stroke="#E0B24A" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M-2.8 1.4 H2.8" stroke="#E0B24A" stroke-width="1.6" stroke-linecap="round"/>
+  </g>
+</svg>`;
+
+/* ── EL PASILLO ─────────────────────────────────────────────────────────
+   Las baldosas son la recta numérica: la baldosa k ES el número k. La
+   gata de oro salta de a en a y la roja de b en b, y cada una deja huella
+   donde CAE —no por donde pasa—, que es justo la diferencia entre un
+   múltiplo y un número cualquiera. Donde caen las dos, la baldosa se
+   enciende: eso es un múltiplo común, y el primero es el mcm. */
+const pasillo = {a:3, b:4, hasta:24, doble:true, tercera:false};
+let primerPintado = true;
+function pintaPasillo(){
+  const suelo = $('suelo'); suelo.innerHTML = '';
+  suelo.className = 'suelo' + (pasillo.tercera ? ' tres' : '');
+  for(let k = 0; k <= pasillo.hasta; k++){
+    const d = document.createElement('div');
+    d.className = 'bald' + (k === 0 ? ' cero' : '');
+    const cae = n => n && k > 0 && k % n === 0;
+    const pa = cae(pasillo.a), pb = pasillo.doble && cae(pasillo.b);
+    const m = pasillo.doble ? mcm(pasillo.a, pasillo.b) : 0;
+    const pc = pasillo.tercera && cae(m);
+    if(pa) d.classList.add('pA');
+    if(pb) d.classList.add('pB');
+    if(pc) d.classList.add('pC');
+    if(pa && pb) d.classList.add('ambas');
+    d.innerHTML = '<span class="hA"></span><span class="hB"></span><span class="hC"></span>' + k;
+    d.style.setProperty('--tarda', (k * 35) + 'ms');       // la gata va llegando
+    suelo.appendChild(d);
+  }
+  const lista = n => { const v = []; for(let k = n; k <= pasillo.hasta; k += n) v.push(k); return v.join(', '); };
+  $('lecA').textContent = pasillo.a; $('lecA2').textContent = pasillo.a;
+  $('mulA').textContent = lista(pasillo.a);
+  $('wrapB').hidden = !pasillo.doble;
+  $('filaB').hidden = !pasillo.doble;
+  if(pasillo.doble){
+    $('lecB').textContent = pasillo.b; $('lecB2').textContent = pasillo.b;
+    $('mulB').textContent = lista(pasillo.b);
+  }
+  const ver = $('verPasillo');
+  if(pasillo.tercera){
+    const m = mcm(pasillo.a, pasillo.b);
+    ver.className = 'veredicto bien';
+    ver.innerHTML = 'La gata verde salta <b>de ' + m + ' en ' + m + '</b>, y cae <b>exactamente</b> donde '
+      + 'coinciden las otras dos. Ni una de más ni una de menos: los múltiplos comunes de ' + pasillo.a
+      + ' y ' + pasillo.b + ' <b>son</b> los múltiplos de ' + m + '.';
+  }else if(!pasillo.doble){
+    ver.className = 'veredicto';
+    ver.innerHTML = 'Cae en <b>' + lista(pasillo.a) + '</b>… Esas baldosas son los '
+      + '<b>múltiplos de ' + pasillo.a + '</b>.';
+  }else{
+    const m = mcm(pasillo.a, pasillo.b);
+    ver.className = 'veredicto' + (m <= pasillo.hasta ? ' bien' : '');
+    ver.innerHTML = m <= pasillo.hasta
+      ? 'Las dos coinciden por primera vez en la <b>' + m + '</b>. Ese es el '
+        + '<b>mínimo común múltiplo</b> de ' + pasillo.a + ' y ' + pasillo.b + '.'
+      : 'Con este pasillo no llegan a coincidir: el primer encuentro está en la <b>'
+        + m + '</b> y el suelo se acaba en la ' + pasillo.hasta + '.';
+  }
+  ponBotones();
+  /* El pasillo es más ancho que un móvil, así que se arrastra. Pero la
+     baldosa que importa —el primer encuentro, o la última huella— puede
+     quedar fuera de la pantalla justo cuando se acaba de responder. Se
+     asoma sola, con calma. */
+  if(primerPintado){ primerPintado = false; return; }
+  const clave = pasillo.doble
+    ? Math.min(mcm(pasillo.a, pasillo.b), pasillo.hasta)
+    : Math.floor(pasillo.hasta / pasillo.a) * pasillo.a;
+  const caja = suelo.parentElement, hijo = suelo.children[clave];
+  if(hijo && caja.scrollWidth > caja.clientWidth){
+    const destino = hijo.offsetLeft - caja.clientWidth / 2 + hijo.offsetWidth / 2;
+    caja.scrollTo({left: Math.max(0, destino), behavior: 'smooth'});
+  }
+}
+function ponBotones(){
+  const mk = (cont, cual, val) => {
+    const c = $(cont); c.innerHTML = '';
+    [2,3,4,5,6,8,9,12].forEach(n => {
+      const b = document.createElement('button');
+      b.className = 'b'; b.textContent = n;
+      b.setAttribute('aria-pressed', String(val === n));
+      b.addEventListener('click', () => { pasillo[cual] = n; pintaPasillo(); revisa(); });
+      c.appendChild(b);
+    });
+  };
+  mk('botA', 'a', pasillo.a);
+  if(pasillo.doble) mk('botB', 'b', pasillo.b);
+}
+
+/* ── LA SALA ────────────────────────────────────────────────────────────
+   Un suelo de a por b codos y baldosas cuadradas de lado k. Se dibujan
+   TODAS, también las que hay que recortar, y las recortadas salen en rojo:
+   así el alumno ve por qué un k que no divide no sirve. La baldosa más
+   grande que no obliga a recortar ninguna es el mcd — un tamaño, no un
+   resultado. */
+const sala = {a:18, b:24, k:6};
+function pintaSala(){
+  const svg = $('svgSala'), A = sala.a, B = sala.b, k = sala.k;
+  const W = 300, H = W * A / B, U = W / B;
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + (H + 26));
+  let d = '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="var(--arenaO)"/>';
+  for(let y = 0; y < A; y += k) for(let x = 0; x < B; x += k){
+    const w = Math.min(k, B - x), h = Math.min(k, A - y);
+    const entera = (w === k && h === k);
+    d += '<rect x="' + (x*U).toFixed(1) + '" y="' + (y*U).toFixed(1) + '" width="' + (w*U).toFixed(1)
+      + '" height="' + (h*U).toFixed(1) + '" fill="' + (entera ? 'var(--arena)' : 'var(--rojo)')
+      + '" stroke="var(--junta)" stroke-width="1.4"/>';
+  }
+  const sobra = (A % k) || (B % k);
+  d += '<text x="' + (W/2) + '" y="' + (H + 19) + '" text-anchor="middle" '
+    + 'font-family="Space Mono,monospace" font-size="13" fill="'
+    + (sobra ? 'var(--rojo)' : 'var(--verde)') + '">'
+    + (sobra ? 'hay que recortar' : 'llena justo') + '</text>';
+  svg.innerHTML = d;
+  const g = mcd(A, B), ver = $('verSala');
+  const dA = divisores(A), dB = divisores(B), com = dA.filter(x => dB.includes(x));
+  const listas = '<div class="lectura" style="margin-top:8px"><span>divisores de ' + A + ': <b>' + dA.join(', ') + '</b></span>'
+    + '<span>divisores de ' + B + ': <b>' + dB.join(', ') + '</b></span>'
+    + '<span>comunes: <b>' + com.join(', ') + '</b> · el mayor es <b>' + g + '</b></span></div>';
+  ver.className = 'veredicto' + (!sobra ? ' bien' : '');
+  ver.innerHTML = sobra
+    ? 'La de <b>' + k + '</b> no vale: ' + (A % k ? A + ' no es múltiplo de ' + k : B + ' no es múltiplo de ' + k) + '.'
+    : (k === g
+      ? 'La de <b>' + k + '</b> llena justo, y no hay ninguna mayor que lo haga: <b>' + k
+        + ' es el máximo común divisor</b> de ' + A + ' y ' + B + '.'
+      : 'La de <b>' + k + '</b> llena justo, pero no es la mayor que puede hacerlo.');
+  ver.innerHTML += listas;
+  const c = $('botK'); c.innerHTML = '';
+  [2,3,4,5,6,8,9,12].forEach(n => {
+    const b = document.createElement('button');
+    b.className = 'b'; b.textContent = n;
+    b.setAttribute('aria-pressed', String(sala.k === n));
+    b.addEventListener('click', () => { sala.k = n; pintaSala(); revisa(); });
+    c.appendChild(b);
+  });
+}
+
+/* ── EL COLLAR ──────────────────────────────────────────────────────────
+   Un amuleto por factor primo. Los que están en los dos collares llevan
+   aro de oro: multiplicados dan el mcd. Y todo lo que hace falta para
+   armar los dos collares, contando una sola vez los comunes, da el mcm. La regla
+   de los exponentes se lee aquí, no se recita. */
+const collar = {a:18, b:24};
+function pintaCollar(){
+  const A = primos(collar.a), B = primos(collar.b);
+  const comunes = []; const resto = B.slice();
+  A.forEach(p => { const i = resto.indexOf(p); if(i >= 0){ comunes.push(p); resto.splice(i, 1); } });
+  const amu = (p, com) => '<span class="amu p' + (p <= 7 ? p : 'x') + (com ? ' comun' : '') + '">' + p + '</span>';
+  const marca = (lista, otros) => { const q = otros.slice();
+    return lista.map(p => { const i = q.indexOf(p); if(i >= 0){ q.splice(i, 1); return amu(p, true); } return amu(p, false); }).join(''); };
+  $('collares').innerHTML =
+    '<div class="collar"><span class="n">' + collar.a + '</span>' + marca(A, B) + '</div>' +
+    (collar.a === collar.b ? '' : '<div class="collar"><span class="n">' + collar.b + '</span>' + marca(B, A) + '</div>');
+  const g = comunes.reduce((x, y) => x * y, 1);
+  const m = mcm(collar.a, collar.b);
+  $('verCollar').className = 'veredicto bien';
+  $('verCollar').innerHTML =
+    'Lo que comparten los dos collares es <b>' + (comunes.length ? comunes.join(' · ') : 'nada') +
+    '</b>, y multiplicado da <b>' + g + '</b>: el <b>mcd</b>.<br>' +
+    'Y todo lo que hace falta para armar los dos, contando una sola vez lo compartido, da <b>' +
+    m + '</b>: el <b>mcm</b>.';
+}
+</script>
+<script>
+
+/* ── EL GRANERO. El teorema de la división, en granos: N granos puestos en
+   filas de d. Las filas enteras son el cociente y la fila corta de abajo es
+   el resto. Que se vea que el resto siempre es MENOR que d —si no, cabría
+   otra fila— es la mitad del teorema. */
+const granero = {n:139, d:7};
+function pintaResto(){
+  const {n, d} = granero, q = Math.floor(n / d), r = n % d;
+  const caja = $('filas'); caja.innerHTML = '';
+  const MAX = 14;                       // no se pintan más de catorce filas
+  const dibuja = (cuantos, suelta, rot) => {
+    const f = document.createElement('div');
+    f.className = 'f' + (suelta ? ' suelta' : '');
+    for(let i = 0; i < cuantos; i++){ const g = f.appendChild(document.createElement('i')); g.className = 'g';
+      g.style.setProperty('--tarda', (caja.children.length * 45 + i * 8) + 'ms'); }
+    if(rot){ const e = document.createElement('span'); e.className = 'rot'; e.textContent = rot; f.appendChild(e); }
+    caja.appendChild(f);
+  };
+  const enseñadas = Math.min(q, MAX);
+  for(let k = 0; k < enseñadas; k++) dibuja(d, false, k === 0 ? 'fila 1' : (k === enseñadas - 1 && q <= MAX ? 'fila ' + q : ''));
+  if(q > MAX){ const e = document.createElement('div'); e.className = 'rot';
+    e.textContent = '… y ' + (q - MAX) + ' filas más, hasta ' + q; caja.appendChild(e); }
+  if(r) dibuja(r, true, 'sobran ' + r);
+  const v = $('verResto');
+  v.className = 'veredicto' + (r === 0 ? ' bien' : '');
+  v.innerHTML = r === 0
+    ? '<b>' + n + ' = ' + d + ' · ' + q + '</b>, sin sobrar nada. El resto es <b>0</b>, y eso es exactamente '
+      + 'lo que quiere decir que <b>' + d + ' divide a ' + n + '</b>.'
+    : '<b>' + n + ' = ' + d + ' · ' + q + ' + ' + r + '</b>. Sobran <b>' + r + '</b>, y sobran menos de ' + d
+      + ': si fueran ' + d + ' o más, cabría otra fila entera.';
+  const mk = (cont, cual, lista) => {
+    const c = $(cont); c.innerHTML = '';
+    lista.forEach(x => { const b = document.createElement('button');
+      b.className = 'b'; b.textContent = x;
+      b.setAttribute('aria-pressed', String(granero[cual] === x));
+      b.addEventListener('click', () => { granero[cual] = x; pintaResto(); revisa(); });
+      c.appendChild(b); });
+  };
+  mk('botN', 'n', [24, 36, 45, 139]);
+  mk('botD', 'd', [2, 3, 5, 6, 7, 9]);
+}
+
+/* ── LOS RECTÁNGULOS. Con n baldosas se buscan TODOS los rectángulos
+   posibles. Si el único que sale es la tira de 1 por n, no hay manera de
+   repartirlas en filas iguales: eso es ser primo. Y de la misma imagen sale
+   el criterio de la raíz — en cada rectángulo, un lado es siempre menor o
+   igual que la raíz de n, así que no hace falta probar más allá. */
+const rect = {n:12};
+function pintaRects(){
+  const n = rect.n, caja = $('rects'); caja.innerHTML = '';
+  const pares = [];
+  for(let a = 1; a * a <= n; a++) if(n % a === 0) pares.push([a, n / a]);
+  pares.forEach(([a, b]) => {
+    const f = document.createElement('figure');
+    if(a === 1) f.className = 'tira';
+    const g = document.createElement('div');
+    g.className = 'rj';
+    g.style.gridTemplateColumns = 'repeat(' + b + ', 11px)';
+    for(let k = 0; k < n; k++) g.appendChild(document.createElement('i'));
+    const c = document.createElement('figcaption');
+    c.textContent = a + ' × ' + b;
+    f.style.setProperty('--tarda', (caja.children.length * 120) + 'ms');
+    f.appendChild(g); f.appendChild(c); caja.appendChild(f);
+  });
+  const primo = pares.length === 1;
+  const v = $('verRect');
+  v.className = 'veredicto' + (primo ? ' bien' : '');
+  const raiz = Math.floor(Math.sqrt(n));
+  v.innerHTML = primo
+    ? 'Con ' + n + ' baldosas <b>solo sale la tira</b>: no hay forma de ponerlas en filas iguales de más '
+      + 'de una. Eso es ser <b>primo</b>.'
+    : 'Con ' + n + ' salen <b>' + pares.length + '</b> rectángulos, así que ' + n + ' <b>no es primo</b>. '
+      + 'Y fíjate en el lado corto de cada uno: nunca pasa de <b>' + raiz + '</b>, que es la raíz de ' + n
+      + '. Por eso, para saber si un número es primo, basta probar divisores hasta su raíz.';
+  const c = $('botR'); c.innerHTML = '';
+  [7, 9, 11, 12, 13, 16, 18, 24].forEach(x => {
+    const b = document.createElement('button');
+    b.className = 'b'; b.textContent = x;
+    b.setAttribute('aria-pressed', String(rect.n === x));
+    b.addEventListener('click', () => { rect.n = x; pintaRects(); revisa(); });
+    c.appendChild(b);
+  });
+}
+
+/* ── EL MURAL DE LOS CIEN. Cada número, un anillo partido en tantos trozos
+   como factores primos tenga, con un color por primo. Es el collar de
+   Miut extendido a cien números: los primos son de un color entero y
+   se ven de golpe, sin tachar nada. */
+const COLORP = {2:'#6FB7E0', 3:'#9BC26A', 5:'#F0C75E', 7:'#F08A6B', 11:'#5FD0C0', 13:'#E89AC7'};
+const colorDe = p => COLORP[p] || '#E8DCC8';
+let muralSel = 0;
+const cifra = n => '<text x="12" y="12" text-anchor="middle" dominant-baseline="central" '
+  + 'font-family="Rokkitt,serif" font-weight="700" font-size="' + (n > 9 ? 8.2 : 9) + '" '
+  + 'fill="var(--tinta)">' + n + '</text>';
+/* El anillo va pintado como en una pared egipcia: color plano entre dos
+   aros oscuros. El contorno es lo que hace que se lea como pintura y no
+   como gráfico de tarta. */
+function anillo(n, R, grosor, conCifra){
+  R = R || 9; grosor = grosor || 6;
+  const cx = 12, cy = 12;
+  const aro = (r, w, col, op) => '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="'
+    + col + '" stroke-width="' + w + '"' + (op ? ' opacity="' + op + '"' : '') + '/>';
+  if(n === 1) return '<svg viewBox="0 0 24 24">' + aro(R, grosor * .55, '#5A4E6A')
+    + (conCifra === false ? '' : cifra(1)) + '</svg>';
+  const f = primos(n), k = f.length, C = 2 * Math.PI * R, trozo = C / k;
+  let d = aro(R, grosor + 2.2, '#1A1226');            // el contorno, por debajo
+  f.forEach((p, i) => {
+    d += '<circle cx="' + cx + '" cy="' + cy + '" r="' + R + '" fill="none" stroke="' + colorDe(p) + '" '
+      + 'stroke-width="' + grosor + '" stroke-dasharray="' + (trozo - 0.9).toFixed(2) + ' ' + (C - trozo + 0.9).toFixed(2) + '" '
+      + 'stroke-dashoffset="' + (-i * trozo).toFixed(2) + '" transform="rotate(-90 ' + cx + ' ' + cy + ')"/>';
+  });
+  d += aro(R + grosor / 2, 1, '#1A1226', .85) + aro(R - grosor / 2, 1, '#1A1226', .85);
+  return '<svg viewBox="0 0 24 24">' + d + (conCifra === false ? '' : cifra(n)) + '</svg>';
+}
+function pintaMural(){
+  const m = $('mural'); m.innerHTML = '';
+  for(let n = 1; n <= 100; n++){
+    const b = document.createElement('button');
+    b.innerHTML = anillo(n);
+    b.style.setProperty('--tarda', (muralSel ? 0 : n * 9) + 'ms');   // solo la primera vez
+    b.setAttribute('aria-label', String(n));
+    b.setAttribute('aria-pressed', String(muralSel === n));
+    b.addEventListener('click', () => { muralSel = n; pintaMural(); revisa(); });
+    m.appendChild(b);
+  }
+  const pie = $('muralPie'), det = $('detalle');
+  if(!muralSel){
+    pie.textContent = 'Toca un número para verlo en grande.'; det.innerHTML = '';
+  }else{
+    pie.textContent = '';
+    const f = primos(muralSel), dv = divisores(muralSel);
+    const grande = anillo(muralSel, 8.4, 5.6, false);
+    let txt;
+    if(muralSel === 1) txt = '<b>1</b> no está hecho de nada: no es primo ni compuesto. Si lo fuera, cada número '
+      + 'tendría infinitos collares y se acabaría la gracia.';
+    else if(f.length === 1) txt = 'Un solo trozo: <b>' + muralSel + ' es primo</b>. Sus únicos divisores son el 1 y él mismo.';
+    else txt = '<b>' + muralSel + ' = ' + f.join(' · ') + '</b> — ' + f.length + ' trozos. Sus <b>' + dv.length
+      + '</b> divisores: ' + dv.join(', ') + '.';
+    det.innerHTML = '<div class="detalle">' + grande + '<div><div class="quien">' + muralSel + '</div>'
+      + '<div class="factores">' + f.map(p => '<span style="color:' + colorDe(p) + '">' + p + '</span>').join('')
+      + (muralSel === 1 ? '<span style="color:var(--tenue)">nada</span>' : '') + '</div>'
+      + '<p class="txt" style="margin:0">' + txt + '</p></div></div>';
+  }
+  $('leyPrimos').innerHTML = [2,3,5,7,11,13].map(p =>
+    '<span><i style="background:' + colorDe(p) + '"></i>' + p + '</span>').join('')
+    + '<span><i style="background:#E8DCC8"></i>otros</span>';
+  const v = $('verMural');
+  v.className = 'veredicto';
+  v.innerHTML = 'Los que son de <b>un solo color entero</b> son los primos. Los demás enseñan '
+    + 'de qué están hechos, y no hay dos números distintos con el mismo collar.';
+}
+
+
+/* ── LA ESCALERA DE EUCLIDES ────────────────────────────────────────────
+   Un rectángulo de a por b. Se corta el cuadrado más grande que cabe —de
+   lado el menor de los dos— y se sigue con lo que sobra. Si sobra cero, el
+   último cuadrado es el mcd. Cada corte es una división con resto: eso es
+   mcd(a,b) = mcd(b, r), el lema de Wu, sin decirlo con letras. */
+const eu = {a:54, b:16, pasos:[], a0:54, b0:16};
+function euReset(){
+  eu.a = Math.min(eu.a0, eu.b0); eu.b = Math.max(eu.a0, eu.b0); eu.pasos = [];
+  pintaEu();
+}
+function euCorta(){
+  if(eu.a === 0 || eu.b === 0) return;
+  const lado = Math.min(eu.a, eu.b), largo = Math.max(eu.a, eu.b);
+  const q = Math.floor(largo / lado), r = largo % lado;
+  eu.pasos.push({lado, q, r, largo});
+  if(eu.a >= eu.b) eu.a = r; else eu.b = r;
+  pintaEu(true);
+}
+function pintaEu(anim){
+  const L = Math.max(eu.a0, eu.b0), S = Math.min(eu.a0, eu.b0);   // largo tumbado
+  const A = S, B = L, W = 340;
+  const esc = W / B, H = A * esc;
+  const svg = $('svgEu');
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + (H + 4));
+  let d = '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="var(--arenaO)" stroke="var(--junta)" stroke-width="1.5"/>';
+  // se recolocan los cuadrados de cada paso en el hueco que iban ocupando
+  let x = 0, y = 0, w = B, h = A;
+  const tonos = ['#C9A87C', '#D9BC96', '#B8935F', '#E3CBA6', '#A8875C'];
+  eu.pasos.forEach((p, i) => {
+    const horiz = w >= h;                       // se corta a lo largo del lado largo
+    for(let k = 0; k < p.q; k++){
+      const cx = horiz ? x + k * p.lado : x, cy = horiz ? y : y + k * p.lado;
+      const ultimo = anim && i === eu.pasos.length - 1;
+      d += '<rect class="q' + (ultimo ? ' nuevo' : '') + '" x="' + (cx*esc).toFixed(1) + '" y="' + (cy*esc).toFixed(1)
+        + '" width="' + (p.lado*esc).toFixed(1) + '" height="' + (p.lado*esc).toFixed(1)
+        + '" fill="' + tonos[i % tonos.length] + '" stroke="var(--junta)" stroke-width="1.6"/>';
+      if(p.lado * esc > 22) d += '<text x="' + ((cx + p.lado/2)*esc).toFixed(1) + '" y="' + ((cy + p.lado/2)*esc + 4).toFixed(1)
+        + '" text-anchor="middle" font-family="Space Mono,monospace" font-size="11" fill="#4A3620">' + p.lado + '</text>';
+    }
+    if(horiz){ x += p.q * p.lado; w -= p.q * p.lado; } else { y += p.q * p.lado; h -= p.q * p.lado; }
+  });
+  if(w > 0 && h > 0 && eu.pasos.length)
+    d += '<rect x="' + (x*esc).toFixed(1) + '" y="' + (y*esc).toFixed(1) + '" width="' + (w*esc).toFixed(1)
+      + '" height="' + (h*esc).toFixed(1) + '" fill="var(--rojo)" opacity=".55"/>';
+  svg.innerHTML = d;
+  $('pasosEu').innerHTML = eu.pasos.map(p =>
+    p.largo + ' = ' + p.lado + ' · ' + p.q + (p.r ? ' + <b>' + p.r + '</b>' : ' + 0')).join('<br>');
+  const fin = eu.a === 0 || eu.b === 0;
+  const g = mcd(A, B);
+  const v = $('verEu');
+  v.className = 'veredicto' + (fin ? ' bien' : '');
+  if(!eu.pasos.length) v.innerHTML = 'Un suelo de <b>' + B + ' × ' + A + '</b>. Corta el cuadrado más grande que quepa y mira qué sobra.';
+  else if(!fin) v.innerHTML = 'Sobra un trozo de <b>' + Math.max(eu.a, eu.b) + ' × ' + Math.min(eu.a, eu.b) + '</b> (en rojo). '
+    + 'Lo que divida a los dos lados del suelo tiene que dividir también a este trozo: sigue cortando ahí.';
+  else{
+    /* dos Fibonacci seguidos son el PEOR caso del algoritmo: cada corte
+       quita un solo cuadrado y la escalera sale en espiral. */
+    const fib = [1,1,2,3,5,8,13,21,34,55,89,144];
+    const i1 = fib.indexOf(Math.min(A,B)), i2 = fib.indexOf(Math.max(A,B));
+    const espiral = i1 >= 0 && i2 === i1 + 1;
+    v.innerHTML = 'No sobra nada. El último cuadrado mide <b>' + g + '</b>, y ese es el <b>mcd(' + B + ', ' + A + ')</b>. '
+      + 'Sin factorizar: solo cortando cuadrados. Así lo hacía Euclides hace 2.300 años.'
+      + (espiral ? '<br>Y este suelo es especial: ' + A + ' y ' + B + ' son dos números de <b>Fibonacci</b> seguidos, '
+          + 'y por eso en cada paso solo cabe <b>un</b> cuadrado y la escalera sale en espiral. Es el caso en que '
+          + 'el algoritmo más pasos necesita: con números de este tamaño, ningún otro par da tantos cortes.' : '');
+  }
+  $('euCorta').disabled = fin;
+  const c = $('botEu'); c.innerHTML = '';
+  [[54,16],[18,24],[60,36],[96,111],[55,34]].forEach(([a,b]) => {
+    const bt = document.createElement('button');
+    bt.className = 'b'; bt.textContent = a + '×' + b;
+    bt.setAttribute('aria-pressed', String(eu.a0 === a && eu.b0 === b));
+    bt.addEventListener('click', () => { eu.a0 = a; eu.b0 = b; euReset(); revisa(); });
+    c.appendChild(bt);
+  });
+}
+/* la red se monta con cualquier par: es lo que hace que sirva de taller.
+   Se limita el tamaño porque con muchos divisores deja de leerse — y
+   decirlo es más honesto que dibujar una maraña. */
+function redLibre(){
+  const a = Math.max(1, Math.min(9999, parseInt($('redA').value, 10) || 0));
+  const b = Math.max(1, Math.min(9999, parseInt($('redB').value, 10) || 0));
+  if(!a || !b) return;
+  const n = divisores(mcm(a, b)).length;
+  if(n > 36){
+    $('verRed').className = 'veredicto';
+    $('verRed').innerHTML = 'El mcm de ' + a + ' y ' + b + ' tiene <b>' + n + ' divisores</b>: la red saldría '
+      + 'ilegible. Prueba con números que tengan menos factores — la red se lee bien hasta unos 36 nodos.';
+    return;
+  }
+  red.a = a; red.b = b; pintaRed(); revisa();
+}
+$('redVa').addEventListener('click', redLibre);
+$('redA').addEventListener('keydown', e => { if(e.key === 'Enter') redLibre(); });
+$('redB').addEventListener('keydown', e => { if(e.key === 'Enter') redLibre(); });
+
+$('euCorta').addEventListener('click', () => { euCorta(); revisa(); });
+$('euReset').addEventListener('click', () => { euReset(); revisa(); });
+
+/* ── LOS ENGRANAJES ─────────────────────────────────────────────────────
+   Dos ruedas: A dientes la grande y B la pequeña. Un diente de la grande va
+   marcado. Cada «paso» avanza un diente en las dos. El diente marcado
+   vuelve al mismo hueco de la pequeña cada mcm(A,B) dientes; y los huecos
+   distintos que llega a tocar son B / mcd(A,B). Con dientes primos entre sí
+   toca todos: desgaste uniforme, que es lo que buscan los relojeros. */
+const eng = {A:20, B:10, n:0, pos:0, meta:0, raf:null, huecos:new Set(), timer:null};
+function pintaEng(){
+  const {A, B, n} = eng;
+  const t = eng.pos;                 // posición con decimales, para el dibujo
+  const svg = $('svgEng');
+  /* El módulo es el mismo para las dos ruedas —si no, no engranarían—, así
+     que el radio es proporcional al número de dientes y la distancia entre
+     centros es la suma de los dos radios primitivos. Eso es lo que hace que
+     el dibujo se parezca a un mecanismo y no a dos soles. */
+  const mod = 5.6, rA = A * mod / 2, rB = B * mod / 2;
+  const cxA = rA + 8, cyA = rA + 8, cxB = cxA + rA + rB, cyB = cyA;
+  const W = cxB + rB + 8, H = 2 * rA + 16;
+  svg.setAttribute('viewBox', '0 0 ' + W.toFixed(0) + ' ' + H.toFixed(0));
+  const pol = (cx, cy, r, a) => (cx + r * Math.cos(a)).toFixed(2) + ' ' + (cy + r * Math.sin(a)).toFixed(2);
+  const rueda = (cx, cy, r, N, giro, marca, col, colD) => {
+    const paso = 2 * Math.PI / N;
+    const rPie = r - mod * 1.0, rPunta = r + mod * 0.52;
+    let dientes = '';
+    for(let i = 0; i < N; i++){
+      const c = i * paso;
+      // un diente: base ancha en la circunferencia de pie, punta estrecha
+      const b1 = c - paso * 0.30, b2 = c + paso * 0.30;
+      const p1 = c - paso * 0.17, p2 = c + paso * 0.17;
+      const esMarca = i === marca;
+      dientes += '<path d="M' + pol(cx, cy, rPie, b1) + ' L' + pol(cx, cy, rPunta, p1)
+        + ' A' + (rPunta) + ' ' + (rPunta) + ' 0 0 1 ' + pol(cx, cy, rPunta, p2)
+        + ' L' + pol(cx, cy, rPie, b2) + ' Z" fill="' + (esMarca ? 'var(--pataB)' : colD)
+        + '" stroke="var(--junta)" stroke-width="1.4" stroke-linejoin="round"/>';
+    }
+    return '<g transform="rotate(' + giro.toFixed(2) + ' ' + cx + ' ' + cy + ')">'
+      + dientes
+      + '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r - mod * 1.0).toFixed(1) + '" fill="' + col + '" stroke="var(--junta)" stroke-width="2"/>'
+      + '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r * 0.62).toFixed(1) + '" fill="none" stroke="var(--junta)" stroke-width="1.2" opacity=".5"/>'
+      /* los radios de la rueda, que es lo que la hace parecer una pieza */
+      + [0, 1, 2, 3, 4].map(k => '<path d="M' + pol(cx, cy, r * 0.16, k * 2 * Math.PI / 5)
+          + ' L' + pol(cx, cy, r * 0.62, k * 2 * Math.PI / 5) + '" stroke="var(--junta)" stroke-width="' + (r > 40 ? 5 : 3.4) + '" stroke-linecap="round" opacity=".55"/>').join('')
+      + '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r * 0.16).toFixed(1) + '" fill="var(--panel)" stroke="var(--junta)" stroke-width="2"/>'
+      + '</g>';
+  };
+  /* Las dos giran en sentidos opuestos y con el mismo avance de diente. El
+     diente marcado de la grande arranca justo en el punto de contacto. */
+  const giroA = t * 360 / A, giroB = -t * 360 / B + 180 + 180 / B;   // media muesca de desfase
+  let d = rueda(cxA, cyA, rA, A, giroA, 0, 'var(--arena)', '#D9BC96')
+        + rueda(cxB, cyB, rB, B, giroB, -1, 'var(--arenaO)', '#C0A57F');
+  /* los huecos visitados: se pintan como MUESCAS —el espacio entre dos
+     dientes— y en verdigrís, no en el rojo del diente marcado. Un diente
+     sobresale y un hueco se hunde: ahora también se ven distintos. */
+  /* la muesca va HACIA DENTRO —un vaciado en el cuerpo de la rueda—, no
+     hacia fuera: hacia fuera se leía como un diente más */
+  const pasoB = 2 * Math.PI / B, rBoca = rB - mod * 0.75, rFondo = rB - mod * 2.5;
+  const rMed = (rBoca + rFondo) / 2, grosor = rBoca - rFondo;
+  d += '<g transform="rotate(' + giroB.toFixed(2) + ' ' + cxB + ' ' + cyB + ')">';
+  eng.huecos.forEach(h => {
+    const c = (h + 0.5) * pasoB;
+    // una ranura radial: un trazo grueso con las puntas redondeadas
+    d += '<path d="M' + pol(cxB, cyB, rBoca - 1, c) + ' L' + pol(cxB, cyB, rFondo + 1, c)
+      + '" stroke="#1A1226" stroke-width="' + (mod * 1.5).toFixed(1) + '" stroke-linecap="round" fill="none"/>';
+    d += '<path d="M' + pol(cxB, cyB, rBoca - 1, c) + ' L' + pol(cxB, cyB, rFondo + 1, c)
+      + '" stroke="#3FA192" stroke-width="' + (mod * 0.85).toFixed(1) + '" stroke-linecap="round" fill="none"/>';
+  });
+  d += '</g>';
+  /* EL PUNTO DE ENGRANE. Un aro pequeño no bastaba: ahora va una banda
+     vertical de oro sobre la línea de centros —que es exactamente donde
+     los dientes se tocan—, con su rótulo. Es lo único que hay que mirar. */
+  const xEng = cxA + rA;
+  d = '<rect x="' + (xEng - 12).toFixed(1) + '" y="' + (cyA - rA).toFixed(1)
+    + '" width="24" height="' + (2 * rA).toFixed(1) + '" rx="12" fill="var(--oro)" opacity=".12"/>' + d;
+  d += '<path d="M' + xEng.toFixed(1) + ' ' + (cyA - rA - 6).toFixed(1) + ' V' + (cyA + rA + 6).toFixed(1)
+    + '" stroke="var(--oro)" stroke-width="1.4" stroke-dasharray="4 4" opacity=".6"/>';
+  d += '<circle cx="' + xEng.toFixed(1) + '" cy="' + cyA.toFixed(1) + '" r="10" fill="none" stroke="var(--oro)" stroke-width="2.6"/>';
+  /* el rótulo, con su propio hueco arriba y el ancho del lienzo pensado
+     para que quepa entero: antes se salía por la derecha */
+  const rot = 'AQUÍ ENGRANAN', anchoRot = rot.length * 8.4;
+  const W2 = Math.max(W, xEng + anchoRot / 2 + 6);
+  d += '<path d="M' + xEng.toFixed(1) + ' ' + (cyA - rA - 8).toFixed(1) + ' V' + (cyA - rA - 20).toFixed(1)
+    + '" stroke="var(--oro)" stroke-width="1.4" opacity=".7"/>';
+  d += '<text x="' + Math.min(xEng, W2 - anchoRot / 2 - 2).toFixed(1) + '" y="' + (cyA - rA - 26).toFixed(1)
+    + '" text-anchor="middle" font-family="Rokkitt,serif" font-weight="700" font-size="13" '
+    + 'letter-spacing="1.4" fill="var(--oro)">' + rot + '</text>';
+  svg.setAttribute('viewBox', '0 0 ' + W2.toFixed(0) + ' ' + (H + 34).toFixed(0));
+  svg.innerHTML = '<g transform="translate(0 32)">' + d + '</g>';
+  $('engN').textContent = n;
+  $('engH').textContent = eng.huecos.size;
+  $('engLey').innerHTML = '<span><i style="background:var(--pataB)"></i>el diente marcado</span>'
+    + '<span><i style="background:#3FA192"></i>huecos que ha visitado</span>';
+  const m = mcm(A, B), g = mcd(A, B);
+  const v = $('verEng');
+  const vueltoInicio = n > 0 && n % m === 0;
+  v.className = 'veredicto' + (vueltoInicio ? ' bien' : '');
+  if(n === 0) v.innerHTML = 'Rueda de <b>' + A + '</b> y rueda de <b>' + B + '</b>. El diente rojo está en el hueco de arriba. Avanza y mira a qué hueco vuelve.';
+  else if(vueltoInicio) v.innerHTML = 'Tras <b>' + n + '</b> dientes el diente rojo vuelve a su hueco de salida. Se encuentran cada <b>mcm(' + A + ', ' + B + ') = ' + m + '</b> dientes: '
+    + (n / A) + ' vuelta' + (n/A === 1 ? '' : 's') + ' de la grande y ' + (n / B) + ' de la pequeña. '
+    + 'Y ha tocado <b>' + eng.huecos.size + '</b> hueco' + (eng.huecos.size === 1 ? '' : 's') + ' de ' + B
+    + (g === 1 ? ': <b>todos</b>, porque ' + A + ' y ' + B + ' son primos entre sí. Desgaste uniforme.'
+              : ': solo <b>' + (B / g) + '</b> de los ' + B + ', porque comparten el ' + g + '. Esos huecos se gastan y los demás no.');
+  else v.innerHTML = 'Van <b>' + n + '</b> dientes. El diente rojo ha tocado <b>' + eng.huecos.size + '</b> hueco' + (eng.huecos.size === 1 ? '' : 's') + ' distinto' + (eng.huecos.size === 1 ? '' : 's') + '.';
+  const mk = (cont, cual, lista) => {
+    const c = $(cont); c.innerHTML = '';
+    lista.forEach(x => { const b = document.createElement('button');
+      b.className = 'b'; b.textContent = x; b.setAttribute('aria-pressed', String(eng[cual] === x));
+      b.addEventListener('click', () => { cancelAnimationFrame(eng.raf); eng[cual] = x; engReset(); revisa(); }); c.appendChild(b); });
+  };
+  mk('botEA', 'A', [20, 24, 25]);
+  mk('botEB', 'B', [8, 10, 12]);
+}
+/* Qué hueco de la rueda pequeña está en el punto de engrane cuando han
+   pasado t dientes. Sale de igualar el ángulo con el que se DIBUJA, no de
+   estimarlo: así el diente rojo y la muesca verde coinciden siempre. */
+const huecoEnEngrane = t => ((t - 1) % eng.B + eng.B) % eng.B;
+function contarDiente(k){                    // apunta el hueco que pisa el diente rojo
+  if(k % eng.A === 0) eng.huecos.add(huecoEnEngrane(k));
+}
+function engPaso(){ eng.n++; contarDiente(eng.n); eng.pos = eng.n; pintaEng(); }
+function engReset(){ cancelAnimationFrame(eng.raf); eng.n = 0; eng.pos = 0; eng.meta = 0;
+  eng.huecos = new Set([0]); pintaEng(); }
+/* la animación: se va hacia «meta» con frenada, apuntando cada diente
+   entero justo cuando se pasa por él */
+function engAnima(meta, alAcabar){
+  cancelAnimationFrame(eng.raf);
+  eng.meta = meta;
+  const lento = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(lento){ while(eng.n < meta) engPaso(); if(alAcabar) alAcabar(); return; }
+  const t0 = performance.now(), desde = eng.pos, tramo = meta - desde;
+  const dur = Math.min(4200, Math.max(420, tramo * 95));
+  const paso = ahora => {
+    const u = Math.min(1, (ahora - t0) / dur);
+    const suave = 1 - Math.pow(1 - u, 3);           // frena al llegar
+    eng.pos = desde + tramo * suave;
+    while(eng.n < Math.floor(eng.pos)){ eng.n++; contarDiente(eng.n); }
+    pintaEng();
+    if(u < 1) eng.raf = requestAnimationFrame(paso);
+    else { eng.pos = meta; eng.n = meta; pintaEng(); if(alAcabar) alAcabar(); }
+  };
+  eng.raf = requestAnimationFrame(paso);
+}
+$('engPaso').addEventListener('click', () => engAnima(eng.n + 1, revisa));
+$('engGira').addEventListener('click', () => {
+  const m = mcm(eng.A, eng.B);
+  engAnima(Math.ceil((eng.n + 1) / m) * m, revisa);
+});
+$('engReset').addEventListener('click', () => { engReset(); revisa(); });
+
+
+
+/* ── EL ÍNDICE DE SALAS ─────────────────────────────────────────────────
+   Dos usos: probar la app entera sin recorrer los 25 encargos, y en clase
+   abrir de golpe la sala que se quiere proyectar. Abrir una sala «suelta»
+   esconde el encargo y deja el manipulativo con todos sus mandos. */
+const NOMBRES = {
+  pasillo:'El pasillo', eng:'El taller del relojero', resto:'El granero',
+  sala:'La sala', euclides:'La escalera de Euclides', rect:'Los rectángulos',
+  criba:'La criba', mural:'El mural de los cien', red:'La red de divisores',
+  collar:'El collar'
+};
+const indice = {abierto:false, libre:null};
+function abreSalaLibre(k){
+  indice.libre = k;
+  document.querySelector('.panel.encargo').hidden = true;
+  $('informe').hidden = true;
+  $('pTaller').hidden = true;
+  taller.enTaller = false; $('bTaller').setAttribute('aria-pressed','false'); $('bTaller').textContent = 'Taller';
+  muestraSala(k);
+  $('rotuloLibre').hidden = false;
+  $('rotuloLibre').textContent = NOMBRES[k] + ' · sala suelta';
+  pintaIndice();
+  $(SALAS[k]).scrollIntoView({behavior:'smooth', block:'start'});
+}
+function cierraLibre(){
+  indice.libre = null; $('rotuloLibre').hidden = true;
+  document.querySelector('.panel.encargo').hidden = false;
+  pintaEncargo();
+}
+function pintaIndice(){
+  const r = $('rejSalas'); r.innerHTML = '';
+  Object.keys(SALAS).forEach(k => {
+    const b = document.createElement('button');
+    b.className = 'b'; b.textContent = NOMBRES[k] || k;
+    b.setAttribute('aria-pressed', String(indice.libre === k));
+    b.addEventListener('click', () => abreSalaLibre(k));
+    r.appendChild(b);
+  });
+  const l = $('listaEnc'); l.innerHTML = '';
+  ENCARGOS.forEach((e, i) => {
+    const b = document.createElement('button');
+    if(hechos.has(i)) b.className = 'hecho';
+    const txt = (e.t || '').replace(/<[^>]+>/g, '');
+    b.innerHTML = '<b>' + String(i + 1).padStart(2, '0') + ' · ' + (NOMBRES[e.sala] || e.sala) + '</b>' + txt.slice(0, 58) + '…';
+    b.addEventListener('click', () => {
+      cierraLibre(); enc = i; pintaEncargo();
+      document.querySelector('.panel.encargo').scrollIntoView({behavior:'smooth', block:'start'});
+      pintaIndice();
+    });
+    l.appendChild(b);
+  });
+}
+$('bIndice').addEventListener('click', () => {
+  indice.abierto = !indice.abierto;
+  $('pIndice').hidden = !indice.abierto;
+  $('bIndice').setAttribute('aria-pressed', String(indice.abierto));
+  if(indice.abierto){ pintaIndice(); $('pIndice').scrollIntoView({behavior:'smooth', block:'start'}); }
+  else if(indice.libre) cierraLibre();
+});
+$('ixPapiro').addEventListener('click', () => {
+  $('cerradura').classList.add('abierta'); $('papiro').hidden = false;
+  $('papiro').scrollIntoView({behavior:'smooth', block:'start'});
+});
+$('ixTodo').addEventListener('click', () => {
+  ENCARGOS.forEach((_, i) => hechos.add(i)); enc = ENCARGOS.length - 1;
+  cierraLibre(); pintaIndice();
+});
+$('ixCero').addEventListener('click', () => {
+  hechos.clear(); enc = 0; cierraLibre(); pintaIndice();
+});
+
+/* ── AUTODIAGNÓSTICO. Cada motor se prueba contra sí mismo: los generadores
+   del taller aceptan su propia solución y rechazan basura; las reglas del
+   papiro conservan la divisibilidad; Euclides llega al mcd; el mcm de la
+   tercera gata cae donde debe. Lo que aquí salga en rojo, está roto. */
+$('ixDiag').addEventListener('click', () => {
+  const d = $('diag'); d.hidden = false;
+  const li = [];
+  const di = (txt, ok) => li.push('<div class="' + (ok ? 'ok' : 'ko') + '">' + (ok ? '✓ ' : '✗ ') + txt + '</div>');
+  // 1 · generadores del taller
+  Object.keys(TIPOS).forEach(t => {
+    let bien = 0, basura = 0;
+    for(let i = 0; i < 200; i++){
+      const e = TIPOS[t].gen();
+      if(e.ok(e.sol)) bien++;
+      if(!e.ok('999999')) basura++;
+    }
+    di('taller · ' + TIPOS[t].n + ': acepta su solución ' + bien + '/200, rechaza basura ' + basura + '/200',
+       bien === 200 && basura === 200);
+  });
+  // 2 · reglas del papiro (si está montado)
+  const bots = document.querySelectorAll('#reglas button');
+  if(bots.length){
+    let mal = 0;
+    bots.forEach(b => {
+      const sN = +b.dataset.s, k = +b.dataset.k, ps = b.dataset.ps.split(',').map(Number);
+      for(let t = 0; t < 120; t++){
+        const N = BigInt(Math.floor(Math.random() * 9e11) + 10 ** sN);
+        const str = N.toString(), a = BigInt(str[0]), resto = BigInt(str.slice(1)), pos = BigInt(str.length - 1 - sN);
+        const Np = resto + BigInt(k) * a * 10n ** pos;
+        for(const p of ps){ const P = BigInt(p);
+          if((N % P === 0n) !== (((Np % P) + P) % P === 0n)) mal++; }
+      }
+    });
+    di('papiro · ' + bots.length + ' reglas × 120 números: ' + mal + ' discrepancias', mal === 0);
+  }else di('papiro · sin abrir (ábrelo para probar sus reglas)', true);
+  // 3 · Euclides
+  let euMal = 0;
+  for(let t = 0; t < 200; t++){
+    const a = 1 + Math.floor(Math.random() * 200), b = 1 + Math.floor(Math.random() * 200);
+    let x = Math.max(a, b), y = Math.min(a, b), g = 0;
+    while(y > 0 && g++ < 100){ const r = x % y; x = y; y = r; }
+    if(x !== mcd(a, b)) euMal++;
+  }
+  di('escalera de Euclides · 200 pares: ' + euMal + ' discrepancias con el mcd', euMal === 0);
+  // 4 · la tercera gata: los múltiplos comunes son los del mcm
+  let gMal = 0;
+  for(let t = 0; t < 200; t++){
+    const a = 2 + Math.floor(Math.random() * 12), b = 2 + Math.floor(Math.random() * 12), m = mcm(a, b);
+    for(let k = 1; k <= 120; k++) if(((k % a === 0) && (k % b === 0)) !== (k % m === 0)) gMal++;
+  }
+  di('tercera gata · múltiplos comunes = múltiplos del mcm: ' + gMal + ' discrepancias', gMal === 0);
+  // 5 · engranajes: huecos tocados = B / mcd
+  let enMal = 0;
+  [[20,10],[25,12],[24,8],[20,12],[25,10]].forEach(([A, B]) => {
+    const hue = new Set(); const m = mcm(A, B);
+    for(let n = A; n <= m; n += A) hue.add(n % B);
+    if(hue.size !== B / mcd(A, B)) enMal++;
+  });
+  di('engranajes · huecos tocados = dientes / mcd: ' + (5 - enMal) + '/5', enMal === 0);
+  // 6 · el mural: cada número, un solo collar
+  let muMal = 0;
+  for(let n = 2; n <= 300; n++){
+    const f = primos(n);
+    if(f.reduce((x, y) => x * y, 1) !== n) muMal++;
+  }
+  di('mural · 299 descomposiciones que multiplican bien: ' + muMal + ' fallos', muMal === 0);
+  // 7 · encargos: que todos tengan lo que necesitan
+  let encMal = [];
+  ENCARGOS.forEach((e, i) => {
+    if(!SALAS[e.sala]) encMal.push((i+1) + ' sala desconocida');
+    if(!e.ops && !e.ok) encMal.push((i+1) + ' sin forma de corregir');
+    if(e.ops && !e.ops.some(o => o.ok)) encMal.push((i+1) + ' sin respuesta correcta');
+    if(e.ops && e.ops.filter(o => o.ok).length > 1) encMal.push((i+1) + ' con dos correctas');
+    if(e.ops && e.ops.some(o => !o.r)) encMal.push((i+1) + ' opción sin explicación');
+  });
+  di('encargos · ' + ENCARGOS.length + ' revisados: ' + (encMal.length ? encMal.join('; ') : 'todos completos'), !encMal.length);
+  d.innerHTML = li.join('');
+});
+
+/* ── EL TALLER ──────────────────────────────────────────────────────────
+   Siete tipos de ejercicio, generados al azar con números razonables para
+   1.º y 2.º. Cada uno sabe corregirse, explicar la respuesta y llevarte a
+   la sala donde se ve. La racha es lo que engancha; la hoja de diez es lo
+   que se lleva el profesor. */
+const al = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const elige = arr => arr[al(0, arr.length - 1)];
+const esPrimo = n => n > 1 && primos(n).length === 1;
+const TIPOS = {
+  resto: {n:'resto', modo:'numeric', ayuda:'cociente, resto', gen(){ const d = al(3, 9), q = al(4, 30), r = al(1, d - 1); const N = d*q + r;
+      return {t:'Cociente y resto de <b>' + N + '</b> entre <b>' + d + '</b>. Escribe «cociente, resto».',
+        ok: v => { const m = v.match(/(\d+)\D+(\d+)/); return !!m && +m[1] === q && +m[2] === r; },
+        sol: q + ', ' + r, exp: N + ' = ' + d + ' · ' + q + ' + ' + r + '. Sobran ' + r + ', que son menos de ' + d + '.',
+        sala:'resto', pon(){ granero.n = N; granero.d = d; }}; }},
+  mult: {n:'múltiplo o no', bool:true, gen(){ const d = elige([3,4,6,7,8,9,12]); const N = Math.random() < .5 ? d*al(3,25) : d*al(3,25) + al(1,d-1);
+      const es = N % d === 0;
+      return {t:'¿Es <b>' + N + '</b> múltiplo de <b>' + d + '</b>?',
+        ok: v => /^s[ií]$/i.test(v.trim()) === es && /^(s[ií]|no)$/i.test(v.trim()),
+        sol: es ? 'sí' : 'no', exp: es ? N + ' = ' + d + ' · ' + (N/d) + ': saltando de ' + d + ' en ' + d + ' se cae justo.'
+                                          : N + ' = ' + d + ' · ' + Math.floor(N/d) + ' + ' + (N % d) + ': sobran ' + (N % d) + ', así que no cae justo.',
+        sala:'pasillo', pon(){ pasillo.doble = false; pasillo.a = d; pasillo.hasta = Math.min(N + 4, 60); pasillo.tercera = false; }}; }},
+  divs: {n:'divisores', modo:'numeric', ayuda:'1, 2, 3…', gen(){ const N = elige([12,16,18,20,24,28,30,36,40,42,45,48]);
+      const dv = divisores(N);
+      return {t:'Escribe <b>todos</b> los divisores de <b>' + N + '</b>, separados por comas.',
+        ok: v => { const xs = v.split(/[\s,;]+/).filter(Boolean).map(Number).sort((a,b)=>a-b);
+          return xs.length === dv.length && xs.every((x, i) => x === dv[i]); },
+        sol: dv.join(', '), exp: 'Son ' + dv.length + ': los saltos que caen justo en la ' + N + '. Van por parejas que multiplican ' + N + '.',
+        sala:'rect', pon(){ rect.n = N; }}; }},
+  primo: {n:'¿primo?', bool:true, gen(){ const N = al(11, 99); const es = esPrimo(N);
+      return {t:'¿Es <b>' + N + '</b> primo?',
+        ok: v => /^(s[ií]|no)$/i.test(v.trim()) && /^s[ií]$/i.test(v.trim()) === es,
+        sol: es ? 'sí' : 'no', exp: es ? 'Ningún primo hasta ' + Math.floor(Math.sqrt(N)) + ' lo divide, y con eso basta: ' + N + ' es primo.'
+                                          : N + ' = ' + primos(N).join(' · ') + ', así que tiene más divisores que el 1 y él mismo.',
+        sala:'mural', pon(){ muralSel = N; }}; }},
+  desc: {n:'descomponer', modo:'text', ayuda:'2·2·3 o 2^2·3', gen(){ const N = elige([24,36,40,45,48,54,60,72,84,90,96,100,120,126]);
+      const f = primos(N);
+      return {t:'Descompón <b>' + N + '</b> en factores primos. Escribe algo como «2·2·3» o «2^2·3».',
+        ok: v => { const xs = []; v.replace(/(\d+)\s*(?:\^|\*\*)\s*(\d+)/g, (_, b, e) => { for(let k=0;k<+e;k++) xs.push(+b); return ' '; })
+                    .split(/[^\d]+/).filter(Boolean).forEach(x => xs.push(+x));
+                  xs.sort((a,b)=>a-b); return xs.length === f.length && xs.every((x,i) => x === f[i]); },
+        sol: f.join(' · '), exp: 'El collar de ' + N + ' lleva ' + f.join(', ') + ': ' + f.length + ' amuletos, y no hay otro collar posible.',
+        sala:'collar', pon(){ collar.a = N; collar.b = N; }}; }},
+  mcd: {n:'mcd', modo:'numeric', ayuda:'un número', gen(){ const g = elige([2,3,4,5,6,8,9,12]); let a = g*al(2,9), b = g*al(2,9); while(b === a) b = g*al(2,9);
+      const G = mcd(a, b);
+      return {t:'<b>mcd(' + a + ', ' + b + ')</b>', ok: v => +v.trim() === G, sol: String(G),
+        exp: 'Divisores de ' + a + ': ' + divisores(a).join(', ') + '. De ' + b + ': ' + divisores(b).join(', ') + '. El mayor común es ' + G + '.',
+        sala:'euclides', pon(){ eu.a0 = a; eu.b0 = b; euReset(); }}; }},
+  mcm: {n:'mcm', modo:'numeric', ayuda:'un número', gen(){ let a = al(3, 15), b = al(3, 15); while(b === a) b = al(3, 15);
+      const M = mcm(a, b);
+      return {t:'<b>mcm(' + a + ', ' + b + ')</b>', ok: v => +v.trim() === M, sol: String(M),
+        exp: 'Múltiplos de ' + a + ': ' + [1,2,3,4].map(k=>a*k).join(', ') + '… y de ' + b + ': ' + [1,2,3,4].map(k=>b*k).join(', ') + '… El primero común es ' + M
+           + (M === a*b ? ' (el producto: no comparten nada).' : ' (menos que el producto ' + a*b + ': comparten el ' + mcd(a,b) + ').'),
+        sala:'pasillo', pon(){ pasillo.doble = true; pasillo.a = a; pasillo.b = b; pasillo.hasta = Math.min(M + 2, 90); pasillo.tercera = true; }}; }}
+};
+const taller = {tipo:'mcd', ej:null, ac:0, racha:0, mejor:0, enTaller:false, corregido:false};
+function nuevoEjercicio(){
+  const T = TIPOS[taller.tipo];
+  taller.ej = T.gen(); taller.corregido = false;
+  $('ejer').innerHTML = taller.ej.t;
+  $('verTaller').hidden = true; $('verlo').hidden = true;
+  /* de sí/no se contesta con botones; de lo demás, con el campo — y cada
+     tipo pide el teclado que le sirve: cifras para los numéricos y letras
+     donde hacen falta signos, que en el teclado numérico no existen */
+  $('filaSiNo').hidden = !T.bool;
+  $('filaResp').hidden = !!T.bool;
+  if(!T.bool){
+    const r = $('resp');
+    r.value = '';
+    r.setAttribute('inputmode', T.modo || 'text');
+    r.placeholder = T.ayuda || 'tu respuesta';
+    r.focus();
+  }
+}
+function pintaTipos(){
+  const c = $('tipos'); c.innerHTML = '';
+  Object.keys(TIPOS).forEach(k => {
+    const b = document.createElement('button'); b.className = 'b'; b.textContent = TIPOS[k].n;
+    b.setAttribute('aria-pressed', String(taller.tipo === k));
+    b.addEventListener('click', () => { taller.tipo = k; pintaTipos(); nuevoEjercicio(); });
+    c.appendChild(b);
+  });
+  $('tAc').textContent = taller.ac; $('tRacha').textContent = taller.racha; $('tMejor').textContent = taller.mejor;
+}
+function corrige(dado){
+  const v = dado !== undefined ? dado : $('resp').value;
+  if(!String(v).trim() || taller.corregido) return;
+  const bien = taller.ej.ok(v);
+  const ver = $('verTaller'); ver.hidden = false;
+  ver.className = 'veredicto' + (bien ? ' bien' : '');
+  if(bien){ taller.ac++; taller.racha++; taller.mejor = Math.max(taller.mejor, taller.racha);
+    ver.innerHTML = '<b>Bien.</b> ' + taller.ej.exp; }
+  else { taller.racha = 0;
+    ver.innerHTML = 'No. La respuesta era <b>' + taller.ej.sol + '</b>. ' + taller.ej.exp; }
+  taller.corregido = true;
+  $('verlo').hidden = false;
+  pintaTipos();
+}
+function verEnSala(){
+  const e = taller.ej; if(!e) return;
+  e.pon(); muestraSala(e.sala);
+  $(SALAS[e.sala]).scrollIntoView({behavior:'smooth', block:'start'});
+}
+function entraTaller(dentro){
+  if(indice.libre){ indice.libre = null; $('rotuloLibre').hidden = true; }
+  taller.enTaller = dentro;
+  $('pTaller').hidden = !dentro;
+  document.querySelector('.panel.encargo').hidden = dentro;
+  $('informe').hidden = dentro ? true : !hechos.has(enc);
+  $('bTaller').setAttribute('aria-pressed', String(dentro));
+  $('bTaller').textContent = dentro ? 'Misiones' : 'Taller';
+  if(dentro){ pintaTipos(); nuevoEjercicio(); for(const k in SALAS) $(SALAS[k]).hidden = true; }
+  else pintaEncargo();
+}
+$('bTaller').addEventListener('click', () => entraTaller(!taller.enTaller));
+$('corrige').addEventListener('click', () => corrige());
+$('bSi').addEventListener('click', () => corrige('sí'));
+$('bNo').addEventListener('click', () => corrige('no'));
+$('resp').addEventListener('keydown', e => { if(e.key === 'Enter'){ taller.corregido ? nuevoEjercicio() : corrige(); } });
+$('otro').addEventListener('click', nuevoEjercicio);
+$('verlo').addEventListener('click', verEnSala);
+
+/* la hoja de diez: diez ejercicios variados, clave en hoja aparte */
+$('hojaDiez').addEventListener('click', () => {
+  const claves = Object.keys(TIPOS); const lista = [];
+  for(let i = 0; i < 10; i++) lista.push(TIPOS[claves[i % claves.length]].gen());
+  const limpia = h => h.replace(/<[^>]+>/g, '');
+  $('hoja').innerHTML = '<h2>El templo de Miut · hoja de práctica</h2>'
+    + '<div class="cab">Divisibilidad, primos, mcd y mcm · Nombre: ____________________ · Fecha: __________</div>'
+    + '<ol>' + lista.map(e => '<li>' + limpia(e.t) + '</li>').join('') + '</ol>'
+    + '<div class="clave"><h2>Clave del profesor</h2><ol>' + lista.map(e => '<li><b>' + e.sol + '</b> — ' + limpia(e.exp) + '</li>').join('') + '</ol></div>';
+  document.body.classList.add('imprimiendo');
+  const fuera = () => { document.body.classList.remove('imprimiendo'); removeEventListener('afterprint', fuera); };
+  addEventListener('afterprint', fuera);
+  setTimeout(() => { print(); setTimeout(fuera, 800); }, 60);
+});
+
+
+/* ── LA RED DE DIVISORES ────────────────────────────────────────────────
+   Se dibuja la red del mcm de los dos números: todos sus divisores, con el
+   1 abajo y el mcm arriba, y una arista cada vez que se multiplica por un
+   primo. Encima se pintan los divisores de a (morado) y los de b (rojo).
+   Lo que se ve solo: donde los dos colores coinciden POR ABAJO está el
+   mcd, y el techo común es el mcm. Los dos, en el mismo dibujo.
+   Las columnas se colocan por «altura» = número de factores primos, que es
+   lo que hace que la red se vea igual del derecho que del revés. */
+const red = {a:12, b:18};
+function pintaRed(){
+  const A = red.a, B = red.b, M = mcm(A, B), G = mcd(A, B);
+  const divs = divisores(M);
+  /* La colocación de antes repartía cada fila a lo ancho y las aristas
+     salían cruzadas, cada una con su ángulo: ilegible. La buena es la de
+     Weissman — colocar cada divisor por su VECTOR DE EXPONENTES. Cada
+     primo tiene una dirección fija, así que todas las aristas del mismo
+     primo salen PARALELAS y del mismo color, y la red se lee como una
+     caja: una dimensión por primo. */
+  const ps = [...new Set(primos(M))];               // los primos distintos del mcm
+  const exps = n => ps.map(p => { let e = 0, m = n; while(m % p === 0){ m /= p; e++; } return e; });
+  const maxE = ps.map(p => exps(M)[ps.indexOf(p)]);
+  /* La ALTURA es el número de primos que lleva el divisor: así el 1 queda
+     abajo del todo y el mcm arriba, y cada escalón es exactamente una
+     multiplicación. El desplazamiento horizontal lo da el vector de
+     exponentes, un peso por primo, de modo que las aristas del mismo primo
+     salen todas paralelas. */
+  const nivel = x => primos(x).length;
+  const WX = [-1, 1.15, 2.7, -2.7];
+  const equis = d => exps(d).reduce((acc, ei, i) => acc + ei * WX[i % 4], 0);
+  const xs = divs.map(equis), niv = divs.map(nivel);
+  const minX = Math.min(...xs), maxX = Math.max(...xs), maxN = Math.max(...niv);
+  const W = 340, mrg = 28, escY = 46;
+  const escX = (maxX - minX) ? (W - 2 * mrg) / (maxX - minX) : 1;
+  const H = maxN * escY + 2 * mrg;
+  const pos = {};
+  divs.forEach((d, i) => { pos[d] = {x: mrg + (xs[i] - minX) * escX, y: H - mrg - niv[i] * escY}; });
+  let g = '', n = '', t = 0;
+  divs.forEach(d => divs.forEach(e => {
+    if(e > d && e % d === 0 && nivel(e) === nivel(d) + 1){
+      const p = e / d;                               // el primo por el que se multiplica
+      const enA = A % e === 0 && A % d === 0, enB = B % e === 0 && B % d === 0;
+      const fuerte = enA || enB;
+      g += '<line class="arista" x1="' + pos[d].x.toFixed(1) + '" y1="' + pos[d].y.toFixed(1)
+        + '" x2="' + pos[e].x.toFixed(1) + '" y2="' + pos[e].y.toFixed(1)
+        + '" stroke="' + colorDe(p) + '" stroke-width="' + (fuerte ? 3.2 : 1.6) + '"'
+        + ' opacity="' + (fuerte ? 1 : .3) + '" style="--tarda:' + (t++ * 22) + 'ms"/>';
+    }
+  }));
+  divs.forEach(d => {
+    const enA = A % d === 0, enB = B % d === 0;
+    const cls = enA && enB ? 'dos' : enA ? 'a' : enB ? 'b' : 'ni';
+    const hito = (d === G || d === M) ? ' hito' : '';
+    n += '<circle class="nodo ' + cls + hito + '" cx="' + pos[d].x.toFixed(1) + '" cy="' + pos[d].y.toFixed(1)
+      + '" r="' + (String(d).length > 2 ? 15 : 13) + '" style="--tarda:' + (t++ * 16) + 'ms"/>'
+      + '<text class="' + (cls === 'ni' ? 'flojo' : '') + '" x="' + pos[d].x.toFixed(1) + '" y="' + pos[d].y.toFixed(1) + '">' + d + '</text>';
+    if(d === G) n += '<text class="rot" x="' + pos[d].x.toFixed(1) + '" y="' + (pos[d].y + 25).toFixed(1) + '">mcd</text>';
+    if(d === M && M !== G) n += '<text class="rot" x="' + pos[d].x.toFixed(1) + '" y="' + (pos[d].y - 25).toFixed(1) + '">mcm</text>';
+  });
+  const svg = $('svgRed');
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H.toFixed(0));
+  svg.innerHTML = g + n;
+  /* los que no dividen a ninguno de los dos: hay que decirlo, o el alumno
+     se pregunta qué pinta ahí un 12 cuando los números son 20 y 30 */
+  const sueltos = divs.filter(d => A % d !== 0 && B % d !== 0);
+  $('verRed').className = 'veredicto bien';
+  $('verRed').innerHTML = 'En morado los divisores de <b>' + A + '</b>, en rojo los de <b>' + B + '</b> '
+    + 'y en oro los de los dos. El punto de oro <b>más alto por debajo</b> de ambos es el <b>mcd = ' + G
+    + '</b>; el <b>techo común</b> es el <b>mcm = ' + M + '</b>. Cada color de arista es un primo: '
+    + ps.map(p => '<b style="color:' + colorDe(p) + '">×' + p + '</b>').join(', ')
+    + ', y todas las del mismo primo van en la misma dirección.'
+    + (sueltos.length ? '<br>Los apagados (' + sueltos.join(', ') + ') dividen al ' + M
+        + ' pero <b>no a ' + A + ' ni a ' + B + '</b>: están porque la red es la de todos los divisores '
+        + 'del mcm, y hacen falta para que la caja esté completa.' : '')
+    + '<br>Y fíjate en la red entera: se ve igual del derecho que del revés, porque los divisores van por '
+    + 'parejas — cada <i>d</i> tiene su compañero <i>' + M + '/d</i>.';
+  const c = $('botRed'); c.innerHTML = '';
+  [[12,18],[4,6],[8,12],[20,30],[9,15]].forEach(([x, y]) => {
+    const b = document.createElement('button');
+    b.className = 'b'; b.textContent = x + ' y ' + y;
+    b.setAttribute('aria-pressed', String(red.a === x && red.b === y));
+    b.addEventListener('click', () => { red.a = x; red.b = y; $('redA').value = x; $('redB').value = y; pintaRed(); revisa(); });
+    c.appendChild(b);
+  });
+}
+
+/* ── LA CRIBA. Del 2 al 200. En cada paso se tachan los múltiplos del
+   siguiente primo que quede en pie — nunca el propio primo, que se queda
+   con su color. Cuando el primo pasa de la raíz de 200 ya no se tacha
+   nada nuevo: es la misma razón que en los rectángulos. */
+const criba = {hasta:200, hechos:[], n:2};
+function pintaCriba(){
+  const c = $('criba'); c.innerHTML = '';
+  const fuera = new Set();
+  criba.hechos.forEach(p => { for(let k = p * 2; k <= criba.hasta; k += p) fuera.add(k); });
+  for(let k = 2; k <= criba.hasta; k++){
+    const i = document.createElement('i');
+    const dueño = criba.hechos.find(p => k === p);
+    if(dueño) i.className = 'p' + dueño;
+    else if(fuera.has(k)) i.className = 'fuera';
+    else if(criba.hechos.length && criba.hechos[criba.hechos.length - 1] ** 2 > criba.hasta) i.className = 'primo';
+    else i.className = 'enPie';
+    i.title = String(k);
+    c.appendChild(i);
+  }
+  const raiz = Math.floor(Math.sqrt(criba.hasta));
+  const sig = (() => { for(let k = 2; k <= criba.hasta; k++){ if(criba.hechos.includes(k)) continue;
+      if(!fuera.has(k)) return k; } return null; })();
+  criba.n = sig;
+  $('cribaPie').innerHTML = criba.hechos.length
+    ? 'Tachados los múltiplos de <b>' + criba.hechos.join(', ') + '</b>. Quedan en pie '
+      + (criba.hasta - 1 - fuera.size) + ' números.'
+    : 'Del 2 al 200, todos en pie. Empieza por el 2.';
+  const raizAlcanzada = sig !== null && sig * sig > criba.hasta;
+  const agotado = sig === null;
+  const acabado = raizAlcanzada || agotado;
+  $('cribaPaso').disabled = sig === null;
+  $('cribaPaso').textContent = sig ? 'Tachar los múltiplos de ' + sig : 'No queda nada que tachar';
+  const v = $('verCriba');
+  v.className = 'veredicto' + (acabado && criba.hechos.length ? ' bien' : '');
+  const quedan = criba.hasta - 1 - fuera.size;
+  if(raizAlcanzada && criba.hechos.length)
+    v.innerHTML = 'Se acabó: el siguiente sería el <b>' + sig + '</b>, y ' + sig + ' · ' + sig + ' = ' + (sig * sig)
+      + ' ya pasa de ' + criba.hasta + '. Todo lo que quedara por tachar tendría un factor más pequeño, y ese ya lo '
+      + 'hemos tachado. Por eso <b>basta cribar hasta la raíz</b> — la misma razón que en los rectángulos. '
+      + 'Lo que queda en pie son los <b>' + quedan + ' primos</b> hasta ' + criba.hasta + '.';
+  else if(agotado)
+    v.innerHTML = 'Ya no queda ningún número por tachar: has pasado por <b>todos</b> los primos hasta ' + criba.hasta
+      + '. Funciona, pero era trabajo de más — a partir del <b>' + (criba.hechos.find(p => p * p > criba.hasta) || 17)
+      + '</b> no se cayó nadie nuevo, porque <b>basta cribar hasta la raíz</b>. Los que quedan en pie son los <b>'
+      + quedan + ' primos</b> hasta ' + criba.hasta + '.';
+  else
+    v.innerHTML = 'Cada primo se queda con su color; sus múltiplos se caen. Sigue hasta que no haga falta más.';
+}
+$('cribaPaso').addEventListener('click', () => { if(criba.n) criba.hechos.push(criba.n); pintaCriba(); revisa(); });
+$('cribaReset').addEventListener('click', () => { criba.hechos = []; pintaCriba(); revisa(); });
+
+/* ── LOS ENCARGOS ───────────────────────────────────────────────────────
+   El mismo motor que la ciudad: Listahmes pide, se comprueba sobre el
+   manipulativo, y Miut contesta. Con el ◀ se vuelve atrás y el
+   informe se queda como estaba, que en clase se pregunta mucho «¿qué
+   había dicho antes?». Cada encargo dice qué sala enseña. */
+const ENCARGOS = [
+ {sala:'pasillo', pre:() => { pasillo.doble = false; pasillo.a = 3; pasillo.hasta = 24; pasillo.tercera = false; },
+  t:'Miut cruza la sala saltando siempre lo mismo y sin pisar nunca una junta. '
+   +'Ponla a saltar <b>de cuatro en cuatro</b> y mira dónde deja la huella.',
+  ok:() => pasillo.a === 4,
+  bien:'4, 8, 12, 16, 20, 24… Esas baldosas son los <b>múltiplos de 4</b>, y no son otra cosa '
+      +'que los sitios donde CAE. Por el 7 pasa por encima, pero no cae: por eso el 7 no es múltiplo de 4.',
+  mal:'Todavía no salta de cuatro en cuatro: pulsa el <b>4</b> ahí arriba.'},
+
+ {sala:'pasillo', pre:() => { pasillo.doble = false; pasillo.a = 4; pasillo.hasta = 24; pasillo.tercera = false; },
+  t:'Antes de seguir quiero escribirlo bien en el papiro. Miut ha caído en 4, 8, 12, 16… '
+   +'¿Cómo lo digo en una frase que valga siempre?',
+  ops:[
+   {t:'Una baldosa es múltiplo de 4 si se llega a ella dando un número entero de saltos de 4: es 4 · algo.', ok:true,
+    r:'Eso ya se puede escribir: <b>b es múltiplo de a cuando b = a · k</b>, con k entero — el número de '
+     +'saltos. Lo demás de esta sala sale de ahí, así que conviene tenerlo apuntado.'},
+   {t:'Una baldosa es múltiplo de 4 si es mayor que 4.', ok:false,
+    r:'La 7 es mayor que 4 y no caigo en ella. Y el 4 es múltiplo de sí mismo, con un solo salto.'},
+   {t:'Una baldosa es múltiplo de 4 si acaba en 4, 8, 2, 6 o 0.', ok:false,
+    r:'Eso vale para los pares, que no es lo mismo: la 6 acaba en 6 y no caigo en ella. Los trucos de la '
+     +'última cifra sirven para 2, 5 y 10, y para poco más.'},
+   {t:'Una baldosa es múltiplo de 4 si se puede dividir entre 4.', ok:false,
+    r:'Estás muy cerca, y de hecho es verdad — pero dicho así usas la división para explicar el salto, '
+     +'cuando lo que estamos viendo es al revés: primero salto, y por eso la división sale exacta.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'pasillo', pre:() => { pasillo.doble = false; pasillo.a = 4; pasillo.hasta = 24; pasillo.tercera = false; },
+  t:'Y ahora la misma frase, del revés. Si 12 es múltiplo de 4, ¿qué se puede decir de 4 respecto de 12?',
+  ops:[
+   {t:'Que 4 es divisor de 12. Es lo mismo dicho desde el otro lado.', ok:true,
+    r:'Exacto, y esto ahorra la mitad del tema: <b>«4 divide a 12» y «12 es múltiplo de 4» son la misma '
+     +'frase</b>, una mirando desde el salto y otra desde la baldosa. No son dos cosas que aprender: es '
+     +'una, con dos nombres según desde dónde se mire.'},
+   {t:'Que 4 es múltiplo de 12.', ok:false,
+    r:'Al revés: saltando de 12 en 12 caigo en 12, 24, 36… nunca en el 4. El grande es múltiplo del '
+     +'pequeño, no al contrario.'},
+   {t:'Nada, son cosas distintas.', ok:false,
+    r:'Son la misma. Si llego a la 12 saltando de 4 en 4, entonces 12 se reparte en trozos de 4 — y eso '
+     +'es exactamente que 4 la divide.'},
+   {t:'Que 4 y 12 son primos entre sí.', ok:false,
+    r:'Ni mucho menos: comparten el 2 y el 4. Primos entre sí son los que no comparten más que el 1, '
+     +'como 4 y 9.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'pasillo', pre:() => { pasillo.doble = false; pasillo.hasta = 24; pasillo.tercera = false; },
+  t:'Ahora al revés. Quiero que caiga <b>justo</b> en la baldosa 12, ni antes ni después. '
+   +'De los saltos que tienes, ¿cuáles la llevan exactamente ahí?',
+  ops:[
+   {t:'El 2, el 3, el 4, el 6 y el 12.', ok:true,
+    r:'Esos son los <b>divisores de 12</b>: los saltos que caen justo en ella. Y fíjate en lo '
+     +'que acabas de hacer sin darte cuenta — has repartido 12 en trozos iguales.'},
+   {t:'Solo el 12, porque es la baldosa.', ok:false,
+    r:'El 12 vale, pero no está sola: saltando de 3 en 3 también caigo en la 12, en el cuarto salto. '
+     +'Pruébalo.'},
+   {t:'El 5 y el 8, porque son más pequeños que 12.', ok:false,
+    r:'Ser más pequeño no basta. Con el 5 caigo en 5, 10 y 15: me salto la 12 por completo. '
+     +'Hace falta que 12 se reparta en trozos iguales de ese tamaño.'},
+   {t:'Todos, si doy los saltos que hagan falta.', ok:false,
+    r:'Ojalá. Con el 8 caigo en 8 y luego en 16: la 12 se queda entre dos huellas. '
+     +'Un salto solo vale si 12 se reparte exacto.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'pasillo', pre:() => { pasillo.doble = true; pasillo.a = 4; pasillo.b = 6; pasillo.hasta = 24; pasillo.tercera = false; },
+  t:'Entra otra gata. Miut salta <b>de cuatro en cuatro</b> y la nueva <b>de seis en seis</b>. '
+   +'Déjalas así y dime en qué baldosa se encuentran por primera vez.',
+  ok:() => pasillo.a === 4 && pasillo.b === 6,
+  bien:'En la <b>12</b>. Es la primera baldosa que es múltiplo de 4 <i>y</i> de 6 a la vez, y por eso '
+      +'se llama <b>mínimo común múltiplo</b>. Después vuelven a encontrarse en la 24, y así cada doce.',
+  mal:'Ponlas en 4 y 6 para verlo.'},
+
+ {sala:'pasillo', pre:() => { pasillo.doble = true; pasillo.a = 4; pasillo.b = 6; pasillo.hasta = 24; pasillo.tercera = false; },
+  t:'Un aprendiz ha escrito en el papiro que se encuentran en la 24, «porque 4 por 6 son 24». '
+   +'¿Qué le digo?',
+  ops:[
+   {t:'Que en la 24 sí se encuentran, pero antes ya lo habían hecho en la 12.', ok:true,
+    r:'Eso es. Multiplicar siempre da <i>un</i> múltiplo común, pero no el primero. El aprendiz no '
+     +'está equivocado del todo: se ha pasado de largo.'},
+   {t:'Que se ha equivocado: en la 24 no se encuentran.', ok:false,
+    r:'Sí se encuentran, mira el suelo: 24 es múltiplo de 4 y de 6. Lo que pasa es que no es el primero.'},
+   {t:'Que tiene razón, el mcm es siempre el producto.', ok:false,
+    r:'Con 4 y 6 no: el producto es 24 y ellas ya se habían visto en la 12. Solo coinciden cuando los '
+     +'dos números no comparten nada.'},
+   {t:'Que da igual, cualquier múltiplo común sirve.', ok:false,
+    r:'Para sumar fracciones cualquiera sirve, es verdad — pero salen números enormes. Por eso '
+     +'buscamos el <b>mínimo</b>.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'pasillo', pre:() => { pasillo.doble = true; pasillo.a = 4; pasillo.b = 9; pasillo.hasta = 40; pasillo.tercera = false; },
+  t:'Prueba ahora con <b>4</b> y <b>9</b>, que el pasillo se ha alargado. ¿Dónde se encuentran?',
+  ok:() => pasillo.a === 4 && pasillo.b === 9,
+  bien:'En la <b>36</b>, que es 4 por 9. Aquí sí coincide con el producto, y no por casualidad: '
+      +'4 y 9 <b>no comparten ningún divisor</b> más que el 1, así que no hay ningún encuentro '
+      +'que adelantar. Cuando comparten algo (como 4 y 6, que comparten el 2) el encuentro se adelanta.',
+  mal:'Pon a Miut en 4 y a la otra en 9.'},
+
+ {sala:'pasillo', pre:() => { pasillo.doble = true; pasillo.a = 4; pasillo.b = 6; pasillo.hasta = 36; pasillo.tercera = true; },
+  t:'Mira lo que hago: suelto una <b>tercera gata</b> que salta de 12 en 12 — justo el mcm. ¿Qué pasa?',
+  ops:[
+   {t:'Cae exactamente en los encuentros de las otras dos, y en ningún sitio más.', ok:true,
+    r:'Y eso es lo que de verdad significa el mcm. No es «el primer encuentro y ya»: <b>todos los '
+     +'encuentros son múltiplos de 12</b>, y todos los múltiplos de 12 son encuentros. Las dos listas '
+     +'son la misma lista. Por eso, para sumar fracciones, cualquier múltiplo común sirve, pero el de '
+     +'12 en 12 es el que va contando desde el principio.'},
+   {t:'Cae en algunos encuentros, pero se salta otros.', ok:false,
+    r:'Mírala otra vez: 12, 24, 36… y esos son todos los encuentros que hay en el pasillo. No se salta ninguno.'},
+   {t:'Cae también en sitios donde no coinciden las otras.', ok:false,
+    r:'Ninguno. Si cae en una baldosa es porque es múltiplo de 12, y todo múltiplo de 12 lo es de 4 y de 6.'},
+   {t:'Cae donde cae la de oro, porque 12 es múltiplo de 4.', ok:false,
+    r:'Cae en algunas de las de la gata morada, sí, pero no en todas: en la 4 y en la 8 no está. '
+     +'Solo cae donde coinciden las DOS.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'eng', pre:() => { eng.A = 20; eng.B = 10; engReset(); },
+  t:'Vamos al taller del relojero. Dos ruedas, de <b>20 y 10 dientes</b>, y un diente de la grande está '
+   +'marcado en rojo. Gira hasta que vuelva a su hueco. ¿Cuántos huecos distintos de la pequeña ha tocado?',
+  ok:() => eng.A === 20 && eng.B === 10 && eng.n > 0 && eng.n % 20 === 0,
+  bien:'<b>Uno solo.</b> Cada vuelta de la grande, el diente rojo cae en el mismo hueco de la pequeña, y ese '
+      +'hueco se desgasta mientras los otros nueve están como nuevos. Se encuentran cada 20 dientes: el '
+      +'<b>mcm(20, 10) = 20</b>. Y los huecos que llega a tocar son 10 / mcd = 10 / 10 = <b>1</b>.',
+  mal:'Pulsa «girar hasta que se encuentren» con las ruedas de 20 y 10.'},
+
+ {sala:'eng', pre:() => { eng.A = 25; eng.B = 12; engReset(); },
+  t:'Ahora <b>25 y 12</b>. Casi la misma relación, 2 y pico. Gira y cuenta huecos.',
+  ok:() => eng.A === 25 && eng.B === 12 && eng.n > 0 && eng.n % 300 === 0,
+  bien:'<b>Los doce.</b> Como 25 y 12 no comparten nada, el diente rojo va visitando un hueco distinto en '
+      +'cada vuelta y no repite hasta haber pasado por todos: 12 / mcd = 12 / 1. Desgaste uniforme, y por eso '
+      +'los relojeros eligen dientes <b>primos entre sí</b> a propósito. Se encuentran cada <b>300</b> dientes, '
+      +'el mcm, que aquí es el producto porque no comparten nada.',
+  mal:'Pulsa «girar hasta que se encuentren» con 25 y 12. Tarda un poco: son 300 dientes.'},
+
+ {sala:'resto', pre:() => { granero.n = 139; granero.d = 7; },
+  t:'Cambiamos de sala. Aquí hay <b>139 granos</b> y hay que ponerlos en <b>filas de 7</b>. '
+   +'Hazlo y mira lo que pasa con la última fila.',
+  ok:() => granero.n === 139 && granero.d === 7,
+  bien:'Salen <b>19 filas enteras</b> y sobran <b>6</b>: 139 = 7 · 19 + 6. Las filas completas son el '
+      +'<b>cociente</b> y lo que sobra es el <b>resto</b>. Y fíjate en algo que no es casualidad: sobran '
+      +'menos de 7. Si sobrasen 7 o más, cabría otra fila entera — por eso el resto siempre es más '
+      +'pequeño que el número de la fila.',
+  mal:'Pon 139 granos en filas de 7.'},
+
+ {sala:'resto', pre:() => { granero.n = 36; },
+  t:'Ahora prueba con <b>36 granos</b>: ponlos en filas de 6, y luego en filas de 5. ¿Qué diferencia hay?',
+  ops:[
+   {t:'Con 6 no sobra nada, y eso es justo lo que quiere decir que 6 divide a 36.', ok:true,
+    r:'Exacto, y así se cierra el círculo con el pasillo: <b>caer justo en la baldosa 36 saltando de 6 en 6</b> '
+     +'y <b>repartir 36 granos en filas de 6 sin que sobre nada</b> son la misma cosa dicha de dos maneras. '
+     +'Resto cero es el nombre corto de todo esto.'},
+   {t:'Con 6 sobran menos granos que con 5.', ok:false,
+    r:'Con 6 no sobra ninguno y con 5 sobra uno, así que sí — pero lo importante no es que sobren menos: '
+     +'es que con 6 <b>no sobra nada</b>.'},
+   {t:'Ninguna: las dos veces salen filas.', ok:false,
+    r:'Filas salen siempre. Lo que cambia es si la última está completa: con 6 lo está, con 5 se queda coja.'},
+   {t:'Con 5 salen más filas, así que 5 es mejor divisor.', ok:false,
+    r:'Salen más filas porque son más cortas. Pero 5 no divide a 36: la última fila tiene un grano suelto.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'sala', pre:() => { sala.a = 18; sala.b = 24; sala.k = 4; },
+  t:'Cambiamos de sala. Este suelo mide <b>18 por 24</b> codos y hay que embaldosarlo con '
+   +'<b>baldosas cuadradas todas iguales</b>, sin recortar ninguna. Busca la más grande que valga.',
+  ok:() => sala.k === 6,
+  bien:'La de <b>6</b>. Y mira lo que es: el salto más grande que cae justo tanto en 18 como en 24, '
+      +'o sea el mayor divisor que tienen los dos. Eso es el <b>máximo común divisor</b> — aquí no es '
+      +'un resultado, es el tamaño de una baldosa.',
+  mal:'Prueba tamaños: los que obliguen a recortar salen en rojo. Busca el mayor que llene justo.'},
+
+ {sala:'sala', pre:() => { sala.a = 18; sala.b = 24; },
+  t:'La de 3 también llenaba justo, y la de 2 también. ¿Por qué nos quedamos con la de 6?',
+  ops:[
+   {t:'Porque es la mayor de las que llenan sin recortar, y con ella hacen falta menos baldosas.', ok:true,
+    r:'Justo. Todas las que llenan justo son <b>divisores comunes</b> de 18 y 24: el 1, el 2, el 3 y el 6. '
+     +'El mcd es el más grande de esa lista.'},
+   {t:'Porque 6 es la mitad de 12.', ok:false,
+    r:'Eso no tiene que ver. Lo que importa es que 18 y 24 se repartan justos en trozos de 6, y se reparten.'},
+   {t:'Porque 6 es par.', ok:false,
+    r:'El 2 también es par y también llena justo, pero es más pequeño. Lo que buscamos es el mayor.'},
+   {t:'Porque 6 es 18 menos 12.', ok:false,
+    r:'Ha salido bien de chiripa. Prueba con 20 y 24: la resta da 4 y el mcd también es 4… pero con '
+     +'18 y 30 la resta da 12 y el mcd es 6. Por ahí no.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'euclides', pre:() => { eu.a0 = 54; eu.b0 = 16; euReset(); },
+  t:'Ahora un suelo grande, de <b>54 por 16</b>. Aquí el collar sería pesado. Prueba otra cosa: '
+   +'<b>corta el cuadrado más grande que quepa</b>, y sigue con lo que sobre, hasta que no sobre nada.',
+  ok:() => eu.a === 0 || eu.b === 0,
+  bien:'Tres cuadrados de 16, sobran 6 × 16. Dos de 6, sobran 4 × 6. Uno de 4, sobran 2 × 4. Dos de 2 y ya no '
+      +'sobra nada: el último cuadrado, <b>2, es el mcd</b>. Y date cuenta de por qué funciona: lo que divide '
+      +'a los dos lados de un rectángulo divide también al trozo que sobra, así que el mcd nunca cambia al '
+      +'cortar. Así lo hacía Euclides hace 2.300 años, sin factorizar nada.',
+  mal:'Sigue cortando hasta que no quede trozo rojo.'},
+
+ {sala:'euclides', pre:() => { eu.a0 = 96; eu.b0 = 111; euReset(); },
+  t:'Con <b>96 y 111</b> el collar da miedo. ¿Qué hace el método de los cuadrados?',
+  ops:[
+   {t:'Lo mismo de siempre, y en tres cortes llega al mcd sin factorizar nada.', ok:true,
+    r:'111 = 96 · 1 + 15; 96 = 15 · 6 + 6; 15 = 6 · 2 + 3; 6 = 3 · 2. Y el mcd es <b>3</b>. Cada línea es una '
+     +'división con resto, la del granero. Por eso este método es <b>más fuerte</b> que el collar: no '
+     +'necesita conocer los primos de nadie, solo dividir. Con números de veinte cifras, los ordenadores '
+     +'siguen haciendo exactamente esto.'},
+   {t:'No sirve: los números son demasiado grandes.', ok:false,
+    r:'Al revés, es justo cuando más sirve. Pruébalo: en cuatro cortes se acaba.'},
+   {t:'Hay que factorizar primero.', ok:false,
+    r:'Eso es lo que este método se ahorra. Solo corta y mira lo que sobra.'},
+   {t:'Sale 1, porque son primos entre sí.', ok:false,
+    r:'Comparten el 3: 96 = 3 · 32 y 111 = 3 · 37. Corta y verás que el último cuadrado mide 3.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'rect', pre:() => { rect.n = 12; },
+  t:'Otra sala. Con un número de baldosas hay que armar <b>rectángulos</b>, todos los que se pueda. '
+   +'Empieza con 12 y luego prueba con <b>13</b>.',
+  ok:() => rect.n === 13,
+  bien:'Con 12 salen tres rectángulos; con 13, <b>solo la tira de 1 por 13</b>. Y eso es ser <b>primo</b>: '
+      +'no hay manera de repartir esas baldosas en filas iguales de más de una. Un número compuesto '
+      +'siempre se deja poner en rectángulo; un primo, nunca.',
+  mal:'Prueba tamaños hasta llegar al 13.'},
+
+ {sala:'rect', pre:() => { rect.n = 24; },
+  t:'Y una cosa que ahorra muchísimo trabajo. Mira los rectángulos de 24 y fíjate en el <b>lado corto</b> '
+   +'de cada uno. ¿Hasta dónde llega?',
+  ops:[
+   {t:'Nunca pasa de 4, que es lo que mide la raíz de 24. Así que para buscar divisores basta llegar hasta ahí.', ok:true,
+    r:'Ese es el atajo. Si 24 = a · b con a menor o igual que b, entonces a no puede pasar de la raíz — '
+     +'si los dos pasaran, el producto se iría por encima de 24. Por eso, <b>para saber si un número es '
+     +'primo solo hay que probar divisores hasta su raíz</b>. Con 139, hasta 11: probando 2, 3, 5, 7 y 11 '
+     +'ya está resuelto.'},
+   {t:'Llega hasta 12, que es la mitad.', ok:false,
+    r:'El 12 aparece, pero como lado LARGO: el rectángulo es 2 × 12. El lado corto de ese es 2.'},
+   {t:'Llega hasta 24.', ok:false,
+    r:'El 24 es el lado largo de la tira. Su lado corto es 1.'},
+   {t:'Depende del número, no hay tope.', ok:false,
+    r:'Sí lo hay, y siempre el mismo: la raíz. En cuanto los dos lados pasan de la raíz, el producto se '
+     +'pasa del número.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'criba', pre:() => { criba.hechos = []; pintaCriba(); },
+  t:'Antes del mural, cómo se <b>encuentran</b> los primos. Aquí están todos del 2 al 200. Ve tachando '
+   +'los múltiplos de cada primo hasta que ya no haga falta más. ¿Cuándo puedes parar?',
+  ok:() => criba.hechos.length >= 6,
+  bien:'Después del <b>13</b> ya no se cae nadie nuevo, y hay una razón: si un número hasta 200 no es '
+      +'primo, se puede escribir como dos factores, y <b>el más pequeño de los dos no puede pasar de 14</b> '
+      +'—porque 15 · 15 ya son 225—. Así que ese número ya se cayó al tachar los múltiplos de su factor '
+      +'pequeño. Es exactamente lo que viste en los rectángulos: basta llegar a la raíz. Lo que queda en '
+      +'pie son los <b>46 primos</b> menores que 200.',
+  mal:'Sigue tachando: 2, 3, 5, 7, 11, 13… hasta que el botón te diga que no queda nada.'},
+
+ {sala:'mural', pre:() => { muralSel = 0; },
+  t:'Y ahora los cien de golpe. Cada número es un anillo partido en tantos trozos como factores primos '
+   +'tenga, con un color por primo. Toca unos cuantos. ¿Qué tienen en común los que son de un solo color?',
+  ops:[
+   {t:'Que son primos: un solo trozo porque no están hechos de nada más pequeño.', ok:true,
+    r:'Eso es. Dicho con todas las letras: <b>un número es primo cuando sus únicos divisores son el 1 y él '
+     +'mismo</b>. Y el mural entero es el collar de Miut repetido cien veces: <b>no hay dos números '
+     +'distintos con el mismo collar</b>. Ese es el teorema que sostiene todo lo de hoy. Por eso el 1 no '
+     +'cuenta como primo: si contara, el 12 podría ser 2·2·3 o 1·2·2·3 o 1·1·2·2·3, y cada número dejaría '
+     +'de tener un solo collar.'},
+   {t:'Que son pares.', ok:false,
+    r:'El 2 es par y es de un color, pero el 4 también es par y tiene dos trozos. Y el 3, el 5 y el 7 son '
+     +'de un color y son impares.'},
+   {t:'Que son pequeños.', ok:false,
+    r:'El 97 es de un solo color y no es pequeño. Y el 4 es pequeño y tiene dos trozos.'},
+   {t:'Que acaban en 1, 3, 7 o 9.', ok:false,
+    r:'Casi todos los primos sí, pero el 21 acaba en 1 y tiene dos trozos (3 · 7). La terminación no basta.'}],
+  mal:'Elige una de las cuatro.'}
+,
+
+ {sala:'red', pre:() => { red.a = 12; red.b = 18; pintaRed(); },
+  t:'Y ahora los dos de una vez. Esta es la <b>red de los divisores</b>: el 1 abajo, y cada escalón '
+   +'es multiplicar por un primo. En morado los de 12, en rojo los de 18. ¿Dónde está el mcd?',
+  ops:[
+   {t:'En el punto de oro más alto que está por debajo de los dos: el 6.', ok:true,
+    r:'Eso es, y ahora se ve la pareja: el <b>mcd es el punto común más alto por debajo</b> y el '
+     +'<b>mcm el más bajo por encima</b>. Uno es el suelo compartido y el otro el techo. Por eso van '
+     +'siempre juntos: son las dos maneras de que dos números se encuentren en esta red.'},
+   {t:'En el 36, arriba del todo.', ok:false,
+    r:'Ese es el <b>mcm</b>: el techo, el primer sitio al que llegan los dos subiendo. El mcd está abajo.'},
+   {t:'En el 1, que está por debajo de todo.', ok:false,
+    r:'El 1 está por debajo de los dos, sí, pero no es el más alto: el 2, el 3 y el 6 también, y el 6 '
+     +'es el que más sube.'},
+   {t:'En el 12 y el 18, que son los dos números.', ok:false,
+    r:'Esos son los propios números. El mcd es lo que comparten <b>por debajo</b>.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'red', pre:() => { red.a = 4; red.b = 6; pintaRed(); },
+  t:'Una cosa curiosa de esta red, que notó Weissman: mírala del derecho y luego imagina darle la '
+   +'vuelta. ¿Por qué se ve igual?',
+  ops:[
+   {t:'Porque los divisores van por parejas: cada uno tiene su compañero, y multiplicados dan el de arriba.', ok:true,
+    r:'Exacto. En la red del 12: 1 con 12, 2 con 6, 3 con 4. Cada divisor pequeño lleva uno grande '
+     +'colgado, y por eso la red es simétrica. Es lo mismo que ya viste en los rectángulos: cada uno '
+     +'tenía un lado corto y uno largo que multiplicados daban el número.'},
+   {t:'Por casualidad de estos números.', ok:false,
+    r:'Pruébalo con cualquier otro par: pasa siempre, porque el emparejamiento siempre existe.'},
+   {t:'Porque todos los números tienen un número par de divisores.', ok:false,
+    r:'No siempre: los cuadrados tienen un número impar, porque la raíz se empareja consigo misma. '
+     +'El 9 tiene 1, 3 y 9. Y la red sigue viéndose igual del revés.'},
+   {t:'Porque la red es un cuadrado.', ok:false,
+    r:'No siempre lo es: la del 60 es una caja de tres dimensiones. Lo que la hace simétrica es el '
+     +'emparejamiento, no la forma.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'collar', pre:() => { collar.a = 18; collar.b = 24; },
+  t:'Ahora lo que hay que llevarse. Mira los <b>collares</b>: cada amuleto es un factor '
+   +'primo. ¿Qué son los amuletos con aro de oro, los que están en los dos?',
+  ops:[
+   {t:'Lo que comparten: multiplicados dan el mcd.', ok:true,
+    r:'Eso es todo el asunto. 18 lleva 2·3·3 y 24 lleva 2·2·2·3; comparten un 2 y un 3, y 2·3 son <b>6</b> '
+     +'(la baldosa de antes). Y para armar los dos collares hacen falta 2·2·2·3·3 = <b>72</b>, que es el mcm. '
+     +'La regla de «los comunes al menor exponente» no es una regla: es contar amuletos.'},
+   {t:'Los números primos que hay entre 18 y 24.', ok:false,
+    r:'No: son los factores primos de cada uno, no los primos que hay por medio. El 19 y el 23 no pintan nada aquí.'},
+   {t:'Los que sobran y se pueden quitar.', ok:false,
+    r:'Al revés: son los imprescindibles, los que están en los dos. Quitarlos rompería los dos collares.'},
+   {t:'Multiplicados dan el mcm.', ok:false,
+    r:'Casi: multiplicados dan el <b>mcd</b>, que es 6. El mcm sale de juntar TODOS los amuletos contando '
+     +'una sola vez los compartidos: 2·2·2·3·3 = 72.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'collar', pre:() => { collar.a = 18; collar.b = 24; },
+  t:'Una comprobación antes de cerrar. Multiplica el mcd por el mcm: 6 · 72. Y ahora multiplica los dos '
+   +'números: 18 · 24. ¿Qué ves?',
+  ops:[
+   {t:'Dan lo mismo, 432, y en el collar se ve por qué: entre los dos aparecen todos los amuletos, y los compartidos exactamente dos veces.', ok:true,
+    r:'Eso es. El mcd son los compartidos y el mcm son todos; al juntarlos, cada amuleto compartido se '
+     +'cuenta dos veces (una en cada uno), igual que al multiplicar 18 · 24. Por eso <b>mcd · mcm = a · b</b> '
+     +'siempre. Y de regalo: sabiendo uno, el otro sale con una división.'},
+   {t:'Dan lo mismo, pero es casualidad de estos números.', ok:false,
+    r:'No es casualidad, y el collar lo enseña: pasa con cualquier par. Pruébalo con 4 y 6 — mcd 2, '
+     +'mcm 12, y 2 · 12 = 24 = 4 · 6.'},
+   {t:'No dan lo mismo.', ok:false,
+    r:'Vuelve a echar la cuenta: 18 · 24 son 432, y 6 · 72 también.'},
+   {t:'Dan lo mismo porque el mcm es siempre el producto.', ok:false,
+    r:'El mcm de 18 y 24 es 72, no 432. Lo que da el producto es mcd · mcm, no el mcm solo.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'collar', pre:() => { collar.a = 18; collar.b = 24; },
+  t:'Y para acabar: ¿esto para qué me sirve fuera del templo?',
+  ops:[
+   {t:'El mcd, para simplificar una fracción de una vez. El mcm, para poner dos fracciones con el mismo denominador.', ok:true,
+    r:'Ahí está todo. <b>18/24</b>: divides arriba y abajo por el mcd, 6, y queda <b>3/4</b> — de una sola '
+     +'pasada, y ya no se puede más, porque no quedan amuletos compartidos. Y para sumar 1/18 con 1/24, el '
+     +'suelo común más pequeño es el mcm, 72. En la pizzería de Nick eso es la grapadora; en la ciudad, '
+     +'poner las dos marcas en el mismo corte.'},
+   {t:'Para nada: es un tema suelto.', ok:false,
+    r:'Es justo lo contrario: sin esto no se pueden sumar fracciones ni simplificarlas. Es la herramienta '
+     +'que las demás salas dan por sabida.'},
+   {t:'Solo para el examen de divisibilidad.', ok:false,
+    r:'Eso también, pero sería un desperdicio. Lo vas a usar cada vez que sumes fracciones, que es media '
+     +'asignatura.'},
+   {t:'Para calcular áreas.', ok:false,
+    r:'Para embaldosar un suelo sí, que es lo de la sala de antes. Pero lo que más lo usa son las '
+     +'fracciones: simplificar y sumar.'}],
+  mal:'Elige una de las cuatro.'}
+];
+
+const SALAS = {pasillo:'pPasillo', sala:'pSala', collar:'pCollar',
+               resto:'pResto', rect:'pRect', mural:'pMural', euclides:'pEuclides', eng:'pEng',
+               red:'pRed', criba:'pCriba'};
+let enc = 0, elegida = null, sellado = false;
+const hechos = new Set();
+function muestraSala(cual){
+  for(const k in SALAS) $(SALAS[k]).hidden = (k !== cual);
+  if(cual === 'pasillo') pintaPasillo();
+  else if(cual === 'sala') pintaSala();
+  else if(cual === 'resto') pintaResto();
+  else if(cual === 'rect') pintaRects();
+  else if(cual === 'mural') pintaMural();
+  else if(cual === 'euclides') pintaEu();
+  else if(cual === 'eng') pintaEng();
+  else if(cual === 'red') pintaRed();
+  else if(cual === 'criba') pintaCriba();
+  else pintaCollar();
+}
+function pintaOpciones(){
+  const e = ENCARGOS[enc], caja = $('ops');
+  caja.innerHTML = ''; caja.hidden = !e.ops;
+  if(!e.ops) return;
+  e.ops.forEach((o, i) => {
+    const b = document.createElement('button');
+    b.className = 'b op'; b.textContent = o.t;
+    b.setAttribute('aria-pressed', String(elegida === i));
+    b.addEventListener('click', () => { if(hechos.has(enc)) return; elegida = i; pintaOpciones(); });
+    caja.appendChild(b);
+  });
+}
+function pintaEncargo(){
+  const e = ENCARGOS[enc], ultimo = enc === ENCARGOS.length - 1, hecho = hechos.has(enc);
+  if(e.pre) e.pre();
+  muestraSala(e.sala);
+  elegida = hecho && e.ops ? e.ops.findIndex(o => o.ok) : null;
+  pintaOpciones();
+  $('encTxt').innerHTML = (ultimo && hecho)
+    ? '<b>Servicio cerrado.</b> Los múltiplos son dónde cae, los divisores son con qué salto se llega, '
+      + 'el mcm es el primer encuentro y el mcd la baldosa más grande. Todo en el mismo suelo.<br>'
+      + 'Y ahora que ya sabes esto: al final de la página hay un <b>papiro cerrado</b>. '
+      + 'La clave son cuatro cifras, y es el número que abre el 7, el 11 y el 13 <b>de una vez</b>.'
+    : e.t;
+  $('cual').textContent = (ultimo && hecho) ? 'sala cerrada'
+    : 'encargo ' + (enc + 1) + ' de ' + ENCARGOS.length;
+  $('atras').disabled = enc === 0;
+  $('comprobar').textContent = !hecho ? 'Comprobar'
+    : (ultimo ? 'Empezar de nuevo' : 'Siguiente encargo →');
+  const inf = $('informe');
+  inf.hidden = !hecho;
+  if(hecho){ inf.className = 'panel informe encargo';
+    $('infTxt').innerHTML = e.ops ? e.ops.find(o => o.ok).r : e.bien; }
+  const viejo = document.querySelector('.sellazo');
+  if(viejo) viejo.remove();
+  if(ultimo && hecho){
+    const z = document.createElement('div');
+    z.className = 'sellazo'; z.textContent = 'SALA CERRADA';
+    $('encTxt').after(z);
+  }
+}
+function revisa(){ /* al tocar el manipulativo, la respuesta vieja deja de valer */
+  if(!hechos.has(enc)) $('informe').hidden = true;
+}
+$('atras').addEventListener('click', () => { if(enc > 0){ enc--; pintaEncargo(); } });
+$('comprobar').addEventListener('click', () => {
+  const e = ENCARGOS[enc], inf = $('informe');
+  if(hechos.has(enc)){
+    if(enc < ENCARGOS.length - 1){ enc++; pintaEncargo(); }
+    else { hechos.clear(); enc = 0; pintaEncargo(); }
+    return;
+  }
+  let bien, dice;
+  if(e.ops){
+    if(elegida === null){ bien = false; dice = e.mal; }
+    else { bien = e.ops[elegida].ok; dice = e.ops[elegida].r;
+           if(!bien) document.querySelectorAll('.op')[elegida].classList.add('fallada'); }
+  }else{ bien = e.ok(); dice = bien ? e.bien : e.mal; }
+  inf.hidden = false;
+  inf.className = 'panel informe encargo' + (bien ? '' : ' mal');
+  $('infTxt').innerHTML = dice;
+  if(bien){ hechos.add(enc); pintaEncargo(); inf.hidden = false; }
+});
+$('bModo').addEventListener('click', () => {
+  const papel = document.body.dataset.modo === 'papel';
+  document.body.dataset.modo = papel ? 'pantalla' : 'papel';
+  $('bModo').textContent = papel ? 'Modo papel' : 'Modo pantalla';
+});
+
+/* ── EL PAPIRO SECRETO ──────────────────────────────────────────────────
+   Se abre tecleando 1001 en cualquier momento. Precedente en la casa: el
+   Reparto Nocturno de la Terminal se abre escribiendo «chatarrilla». Aquí
+   el número no es un santo y seña cualquiera — es la clave del asunto. */
+(function(){
+  let tecleado = '';
+  addEventListener('keydown', e => {
+    if(e.key >= '0' && e.key <= '9'){
+      tecleado = (tecleado + e.key).slice(-4);
+      if(tecleado === '1001'){ abrePapiro(); tecleado = ''; }
+    }else if(e.key.length > 1 && e.key !== 'Shift') tecleado = '';
+  });
+  function abrePapiro(){
+    const p = $('papiro');
+    if(!p.hidden) return;
+    p.hidden = false;
+    $('cerradura').classList.add('abierta');
+    if(p.scrollIntoView) p.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  $('papCerrar').addEventListener('click', () => {
+    $('papiro').hidden = true; $('cerradura').classList.remove('abierta');
+  });
+  /* la cerradura de pie de página: lo mismo, pero con un sitio donde escribir */
+  function pruebaClave(){
+    const v = $('clave').value.trim();
+    if(v === '1001'){ $('cerradura').classList.add('abierta'); $('clave').value = ''; abrePapiro(); }
+    else $('clavePista').textContent = v
+      ? 'Ese no. Pista: es el número que abre el 7, el 11 y el 13 a la vez.'
+      : 'Escribe un número de cuatro cifras.';
+  }
+  $('claveVa').addEventListener('click', pruebaClave);
+  $('clave').addEventListener('keydown', e => { if(e.key === 'Enter') pruebaClave(); });
+
+  /* ── LAS CUATRO MÁQUINAS ─────────────────────────────────────────────
+     Cada una lee su <input>, pinta las cifras en fichas y hace lo suyo
+     encendiendo o apagando fichas. La lectura de abajo cuenta el paso. */
+  const soloCifras = v => (v || '').replace(/\D/g, '').replace(/^0+(?=\d)/, '');
+  const fichas = (cont, txt, clases) => {
+    cont.innerHTML = '';
+    [...txt].forEach((c, k) => {
+      const d = document.createElement('div');
+      d.className = 'c ' + ((clases && clases[k]) || '');
+      d.textContent = c; cont.appendChild(d);
+    });
+    return [...cont.children];
+  };
+  const eng2 = (m) => ({inp: m.querySelector('input'), cif: m.querySelector('.cifras'), lect: m.querySelector('.lect')});
+
+  // 1 · el final
+  (function(){
+    const m = $('mFinal'), e = eng2(m); let d = 2;
+    function corre(){
+      const n = soloCifras(e.inp.value); if(!n){ e.lect.textContent = 'Escribe un número.'; e.cif.innerHTML=''; return; }
+      const k = d === 2 || d === 5 ? 1 : (d === 8 ? 3 : 2);      // cuántas cifras miran
+      const cl = [...n].map((_, i) => i >= n.length - k ? 'mira' : 'apag');
+      fichas(e.cif, n, cl);
+      const cola = n.slice(-k), ok = (+cola) % d === 0;
+      const pot = ['', '10', '100', '1000'][k];
+      e.lect.innerHTML = '<span class="paso">Todo lo que va delante es un múltiplo de ' + pot + ', y ' + pot + ' es múltiplo de ' + d + ': no cuenta.</span>'
+        + '<span class="paso">Solo importa <b>' + cola + '</b>. ¿Es múltiplo de ' + d + '? '
+        + (ok ? '<span class="si">Sí</span>, así que <b>' + n + '</b> es múltiplo de ' + d + '.' : '<span class="no">No</span>, así que <b>' + n + '</b> tampoco.') + '</span>';
+    }
+    m.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      d = +b.dataset.d; m.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); corre(); }));
+    e.inp.addEventListener('input', corre); m.querySelector('button').setAttribute('aria-pressed','true'); corre();
+  })();
+
+  // 2 · la máquina de los pesos: universal
+  (function(){
+    const m = $('mPesos'), e = {inp: m.querySelector('input'), pes: m.querySelector('.pesos'), lect: m.querySelector('.lect')};
+    let mod = 3;
+    const peso = (k, mod) => { let w = 1; for(let i = 0; i < k; i++) w = (w * 10) % mod; return w > mod / 2 ? w - mod : w; };
+    function corre(){
+      const n = soloCifras(e.inp.value); if(!n){ e.pes.innerHTML=''; e.lect.textContent='Escribe un número.'; return; }
+      const L = n.length;
+      e.pes.style.gridTemplateColumns = 'repeat(' + L + ', 34px)';
+      const ws = [...n].map((_, i) => peso(L - 1 - i, mod));
+      const fila = (cls, vals) => '<div>' + vals.map(v => '<div class="' + cls + (String(v).startsWith('-') ? ' neg' : '') + '">' + String(v).replace('-', '−') + '</div>').join('') + '</div>';
+      const prods = [...n].map((c, i) => +c * ws[i]);
+      e.pes.innerHTML = fila('w', ws.map(w => w === 1 ? '×1' : '×' + w)) + fila('d', [...n]) + fila('m', prods);
+      const total = prods.reduce((a, b) => a + b, 0);
+      const r = ((total % mod) + mod) % mod, ok = r === 0;
+      e.lect.innerHTML = '<span class="paso">pesos: ' + ws.slice().reverse().map(w => String(w).replace('-','−')).join(', ') + '… (empezando por las unidades)</span>'
+        + '<span class="paso">suma: ' + prods.map(p => String(p).replace('-','−')).join(' + ').replace(/\+ −/g, '− ') + ' = <b>' + String(total).replace('-','−') + '</b></span>'
+        + '<span class="paso">' + String(total).replace('-','−') + ' deja resto <b>' + r + '</b> entre ' + mod + ', así que <b>' + n + '</b> también'
+        + (ok ? ': <span class="si">es múltiplo de ' + mod + '</span>.' : ': <span class="no">no es múltiplo de ' + mod + '</span>.') + '</span>';
+    }
+    m.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      mod = +b.dataset.m; m.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); corre(); }));
+    e.inp.addEventListener('input', corre); m.querySelector('button').setAttribute('aria-pressed','true'); corre();
+  })();
+
+  // 3 · Elefanti en columna, generalizado: quitar la primera cifra a y en la
+  //     casilla s de la derecha sumar k·a. Para 7, 11 y 13: s = 3, k = −1.
+  const ELEF = {s:3, k:-1, primos:[7, 11, 13], porque:'1001 = 7 · 11 · 13'};
+  (function(){
+    const m = $('mElef'), inp = m.querySelector('input'), col = m.querySelector('.columna'), nota = m.querySelector('.nota-el');
+    let actual = '', pasos = [];
+    function reset(){ actual = soloCifras(inp.value); pasos = []; pinta(); }
+    function paso(){
+      const {s, k} = ELEF;
+      if(actual.length <= s) return false;
+      const a = +actual[0], resto = actual.slice(1), pos = resto.length - s;
+      const nuevo = BigInt(resto) + BigInt(k * a) * 10n ** BigInt(pos);
+      if(nuevo < 0n) return false;
+      pasos.push({de: actual, a, resto, pos, nuevo: nuevo.toString(), sube: k * a});
+      actual = nuevo.toString().replace(/^0+(?=\d)/, '');
+      pinta(true); return true;
+    }
+    function bloque(p, ultimo, viejo){
+      const L = p.de.length;
+      const cel = (txt, cls) => '<div class="cel ' + cls + '">' + txt + '</div>';
+      let h = '<div class="paso-el' + (viejo ? ' viejo' : '') + '" style="grid-template-columns:repeat(' + L + ',' + (viejo ? 24 : 30) + 'px)">';
+      // fila 1: el número, con la cifra que sube encendida
+      h += [...p.de].map((c, i) => cel(c, i === 0 ? 'num sube' : 'num')).join('');
+      // fila 2: la cifra bajada, en la casilla s de la derecha, con signo
+      const idx = ELEF.s;                         // casilla donde cae, contando desde la primera
+      h += [...p.de].map((_, i) => i === idx
+        ? cel((p.sube < 0 ? '−' : '+') + Math.abs(p.sube), 'baja' + (ultimo ? ' mueve' : ''))
+        : cel('', 'vacia')).join('');
+      h += '<div class="raya"></div>';
+      // fila 3: el resultado, alineado a la derecha
+      const res = p.nuevo.padStart(L, ' ');
+      h += [...res].map(c => c === ' ' ? cel('', 'vacia') : cel(c, 'res')).join('');
+      return h + '</div>';
+    }
+    function pinta(anim){
+      if(!actual){ col.innerHTML = ''; nota.textContent = 'Escribe un número.'; return; }
+      let h = pasos.map((p, i) => bloque(p, anim && i === pasos.length - 1, i < pasos.length - 1)).join('');
+      if(!pasos.length){
+        // estado inicial: solo el número, con la primera cifra encendida y la casilla marcada
+        const L = actual.length, cel = (txt, cls) => '<div class="cel ' + cls + '">' + txt + '</div>';
+        h = '<div class="paso-el" style="grid-template-columns:repeat(' + L + ',30px)">'
+          + [...actual].map((c, i) => cel(c, i === 0 && L > ELEF.s ? 'num sube' : 'num')).join('')
+          + (L > ELEF.s ? [...actual].map((_, i) => i === ELEF.s ? cel('↓', 'baja') : cel('', 'vacia')).join('') : '')
+          + '</div>';
+      }
+      col.innerHTML = h;
+      // que el último bloque se vea
+      const ult = col.lastElementChild; if(ult && ult.scrollIntoView && anim) ult.scrollIntoView({block:'nearest'});
+      if(actual.length <= ELEF.s){
+        const fin = +actual, cuales = ELEF.primos.filter(d => fin % d === 0);
+        nota.innerHTML = 'Quedan <b>' + actual + '</b>. ' + (cuales.length
+          ? '<span class="si">Es múltiplo de ' + cuales.join(', de ') + '</span>, y el número de arriba también.'
+          : '<span class="no">No es múltiplo de ' + ELEF.primos.join(', ni de ') + '</span>. Tampoco el de arriba.');
+      }else nota.innerHTML = 'La cifra <b>encendida</b> sube; en la casilla marcada, ' + ELEF.s + ' a la derecha, se '
+        + (ELEF.k < 0 ? 'resta' : 'suma') + (Math.abs(ELEF.k) === 1 ? '' : ' ' + Math.abs(ELEF.k) + ' veces') + '. Regla para <b>' + ELEF.primos.join(', ') + '</b>, porque ' + ELEF.porque + '.';
+    }
+    m.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      if(b.dataset.acc === 'reset') reset();
+      else if(b.dataset.acc === 'paso') paso();
+      else { let g = 0; while(paso() && g++ < 40){} }
+    }));
+    inp.addEventListener('input', reset); reset();
+    window._elefReset = reset;
+  })();
+
+
+  // 5 · la tabla de divisores de a·b (Weissman): si a y b no comparten nada,
+  //     cada casilla es un divisor distinto del producto
+  (function(){
+    const est = {a:4, b:15};
+    function corre(){
+      const {a, b} = est, da = divisores(a), db = divisores(b), g = mcd(a, b);
+      const vistos = new Set();
+      let h = '<table><tr><th></th>' + da.map(x => '<th>' + x + '</th>').join('') + '</tr>';
+      db.forEach(y => {
+        h += '<tr><th>' + y + '</th>' + da.map(x => {
+          const p = x * y, rep = vistos.has(p); vistos.add(p);
+          return '<td class="' + (rep ? 'rep' : '') + '">' + p + '</td>';
+        }).join('') + '</tr>';
+      });
+      $('tablaDiv').innerHTML = h + '</table>';
+      const total = divisores(a * b).length;
+      $('tablaLect').innerHTML = g === 1
+        ? '<span class="paso">' + a + ' y ' + b + ' <b>no comparten nada</b> (mcd = 1).</span>'
+          + '<span class="paso">' + da.length + ' × ' + db.length + ' = <b>' + (da.length * db.length)
+          + '</b> casillas, y ' + (a * b) + ' tiene exactamente <b>' + total + '</b> divisores. '
+          + '<span class="si">Cuadra</span>: cada casilla es uno distinto.</span>'
+        : '<span class="paso">' + a + ' y ' + b + ' <b>comparten el ' + g + '</b>, y el truco se rompe.</span>'
+          + '<span class="paso">Salen ' + (da.length * db.length) + ' casillas pero ' + (a * b) + ' solo tiene <b>'
+          + total + '</b> divisores: los rojos <span class="no">ya habían salido antes</span>. Por eso la regla '
+          + 'exige que no compartan nada.</span>';
+      const mk = (cont, cual, lista) => { const c = $(cont); c.innerHTML = '';
+        lista.forEach(x => { const bt = document.createElement('button');
+          bt.textContent = x; bt.setAttribute('aria-pressed', String(est[cual] === x));
+          bt.addEventListener('click', () => { est[cual] = x; corre(); }); c.appendChild(bt); }); };
+      mk('tblA', 'a', [4, 8, 9, 21]);
+      mk('tblB', 'b', [15, 25, 10, 6]);
+    }
+    corre();
+  })();
+
+  // 4 · las reglas para cada primo, DERIVADAS y verificadas, no copiadas del
+  //     escaneo: para cada primo hasta 109, el 10^s ± k más corto que sea
+  //     múltiplo suyo. Los primos que comparten número comparten regla.
+  (function(){
+    const esP = n => n > 1 && primos(n).length === 1;
+    const PRIMOS = []; for(let p = 7; p <= 109; p++) if(esP(p)) PRIMOS.push(p);
+    /* candidatos: todos los 10^s ± k pequeños, con los primos que cubren.
+       Para cada primo se elige el candidato que cubre MÁS primos a la vez
+       —así aparecen las parejas de Elefanti: 7-11-13, 17-59, 19-53…— y a
+       igualdad, el de s y k más pequeños. */
+    const cand = [];
+    for(let s = 2; s <= 4; s++) for(let k = 1; k <= 15; k++) for(const sg of [-1, 1]){
+      const num = 10 ** s - sg * k, ps = PRIMOS.filter(p => num % p === 0);
+      if(ps.length) cand.push({s, k: sg * k, num, ps});
+    }
+    /* reparto conjunto: se van tomando las reglas que cubren más primos aún
+       sin regla, así cada primo aparece una sola vez y en la mejor compañía */
+    const lista = [], libres = new Set(PRIMOS);
+    cand.sort((x, y) => y.ps.length - x.ps.length || x.s - y.s || Math.abs(x.k) - Math.abs(y.k));
+    while(libres.size){
+      let mejor = null, cubre = 0;
+      for(const c of cand){ const n = c.ps.filter(p => libres.has(p)).length; if(n > cubre){ cubre = n; mejor = c; } }
+      if(!mejor) break;
+      const ps = mejor.ps.filter(p => libres.has(p)); ps.forEach(p => libres.delete(p));
+      lista.push({s: mejor.s, k: mejor.k, ps});
+    }
+    lista.sort((a, b) => b.ps.length - a.ps.length || a.s - b.s || Math.abs(a.k) - Math.abs(b.k));
+    $('reglas').innerHTML = lista.map(g => {
+      const num = 10 ** g.s - g.k;
+      return '<div class="fila-r"><b>' + g.ps.join(', ') + '</b>'
+        + '<span>quita a; ' + g.s + ' casillas a la derecha, ' + (g.k < 0 ? 'resta' : 'suma') + ' ' + (Math.abs(g.k) === 1 ? 'a' : Math.abs(g.k) + '·a') + '</span>'
+        + '<span style="opacity:.7">porque ' + (10 ** g.s) + (g.k < 0 ? ' + ' : ' − ') + Math.abs(g.k) + ' = ' + num + ' = ' + primos(num).join('·') + '</span>'
+        + '<button data-s="' + g.s + '" data-k="' + g.k + '" data-ps="' + g.ps.join(',') + '" data-num="' + num + '">probar</button></div>';
+    }).join('');
+    $('reglas').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      ELEF.s = +b.dataset.s; ELEF.k = +b.dataset.k; ELEF.primos = b.dataset.ps.split(',').map(Number);
+      ELEF.porque = (10 ** ELEF.s) + (ELEF.k < 0 ? ' + ' : ' − ') + Math.abs(ELEF.k) + ' = ' + b.dataset.num;
+      window._elefReset(); $('mElef').scrollIntoView({behavior:'smooth', block:'center'});
+    }));
+  })();
+})();
+
+
+/* ── EL VESTIDO COMÚN. En vez de reescribir los diez bloques de HTML, se
+   les pone el mismo traje al arrancar: rótulo arriba, la clase «mandos» a
+   las filas de control y el dibujo envuelto en su escena. Un solo sitio
+   que tocar el día que cambie el diseño. */
+const LEMAS = {
+  pasillo:['El pasillo', 'dónde cae quien salta'],
+  eng:['El taller del relojero', 'qué diente vuelve a qué hueco'],
+  resto:['El granero', 'lo que sobra al repartir'],
+  sala:['La sala', 'la baldosa que llena justo'],
+  euclides:['La escalera de Euclides', 'cortar cuadrados hasta que no sobre'],
+  rect:['Los rectángulos', 'qué formas admite un número'],
+  criba:['La criba', 'cómo se encuentran los primos'],
+  mural:['El mural de los cien', 'de qué está hecho cada número'],
+  red:['La red de divisores', 'el suelo y el techo de dos números'],
+  collar:['El collar', 'lo que comparten dos números']
+};
+const ESCENAS = {
+  pasillo:'.pasillo', eng:'.taller-eng', resto:'.granero', sala:'.sala',
+  euclides:'.escalera', rect:'.rects', criba:'.criba', mural:'.mural',
+  red:'.red', collar:'.collares'
+};
+(function vesteSalas(){
+  Object.keys(SALAS).forEach(k => {
+    const pan = $(SALAS[k]); if(!pan || pan.dataset.vestida) return;
+    pan.dataset.vestida = '1';
+    const [nom, lema] = LEMAS[k] || [k, ''];
+    const rot = document.createElement('div');
+    rot.className = 'salaRot';
+    rot.innerHTML = '<b>' + nom + '</b><span>' + lema + '</span>';
+    pan.insertBefore(rot, pan.firstChild);
+    pan.querySelectorAll(':scope > .fila').forEach(f => {
+      if(f.querySelector('.etq')) f.classList.add('mandos');
+      f.style.marginTop = '';
+    });
+    const vis = pan.querySelector(ESCENAS[k]);
+    if(vis && !vis.parentElement.classList.contains('escena')){
+      const caja = document.createElement('div');
+      caja.className = 'escena';
+      vis.parentNode.insertBefore(caja, vis);
+      caja.appendChild(vis);
+    }
+  });
+})();
+
+document.body.dataset.modo = 'pantalla';
+pintaEncargo();
+</script>
+</body></html>
