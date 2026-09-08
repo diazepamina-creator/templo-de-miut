@@ -121,6 +121,35 @@
     dividen a ninguno de los dos van apagados y el texto explica por qué
     están. Y admite dos números cualesquiera, no solo los preajustes.
 
+  EL DISEÑO DE MIUT (tercera pasada, sobre una referencia que trajo
+     Andrés). El ORDEN DE DIBUJO va escrito y numerado en el SVG, de atrás
+     hacia delante, porque no es decorativo: dice qué está delante de qué.
+     Antes el pectoral se pintaba el último y flotaba sobre las manos, y
+     los bigotes cruzaban por encima de la peluca. Ahora: cuerpo, mechones,
+     orejas, cabeza, flequillo, diadema, cara, pectoral, anj, patas,
+     brazaletes y cola. La CARA: óvalo ancho de pómulos en vez del
+     triángulo duro de antes, cejas finas y altas despegadas del ojo, y
+     ojos grandes donde NO hay pestañas dibujadas — es la propia raya del
+     kohl la que se engorda arriba y sale en punta hacia fuera, que es como
+     se pintaban allí. Con diadema de loto y dos ureos, y el anj grande
+     centrado en el pectoral como foco.
+  EL DISEÑO ANTERIOR DE MIUT. Era un gato redondo de dibujo animado y ahora es una
+     DEIDAD felina: cabeza alta y estrecha que se afila hacia el hocico,
+     orejas muy largas, pómulos marcados y ojos almendrados con el kohl
+     saliéndose por fuera, como en los relieves. Lleva usej de bandas
+     concéntricas —oro, turquesa y rojo—, brazaletes y un aro en la oreja,
+     y el anj cuelga del pico del collar en vez de flotar entre las orejas.
+     Conserva lo suyo: el morado de amatista y los ojos verdes.
+
+  EL ASOMO, prestado de la Terminal J&L: allí Jefecillo se asoma por la
+     esquina de la tarjeta a ver cómo ha quedado la carga. Aquí Miut se
+     asoma POR ENCIMA del borde con las dos patas agarradas, que es lo que
+     hacen los gatos: sale al corregir, mira y se esconde sola. Si la
+     respuesta es buena saca toda la cabeza; si no, se queda a media altura
+     y con la pupila entornada. Y con el asomo se quita el retrato fijo del
+     informe: en la Terminal el asomo ES la presencia, y dos veces la misma
+     gata en el mismo panel sobraba.
+
   EL ÍNDICE DE SALAS (botón «Salas»). Nació para probar la app a fondo sin
      recorrer los 25 encargos, y sirve igual en clase: abre cualquier sala
      SUELTA —sin misión, con todos sus mandos— para proyectarla, salta a un
@@ -236,7 +265,7 @@ button.b.ok{background:linear-gradient(180deg,#F0C765,var(--oro));color:#2A1D06;
 button.b:disabled{opacity:.4;cursor:default}
 .etq{font-family:'Rokkitt',serif;font-weight:700;font-size:12px;letter-spacing:1.8px;
   text-transform:uppercase;color:var(--tenue)}
-.informe{border-left:4px solid var(--oro);margin-top:11px}
+.informe{border-left:4px solid var(--oro);margin-top:11px;position:relative}
 .informe.mal{border-left-color:var(--rojo)}
 .op{display:block;width:100%;text-align:left;margin-bottom:6px;
   font-family:inherit;font-size:14.5px;text-transform:none;letter-spacing:0}
@@ -489,7 +518,7 @@ button.b:disabled{opacity:.4;cursor:default}
    ejercicios generados al azar, corrección inmediata, racha, y una hoja de
    diez para imprimir con su clave aparte. Cada ejercicio tiene un botón
    «verlo» que lo lleva a la sala donde se entiende. ── */
-.taller{border-left:4px solid var(--oro)}
+.taller{border-left:4px solid var(--oro);position:relative}
 .tipos{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .tipos button.b{font-size:12.5px;padding:6px 10px;min-height:34px}
 .ejer{font-size:19px;font-family:'Space Mono',monospace;margin:14px 0 8px;line-height:1.5}
@@ -617,9 +646,6 @@ body.imprimiendo > *:not(.hoja){display:none !important}
 .listaEnc button:hover{background:var(--panel2);color:var(--tinta)}
 .listaEnc button b{color:var(--oro);font-family:'Space Mono',monospace;font-size:11px;margin-right:6px}
 .listaEnc button.hecho b{color:var(--verde)}
-/* el «empezar de cero», una vez armado: rojo, que aquí es el color de lo
-   que no tiene vuelta atrás */
-button.b.armado{border-color:var(--rojo);color:var(--rojo)}
 .diag{font-family:'Space Mono',monospace;font-size:12.5px;line-height:1.7;margin-top:8px;
   max-height:220px;overflow-y:auto;background:var(--panel2);border-radius:8px;padding:9px}
 .diag .ok{color:#9BC26A} .diag .ko{color:#F08A6B;font-weight:700}
@@ -676,6 +702,27 @@ button.b.armado{border-color:var(--rojo);color:var(--rojo)}
 .escena > .pasillo,.escena > .granero{background:none;border:0;border-radius:0;padding:0;box-shadow:none}
 .escena > .sala,.escena > .escalera,.escena > .taller-eng,.escena > .red{padding:0}
 .escena > .mural,.escena > .criba,.escena > .rects,.escena > .collares{padding:0}
+
+/* ── EL ASOMO. Prestado de la Terminal J&L, donde Jefecillo se asoma por
+   la esquina de la tarjeta a ver cómo ha quedado la carga. Aquí lo que
+   toca es que Miut se asome POR ENCIMA del borde con las dos patas
+   agarradas, que es lo que hacen los gatos: sale de detrás del panel, mira
+   y se vuelve a esconder sola. Si la respuesta es buena saca toda la
+   cabeza; si no, se queda a media altura y de reojo. */
+.asomo{position:absolute;right:16px;top:0;width:76px;pointer-events:none;z-index:4;
+  opacity:0;transform:translateY(26px);
+  transition:transform .44s cubic-bezier(.34,1.56,.64,1), opacity .2s ease}
+.asomo svg{width:100%;height:auto;display:block;filter:drop-shadow(0 3px 8px rgba(0,0,0,.5))}
+.asomo.mira{opacity:1;transform:translateY(calc(-100% + 2px))}
+/* si ha fallado, asoma menos: solo los ojos por encima del borde */
+.asomo.mira.falla{transform:translateY(calc(-56% + 2px));
+  transition:transform .5s ease-out, opacity .2s ease}
+.asomo.mira.falla .pupila{ry:1.6px}
+@media (max-width:430px){ .asomo{width:64px;right:12px} }
+@media (prefers-reduced-motion:reduce){
+  .asomo{transition:opacity .2s ease}
+  .asomo.mira,.asomo.mira.falla{transform:translateY(calc(-100% + 2px))}
+}
 .pista.secreto{opacity:.5;font-size:11.5px}
 /* la cerradura: a pie de página, en letra pequeña. Que se vea sin gritar */
 .cerradura{margin-top:22px;padding-top:13px;border-top:1px solid var(--linea);opacity:.75}
@@ -692,11 +739,11 @@ button.b.armado{border-color:var(--rojo);color:var(--rojo)}
   <h1>El templo de Miut</h1>
   <p class="sub">Divisibilidad · primos · mcd y mcm</p>
   <nav class="barra">
-    <!-- Enlace ABSOLUTO a propósito: la línea del tiempo vive en el
-       repositorio terminal-jl y esta app en el suyo, así que un enlace
-       relativo la buscaría aquí dentro y no existe. Entre apps de la
-       casa, siempre la URL entera. -->
-    <a href="https://diazepamina-creator.github.io/linea.html">← Materiales</a>
+    <!-- Enlace ABSOLUTO a propósito: la portada vive en la raíz del sitio
+       y esta app en su propia carpeta, así que un enlace relativo la
+       buscaría aquí dentro y no existe. Entre apps de la casa, siempre la
+       URL entera. -->
+    <a href="https://diazepamina-creator.github.io/">← Materiales</a>
     <button id="bTaller" aria-pressed="false">Taller</button>
     <button id="bIndice" aria-pressed="false">Salas</button>
     <span style="flex:1"></span>
@@ -715,8 +762,7 @@ button.b.armado{border-color:var(--rojo);color:var(--rojo)}
     <span class="paso" id="cual"></span>
   </div>
 </div>
-<div class="panel informe encargo" id="informe" hidden>
-  <div class="cara" id="caraGata"></div>
+<div class="panel informe" id="informe" hidden>
   <div class="quien" style="color:var(--oro)">Miut</div>
   <p class="encTxt" id="infTxt"></p>
 </div>
@@ -1071,69 +1117,7 @@ $('cara').innerHTML = `<svg viewBox="0 0 46 48" aria-hidden="true">
   <rect x="27" y="37" width="12" height="5" rx="1.6" fill="#C08A5E" stroke="#241C36" stroke-width="1.3"/>
   <circle cx="30.4" cy="39.5" r="1.2" fill="#241C36"/><circle cx="35.6" cy="39.5" r="1.2" fill="#B0392C"/>
 </svg>`;
-$('caraGata').innerHTML = `<svg viewBox="0 0 46 48" aria-hidden="true">
-  <!-- MIUT · la gata del templo. Por Chapas, la gata de Andrés, y por
-       Bastet, que en Egipto era gata y era diosa: es el único sitio de esta
-       línea donde un gato manda más que cualquiera. Va en morados de
-       amatista —piedra que los egipcios sacaban de sus propias minas— con
-       el collar usej de oro y los ojos perfilados de kohl. Sentada y muy
-       recta, como se sientan ellas cuando saben que las miras. -->
-  <ellipse cx="23" cy="45.4" rx="13" ry="2.6" fill="#140F1F" opacity=".45"/>
-  <!-- la cola, enroscada por delante de las patas -->
-  <path d="M33 42 Q41 42 40 36 Q39 31 34 33" fill="none" stroke="#241C36" stroke-width="5.6" stroke-linecap="round"/>
-  <path d="M33 42 Q41 42 40 36 Q39 31 34 33" fill="none" stroke="#8A6A9E" stroke-width="4" stroke-linecap="round"/>
-  <g stroke="#6B4E7A" stroke-width="1.2"><path d="M37.6 41 L38.4 43"/><path d="M40 37.6 L42 38"/></g>
-  <!-- el cuerpo -->
-  <path d="M13 45 Q13 27 23 27 Q33 27 33 45 Z" fill="#8A6A9E" stroke="#241C36" stroke-width="1.4" stroke-linejoin="round"/>
-  <path d="M13 45 Q13 27 23 27 Q18 32 17.6 45 Z" fill="#A98BBC" opacity=".55"/>
-  <!-- las patas delanteras, juntas -->
-  <g fill="#A98BBC" stroke="#241C36" stroke-width="1.3" stroke-linejoin="round">
-    <path d="M17 45 Q17 38 20 38 Q23 38 23 45 Z"/>
-    <path d="M23 45 Q23 38 26 38 Q29 38 29 45 Z"/></g>
-  <g stroke="#6B4E7A" stroke-width="1"><path d="M18.6 43.4 H21.4"/><path d="M24.6 43.4 H27.4"/></g>
-  <!-- el collar usej -->
-  <path d="M15.4 29 Q23 35.6 30.6 29 L32 30.8 Q23 39 14 30.8 Z"
-        fill="#E0B24A" stroke="#241C36" stroke-width="1.3" stroke-linejoin="round"/>
-  <path d="M16.8 30.6 Q23 36 29.2 30.6" stroke="#B0392C" stroke-width="1.5" fill="none"/>
-  <!-- el escarabajo del collar -->
-  <ellipse cx="23" cy="35.6" rx="2.4" ry="2.8" fill="#3E7FA0" stroke="#241C36" stroke-width="1"/>
-  <!-- las orejas -->
-  <g fill="#8A6A9E" stroke="#241C36" stroke-width="1.4" stroke-linejoin="round">
-    <path d="M13.4 15.6 L12.4 5.4 L21 11 Z"/>
-    <path d="M32.6 15.6 L33.6 5.4 L25 11 Z"/></g>
-  <path d="M14.6 13.6 L14 8.4 L18.6 11.4 Z" fill="#E8B0C0"/>
-  <path d="M31.4 13.6 L32 8.4 L27.4 11.4 Z" fill="#E8B0C0"/>
-  <!-- los pendientes de oro, que Bastet los lleva -->
-  <circle cx="12.4" cy="19.4" r="1.9" fill="#E0B24A" stroke="#241C36" stroke-width="1"/>
-  <circle cx="33.6" cy="19.4" r="1.9" fill="#E0B24A" stroke="#241C36" stroke-width="1"/>
-  <!-- la cabeza -->
-  <ellipse cx="23" cy="18.6" rx="10.6" ry="9.4" fill="#8A6A9E" stroke="#241C36" stroke-width="1.4"/>
-  <path d="M12.6 16.6 Q13 25 17.6 27.6 Q14 22.6 13.6 15.6 Z" fill="#6B4E7A" opacity=".7"/>
-  <!-- los ojos, perfilados de kohl -->
-  <path d="M14.8 17.6 Q18.4 14.4 22 17.6 Q18.4 21.4 14.8 17.6 Z" fill="#F2EDE2" stroke="#241C36" stroke-width="1.2" stroke-linejoin="round"/>
-  <path d="M24 17.6 Q27.6 14.4 31.2 17.6 Q27.6 21.4 24 17.6 Z" fill="#F2EDE2" stroke="#241C36" stroke-width="1.2" stroke-linejoin="round"/>
-  <ellipse cx="18.4" cy="17.9" rx="1.5" ry="2.4" fill="#4E8B3E"/>
-  <ellipse cx="27.6" cy="17.9" rx="1.5" ry="2.4" fill="#4E8B3E"/>
-  <ellipse cx="18.4" cy="17.9" rx=".6" ry="2" fill="#241C36"/>
-  <ellipse cx="27.6" cy="17.9" rx=".6" ry="2" fill="#241C36"/>
-  <path d="M13.6 17" stroke="#241C36"/>
-  <path d="M14.4 17.2 L11.4 16" stroke="#241C36" stroke-width="1.4" stroke-linecap="round"/>
-  <path d="M31.6 17.2 L34.6 16" stroke="#241C36" stroke-width="1.4" stroke-linecap="round"/>
-  <!-- el hocico -->
-  <path d="M21.4 21.6 L24.6 21.6 L23 23.4 Z" fill="#E8B0C0" stroke="#241C36" stroke-width="1.1" stroke-linejoin="round"/>
-  <path d="M23 23.4 V24.6" stroke="#241C36" stroke-width="1.1"/>
-  <path d="M23 24.6 Q20.6 26.6 19 24.8" fill="none" stroke="#241C36" stroke-width="1.1" stroke-linecap="round"/>
-  <path d="M23 24.6 Q25.4 26.6 27 24.8" fill="none" stroke="#241C36" stroke-width="1.1" stroke-linecap="round"/>
-  <g stroke="#F2EDE2" stroke-width=".9" stroke-linecap="round" opacity=".85">
-    <path d="M19 22.4 Q13.6 21.6 11 22.6"/><path d="M19.2 24.4 Q14 25 11.8 26.6"/>
-    <path d="M27 22.4 Q32.4 21.6 35 22.6"/><path d="M26.8 24.4 Q32 25 34.2 26.6"/></g>
-  <!-- el anj entre las orejas: es del templo, no de la calle -->
-  <g transform="translate(23 5.6)">
-    <ellipse cx="0" cy="-2.6" rx="2.2" ry="2.6" fill="none" stroke="#E0B24A" stroke-width="1.6"/>
-    <path d="M0 0 V5" stroke="#E0B24A" stroke-width="1.6" stroke-linecap="round"/>
-    <path d="M-2.8 1.4 H2.8" stroke="#E0B24A" stroke-width="1.6" stroke-linecap="round"/>
-  </g>
-</svg>`;
+
 
 /* ── EL PASILLO ─────────────────────────────────────────────────────────
    Las baldosas son la recta numérica: la baldosa k ES el número k. La
@@ -1697,6 +1681,120 @@ $('engReset').addEventListener('click', () => { engReset(); revisa(); });
 
 
 
+
+/* ── ASOMARSE ───────────────────────────────────────────────────────────
+   Igual que en la Terminal: quien contesta se asoma a ver en qué ha
+   quedado y se esconde solo. Se guarda el temporizador para que dos
+   respuestas seguidas no dejen a Miut colgada a medias. */
+const MIUT_PEEK = `<svg viewBox="0 0 64 50" aria-hidden="true">
+  <!-- las orejas -->
+  <g fill="#8A6A9E" stroke="#241C36" stroke-width="2" stroke-linejoin="round">
+    <path d="M15.6 21 L10.4 1.6 L26.4 12.6 Z"/><path d="M48.4 21 L53.6 1.6 L37.6 12.6 Z"/>
+  </g>
+  <path d="M17.6 18.6 L14.4 7 L22.6 12.8 Z" fill="#E0A8BE"/>
+  <path d="M46.4 18.6 L49.6 7 L41.4 12.8 Z" fill="#E0A8BE"/>
+  <!-- los mechones de la peluca, a los lados -->
+  <g fill="#2E4E8C" stroke="#241C36" stroke-width="1.9" stroke-linejoin="round">
+    <path d="M14 16 Q9.4 26 10.6 40 L10.6 50 L17.6 50 L17.6 40 Q15 28 16.6 17.4 Z"/>
+    <path d="M50 16 Q54.6 26 53.4 40 L53.4 50 L46.4 50 L46.4 40 Q49 28 47.4 17.4 Z"/>
+  </g>
+  <!-- la cabeza, óvalo ancho, cortada por el borde -->
+  <path d="M32 8 Q49.6 8 50.6 24.6 Q51 33 49 40 L49 50 L15 50 L15 40
+           Q13 33 13.4 24.6 Q14.4 8 32 8 Z" fill="#8A6A9E" stroke="#241C36" stroke-width="2"/>
+  <path d="M32 8 Q14.4 8 13.4 24.6 Q13 33 15 40 L15 50 L21 50 Q17.6 32 18.6 22 Q20 12 32 8 Z"
+        fill="#5F4470" opacity=".24"/>
+  <!-- el flequillo -->
+  <path d="M13.5 22.6 Q14.4 7.8 32 7.8 Q49.6 7.8 50.5 22.6 Q46.6 16.6 32 16 Q17.4 16.6 13.5 22.6 Z"
+        fill="#2E4E8C" stroke="#241C36" stroke-width="1.9" stroke-linejoin="round"/>
+  <g stroke="#4A6BAE" stroke-width="1.2" opacity=".85">
+    <path d="M20 12.4 V19.6"/><path d="M26 10 V17.4"/><path d="M32 9.2 V16.8"/>
+    <path d="M38 10 V17.4"/><path d="M44 12.4 V19.6"/>
+  </g>
+  <!-- la diadema -->
+  <path d="M13 15.4 Q32 6 51 15.4 L50.2 19.2 Q32 10.4 13.8 19.2 Z"
+        fill="#E0B24A" stroke="#241C36" stroke-width="1.8" stroke-linejoin="round"/>
+  <g fill="#241C36" opacity=".5">
+    <circle cx="20" cy="14.6" r="1"/><circle cx="26" cy="12.4" r="1"/>
+    <circle cx="38" cy="12.4" r="1"/><circle cx="44" cy="14.6" r="1"/>
+  </g>
+  <g fill="#F0CE72" stroke="#241C36" stroke-width="1.4" stroke-linejoin="round">
+    <path d="M27.4 11 Q24 8.2 25.8 4.8 Q28.4 6.2 28.8 9.8 Z"/>
+    <path d="M36.6 11 Q40 8.2 38.2 4.8 Q35.6 6.2 35.2 9.8 Z"/>
+    <path d="M32 2 Q34.8 5.6 34.2 10.4 L29.8 10.4 Q29.2 5.6 32 2 Z"/>
+    <path d="M29.4 10.4 Q25.8 8.2 26.2 4.4 Q29 6.2 30 10.4 Z"/>
+    <path d="M34.6 10.4 Q38.2 8.2 37.8 4.4 Q35 6.2 34 10.4 Z"/>
+  </g>
+  <!-- las cejas, finas y altas -->
+  <path d="M18 25.2 Q23.6 21.4 29.2 24.2" fill="none" stroke="#241C36" stroke-width="1.9" stroke-linecap="round"/>
+  <path d="M46 25.2 Q40.4 21.4 34.8 24.2" fill="none" stroke="#241C36" stroke-width="1.9" stroke-linecap="round"/>
+
+  <clipPath id="pkI">
+    <path d="M28.900000000000002 32.2 Q22.6 22.6 16.1 29.1 Q22.6 36.300000000000004 28.900000000000002 32.2 Z"/>
+  </clipPath>
+  <path d="M28.900000000000002 32.2 Q22.6 22.6 16.1 29.1 Q22.6 36.300000000000004 28.900000000000002 32.2 Z" fill="#F6F1E6"/>
+  <g clip-path="url(#pkI)">
+    <circle cx="22.6" cy="30.6" r="5.2" fill="#4E9B46"/>
+    <circle cx="22.6" cy="30.6" r="5.2" fill="none" stroke="#6FC05E" stroke-width="2"/>
+    <ellipse cx="22.6" cy="30.6" rx="2" ry="4.9" fill="#241C36"/>
+    <path d="M28.900000000000002 32.2 Q22.6 24.0 16.1 29.1 Q22.6 27.400000000000002 28.900000000000002 32.2 Z" fill="#8FB6DE" opacity=".55"/>
+  </g>
+  <circle cx="20.700000000000003" cy="28.0" r="1.2" fill="#fff"/>
+  <path d="M28.900000000000002 32.2 Q22.6 36.300000000000004 16.1 29.1" fill="none" stroke="#241C36" stroke-width="1.7" stroke-linecap="round"/>
+  <path d="M28.900000000000002 32.2 Q22.6 22.200000000000003 16.1 29.1 L9.700000000000001 25.5
+           Q22.6 20.8 28.900000000000002 31.6 Z" fill="#241C36"/>
+  <clipPath id="pkD">
+    <path d="M35.1 32.2 Q41.4 22.6 47.9 29.1 Q41.4 36.300000000000004 35.1 32.2 Z"/>
+  </clipPath>
+  <path d="M35.1 32.2 Q41.4 22.6 47.9 29.1 Q41.4 36.300000000000004 35.1 32.2 Z" fill="#F6F1E6"/>
+  <g clip-path="url(#pkD)">
+    <circle cx="41.4" cy="30.6" r="5.2" fill="#4E9B46"/>
+    <circle cx="41.4" cy="30.6" r="5.2" fill="none" stroke="#6FC05E" stroke-width="2"/>
+    <ellipse cx="41.4" cy="30.6" rx="2" ry="4.9" fill="#241C36"/>
+    <path d="M35.1 32.2 Q41.4 24.0 47.9 29.1 Q41.4 27.400000000000002 35.1 32.2 Z" fill="#8FB6DE" opacity=".55"/>
+  </g>
+  <circle cx="43.3" cy="28.0" r="1.2" fill="#fff"/>
+  <path d="M35.1 32.2 Q41.4 36.300000000000004 47.9 29.1" fill="none" stroke="#241C36" stroke-width="1.7" stroke-linecap="round"/>
+  <path d="M35.1 32.2 Q41.4 22.200000000000003 47.9 29.1 L54.3 25.5
+           Q41.4 20.8 35.1 31.6 Z" fill="#241C36"/>
+  <!-- el morro -->
+  <path d="M24 39.4 Q32 37 40 39.4 Q40.2 46 36 49 Q32 51 28 49 Q23.8 46 24 39.4 Z"
+        fill="#C0A9CE" stroke="#241C36" stroke-width="1.7" stroke-linejoin="round"/>
+  <path d="M29.4 40.6 Q32 39.4 34.6 40.6 Q33.8 43.6 32 44.6 Q30.2 43.6 29.4 40.6 Z"
+        fill="#E58AA6" stroke="#241C36" stroke-width="1.4" stroke-linejoin="round"/>
+  <path d="M32 44.6 V46.6" stroke="#241C36" stroke-width="1.4"/>
+  <path d="M32 46.6 Q29 49 27 47" fill="none" stroke="#241C36" stroke-width="1.4" stroke-linecap="round"/>
+  <path d="M32 46.6 Q35 49 37 47" fill="none" stroke="#241C36" stroke-width="1.4" stroke-linecap="round"/>
+  <g stroke="#F6F1E6" stroke-width="1.3" stroke-linecap="round" opacity=".8">
+    <path d="M25 41 Q21.4 40.4 19.6 41.4"/><path d="M25.2 44.6 Q21.6 45.2 20 46.8"/>
+    <path d="M39 41 Q42.6 40.4 44.4 41.4"/><path d="M38.8 44.6 Q42.4 45.2 44 46.8"/>
+  </g>
+  <!-- las patas, agarradas al borde -->
+  <g fill="#C0A9CE" stroke="#241C36" stroke-width="1.8" stroke-linejoin="round">
+    <path d="M2 50 Q2 42 8.4 42 Q14.8 42 14.8 50 Z"/>
+    <path d="M49.2 50 Q49.2 42 55.6 42 Q62 42 62 50 Z"/>
+  </g>
+  <g stroke="#5F4470" stroke-width="1.3" stroke-linecap="round" opacity=".75">
+    <path d="M5.6 50 V46.4"/><path d="M8.4 50 V45.6"/><path d="M11.2 50 V46.4"/>
+    <path d="M52.8 50 V46.4"/><path d="M55.6 50 V45.6"/><path d="M58.4 50 V46.4"/>
+  </g>
+</svg>`;
+let asomoReloj = null;
+function asomate(donde, bien){
+  if(!donde) return;
+  let a = donde.querySelector(':scope > .asomo');
+  if(!a){
+    a = document.createElement('div');
+    a.className = 'asomo'; a.innerHTML = MIUT_PEEK;
+    donde.appendChild(a);
+  }
+  clearTimeout(asomoReloj);
+  a.classList.remove('mira', 'falla');
+  void a.offsetWidth;                       // reinicia la entrada si se repite rápido
+  a.classList.add('mira');
+  if(!bien) a.classList.add('falla');
+  asomoReloj = setTimeout(() => a.classList.remove('mira', 'falla'), bien ? 2100 : 1600);
+}
+
 /* ── EL ÍNDICE DE SALAS ─────────────────────────────────────────────────
    Dos usos: probar la app entera sin recorrer los 25 encargos, y en clase
    abrir de golpe la sala que se quiere proyectar. Abrir una sala «suelta»
@@ -1757,32 +1855,15 @@ $('bIndice').addEventListener('click', () => {
 });
 $('ixPapiro').addEventListener('click', () => {
   $('cerradura').classList.add('abierta'); $('papiro').hidden = false;
-  papiroVisto = true; guardaTurno();
   $('papiro').scrollIntoView({behavior:'smooth', block:'start'});
 });
 $('ixTodo').addEventListener('click', () => {
   ENCARGOS.forEach((_, i) => hechos.add(i)); enc = ENCARGOS.length - 1;
-  cierraLibre(); pintaIndice(); guardaTurno();
+  cierraLibre(); pintaIndice();
 });
-/* EMPEZAR DE CERO borra ahora también lo guardado en el aparato, así que
-   pide el segundo toque —como el de la terminal— y se desarma solo a los
-   cinco segundos: desde aquí se tiran veinticinco encargos de una vez. */
-{
-  let armado = false, reloj = 0;
-  const desarma = () => { armado = false; clearTimeout(reloj);
-    $('ixCero').classList.remove('armado'); $('ixCero').textContent = 'Empezar de cero'; };
-  $('ixCero').addEventListener('click', () => {
-    if(!armado){
-      armado = true; $('ixCero').classList.add('armado');
-      $('ixCero').textContent = 'Pulsa otra vez para borrarlo';
-      clearTimeout(reloj); reloj = setTimeout(desarma, 5000);
-      return;
-    }
-    desarma(); borraTurno();
-    hechos.clear(); enc = 0; taller.ac = 0; taller.racha = 0; taller.mejor = 0;
-    cierraLibre(); pintaIndice(); pintaEncargo();
-  });
-}
+$('ixCero').addEventListener('click', () => {
+  hechos.clear(); enc = 0; cierraLibre(); pintaIndice();
+});
 
 /* ── AUTODIAGNÓSTICO. Cada motor se prueba contra sí mismo: los generadores
    del taller aceptan su propia solución y rechazan basura; las reglas del
@@ -1958,8 +2039,8 @@ function corrige(dado){
     ver.innerHTML = 'No. La respuesta era <b>' + taller.ej.sol + '</b>. ' + taller.ej.exp; }
   taller.corregido = true;
   $('verlo').hidden = false;
+  asomate($('pTaller'), bien);
   pintaTipos();
-  guardaTurno();
 }
 function verEnSala(){
   const e = taller.ej; if(!e) return;
@@ -2500,41 +2581,6 @@ const SALAS = {pasillo:'pPasillo', sala:'pSala', collar:'pCollar',
                red:'pRed', criba:'pCriba'};
 let enc = 0, elegida = null, sellado = false;
 const hechos = new Set();
-
-/* ── EL TURNO. Veinticinco encargos son más de una sesión, y hasta ahora
-      una recarga los borraba todos. El templo se guarda ahora en el propio
-      aparato —sin servidor y sin cuentas— y CADUCA A LAS CUATRO HORAS, para
-      que en un ordenador de clase el grupo siguiente no herede el trabajo
-      del anterior.
-
-      Se guarda lo que costó conseguir: en qué encargo se está, cuáles están
-      sellados, la cuenta del taller y si el papiro ya se había abierto —una
-      clave que se ha descubierto una vez no se vuelve a pedir—. El «empezar
-      de cero» del índice de salas borra también esto.                    */
-let papiroVisto = false;          // la clave, una vez dada, no se vuelve a pedir
-const GUARDADO = 'miut.turno.v1';
-const CADUCA = 4*60*60*1000;
-
-function guardaTurno(){
-  try{
-    localStorage.setItem(GUARDADO, JSON.stringify({
-      v:1, ts:Date.now(), enc:enc, hechos:[...hechos],
-      taller:{ac:taller.ac, racha:taller.racha, mejor:taller.mejor},
-      papiro: papiroVisto,
-      modo: document.body.dataset.modo
-    }));
-  }catch(e){ /* sin almacén disponible: se sigue igual, sin guardar */ }
-}
-function leeTurno(){
-  try{
-    const d = JSON.parse(localStorage.getItem(GUARDADO) || 'null');
-    if(!d || d.v !== 1 || !Array.isArray(d.hechos)) return null;
-    if(!(d.enc >= 0 && d.enc < ENCARGOS.length)) return null;
-    if(Date.now() - d.ts > CADUCA){ borraTurno(); return null; }
-    return d;
-  }catch(e){ return null; }
-}
-function borraTurno(){ try{ localStorage.removeItem(GUARDADO); }catch(e){} }
 function muestraSala(cual){
   for(const k in SALAS) $(SALAS[k]).hidden = (k !== cual);
   if(cual === 'pasillo') pintaPasillo();
@@ -2579,7 +2625,7 @@ function pintaEncargo(){
     : (ultimo ? 'Empezar de nuevo' : 'Siguiente encargo →');
   const inf = $('informe');
   inf.hidden = !hecho;
-  if(hecho){ inf.className = 'panel informe encargo';
+  if(hecho){ inf.className = 'panel informe';
     $('infTxt').innerHTML = e.ops ? e.ops.find(o => o.ok).r : e.bien; }
   const viejo = document.querySelector('.sellazo');
   if(viejo) viejo.remove();
@@ -2592,13 +2638,12 @@ function pintaEncargo(){
 function revisa(){ /* al tocar el manipulativo, la respuesta vieja deja de valer */
   if(!hechos.has(enc)) $('informe').hidden = true;
 }
-$('atras').addEventListener('click', () => { if(enc > 0){ enc--; pintaEncargo(); guardaTurno(); } });
+$('atras').addEventListener('click', () => { if(enc > 0){ enc--; pintaEncargo(); } });
 $('comprobar').addEventListener('click', () => {
   const e = ENCARGOS[enc], inf = $('informe');
   if(hechos.has(enc)){
     if(enc < ENCARGOS.length - 1){ enc++; pintaEncargo(); }
     else { hechos.clear(); enc = 0; pintaEncargo(); }
-    guardaTurno();
     return;
   }
   let bien, dice;
@@ -2608,15 +2653,15 @@ $('comprobar').addEventListener('click', () => {
            if(!bien) document.querySelectorAll('.op')[elegida].classList.add('fallada'); }
   }else{ bien = e.ok(); dice = bien ? e.bien : e.mal; }
   inf.hidden = false;
-  inf.className = 'panel informe encargo' + (bien ? '' : ' mal');
+  inf.className = 'panel informe' + (bien ? '' : ' mal');
   $('infTxt').innerHTML = dice;
-  if(bien){ hechos.add(enc); pintaEncargo(); inf.hidden = false; guardaTurno(); }
+  if(bien){ hechos.add(enc); pintaEncargo(); inf.hidden = false; }
+  asomate(inf, bien);
 });
 $('bModo').addEventListener('click', () => {
   const papel = document.body.dataset.modo === 'papel';
   document.body.dataset.modo = papel ? 'pantalla' : 'papel';
   $('bModo').textContent = papel ? 'Modo papel' : 'Modo pantalla';
-  guardaTurno();
 });
 
 /* ── EL PAPIRO SECRETO ──────────────────────────────────────────────────
@@ -2636,7 +2681,6 @@ $('bModo').addEventListener('click', () => {
     if(!p.hidden) return;
     p.hidden = false;
     $('cerradura').classList.add('abierta');
-    papiroVisto = true; guardaTurno();
     if(p.scrollIntoView) p.scrollIntoView({behavior:'smooth', block:'start'});
   }
   $('papCerrar').addEventListener('click', () => {
@@ -2900,27 +2944,7 @@ const ESCENAS = {
   });
 })();
 
-/* ── LA APERTURA. Si el aparato guarda un turno de hace menos de cuatro
-      horas, el templo se abre por donde se dejó: el mismo encargo, los
-      sellos puestos, la cuenta del taller y el papiro ya encontrado si lo
-      estaba. Si no, se abre por el pasillo, como siempre. ── */
-{
-  const d = leeTurno();
-  document.body.dataset.modo = (d && d.modo === 'papel') ? 'papel' : 'pantalla';
-  if(document.body.dataset.modo === 'papel') $('bModo').textContent = 'Modo pantalla';
-  if(d){
-    enc = d.enc;
-    d.hechos.forEach(i => { if(i >= 0 && i < ENCARGOS.length) hechos.add(i); });
-    const t = d.taller || {};
-    taller.ac = t.ac|0; taller.racha = t.racha|0; taller.mejor = t.mejor|0;
-    if(d.papiro){
-      papiroVisto = true;
-      $('cerradura').classList.add('abierta');
-      $('papiro').hidden = false;   // sin scrollIntoView: se vuelve al encargo, no al papiro
-    }
-  }
-  pintaEncargo();
-  pintaTipos();                     // la cuenta del taller, con sus cifras restauradas
-}
+document.body.dataset.modo = 'pantalla';
+pintaEncargo();
 </script>
 </body></html>
