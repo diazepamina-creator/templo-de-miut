@@ -617,6 +617,9 @@ body.imprimiendo > *:not(.hoja){display:none !important}
 .listaEnc button:hover{background:var(--panel2);color:var(--tinta)}
 .listaEnc button b{color:var(--oro);font-family:'Space Mono',monospace;font-size:11px;margin-right:6px}
 .listaEnc button.hecho b{color:var(--verde)}
+/* el «empezar de cero», una vez armado: rojo, que aquí es el color de lo
+   que no tiene vuelta atrás */
+button.b.armado{border-color:var(--rojo);color:var(--rojo)}
 .diag{font-family:'Space Mono',monospace;font-size:12.5px;line-height:1.7;margin-top:8px;
   max-height:220px;overflow-y:auto;background:var(--panel2);border-radius:8px;padding:9px}
 .diag .ok{color:#9BC26A} .diag .ko{color:#F08A6B;font-weight:700}
@@ -693,7 +696,7 @@ body.imprimiendo > *:not(.hoja){display:none !important}
        repositorio terminal-jl y esta app en el suyo, así que un enlace
        relativo la buscaría aquí dentro y no existe. Entre apps de la
        casa, siempre la URL entera. -->
-    <a href="https://diazepamina-creator.github.io/terminal-jl/linea.html">← Materiales</a>
+    <a href="https://diazepamina-creator.github.io/linea.html">← Materiales</a>
     <button id="bTaller" aria-pressed="false">Taller</button>
     <button id="bIndice" aria-pressed="false">Salas</button>
     <span style="flex:1"></span>
@@ -1754,15 +1757,32 @@ $('bIndice').addEventListener('click', () => {
 });
 $('ixPapiro').addEventListener('click', () => {
   $('cerradura').classList.add('abierta'); $('papiro').hidden = false;
+  papiroVisto = true; guardaTurno();
   $('papiro').scrollIntoView({behavior:'smooth', block:'start'});
 });
 $('ixTodo').addEventListener('click', () => {
   ENCARGOS.forEach((_, i) => hechos.add(i)); enc = ENCARGOS.length - 1;
-  cierraLibre(); pintaIndice();
+  cierraLibre(); pintaIndice(); guardaTurno();
 });
-$('ixCero').addEventListener('click', () => {
-  hechos.clear(); enc = 0; cierraLibre(); pintaIndice();
-});
+/* EMPEZAR DE CERO borra ahora también lo guardado en el aparato, así que
+   pide el segundo toque —como el de la terminal— y se desarma solo a los
+   cinco segundos: desde aquí se tiran veinticinco encargos de una vez. */
+{
+  let armado = false, reloj = 0;
+  const desarma = () => { armado = false; clearTimeout(reloj);
+    $('ixCero').classList.remove('armado'); $('ixCero').textContent = 'Empezar de cero'; };
+  $('ixCero').addEventListener('click', () => {
+    if(!armado){
+      armado = true; $('ixCero').classList.add('armado');
+      $('ixCero').textContent = 'Pulsa otra vez para borrarlo';
+      clearTimeout(reloj); reloj = setTimeout(desarma, 5000);
+      return;
+    }
+    desarma(); borraTurno();
+    hechos.clear(); enc = 0; taller.ac = 0; taller.racha = 0; taller.mejor = 0;
+    cierraLibre(); pintaIndice(); pintaEncargo();
+  });
+}
 
 /* ── AUTODIAGNÓSTICO. Cada motor se prueba contra sí mismo: los generadores
    del taller aceptan su propia solución y rechazan basura; las reglas del
@@ -1939,6 +1959,7 @@ function corrige(dado){
   taller.corregido = true;
   $('verlo').hidden = false;
   pintaTipos();
+  guardaTurno();
 }
 function verEnSala(){
   const e = taller.ej; if(!e) return;
@@ -2479,6 +2500,41 @@ const SALAS = {pasillo:'pPasillo', sala:'pSala', collar:'pCollar',
                red:'pRed', criba:'pCriba'};
 let enc = 0, elegida = null, sellado = false;
 const hechos = new Set();
+
+/* ── EL TURNO. Veinticinco encargos son más de una sesión, y hasta ahora
+      una recarga los borraba todos. El templo se guarda ahora en el propio
+      aparato —sin servidor y sin cuentas— y CADUCA A LAS CUATRO HORAS, para
+      que en un ordenador de clase el grupo siguiente no herede el trabajo
+      del anterior.
+
+      Se guarda lo que costó conseguir: en qué encargo se está, cuáles están
+      sellados, la cuenta del taller y si el papiro ya se había abierto —una
+      clave que se ha descubierto una vez no se vuelve a pedir—. El «empezar
+      de cero» del índice de salas borra también esto.                    */
+let papiroVisto = false;          // la clave, una vez dada, no se vuelve a pedir
+const GUARDADO = 'miut.turno.v1';
+const CADUCA = 4*60*60*1000;
+
+function guardaTurno(){
+  try{
+    localStorage.setItem(GUARDADO, JSON.stringify({
+      v:1, ts:Date.now(), enc:enc, hechos:[...hechos],
+      taller:{ac:taller.ac, racha:taller.racha, mejor:taller.mejor},
+      papiro: papiroVisto,
+      modo: document.body.dataset.modo
+    }));
+  }catch(e){ /* sin almacén disponible: se sigue igual, sin guardar */ }
+}
+function leeTurno(){
+  try{
+    const d = JSON.parse(localStorage.getItem(GUARDADO) || 'null');
+    if(!d || d.v !== 1 || !Array.isArray(d.hechos)) return null;
+    if(!(d.enc >= 0 && d.enc < ENCARGOS.length)) return null;
+    if(Date.now() - d.ts > CADUCA){ borraTurno(); return null; }
+    return d;
+  }catch(e){ return null; }
+}
+function borraTurno(){ try{ localStorage.removeItem(GUARDADO); }catch(e){} }
 function muestraSala(cual){
   for(const k in SALAS) $(SALAS[k]).hidden = (k !== cual);
   if(cual === 'pasillo') pintaPasillo();
@@ -2536,12 +2592,13 @@ function pintaEncargo(){
 function revisa(){ /* al tocar el manipulativo, la respuesta vieja deja de valer */
   if(!hechos.has(enc)) $('informe').hidden = true;
 }
-$('atras').addEventListener('click', () => { if(enc > 0){ enc--; pintaEncargo(); } });
+$('atras').addEventListener('click', () => { if(enc > 0){ enc--; pintaEncargo(); guardaTurno(); } });
 $('comprobar').addEventListener('click', () => {
   const e = ENCARGOS[enc], inf = $('informe');
   if(hechos.has(enc)){
     if(enc < ENCARGOS.length - 1){ enc++; pintaEncargo(); }
     else { hechos.clear(); enc = 0; pintaEncargo(); }
+    guardaTurno();
     return;
   }
   let bien, dice;
@@ -2553,12 +2610,13 @@ $('comprobar').addEventListener('click', () => {
   inf.hidden = false;
   inf.className = 'panel informe encargo' + (bien ? '' : ' mal');
   $('infTxt').innerHTML = dice;
-  if(bien){ hechos.add(enc); pintaEncargo(); inf.hidden = false; }
+  if(bien){ hechos.add(enc); pintaEncargo(); inf.hidden = false; guardaTurno(); }
 });
 $('bModo').addEventListener('click', () => {
   const papel = document.body.dataset.modo === 'papel';
   document.body.dataset.modo = papel ? 'pantalla' : 'papel';
   $('bModo').textContent = papel ? 'Modo papel' : 'Modo pantalla';
+  guardaTurno();
 });
 
 /* ── EL PAPIRO SECRETO ──────────────────────────────────────────────────
@@ -2578,6 +2636,7 @@ $('bModo').addEventListener('click', () => {
     if(!p.hidden) return;
     p.hidden = false;
     $('cerradura').classList.add('abierta');
+    papiroVisto = true; guardaTurno();
     if(p.scrollIntoView) p.scrollIntoView({behavior:'smooth', block:'start'});
   }
   $('papCerrar').addEventListener('click', () => {
@@ -2841,7 +2900,27 @@ const ESCENAS = {
   });
 })();
 
-document.body.dataset.modo = 'pantalla';
-pintaEncargo();
+/* ── LA APERTURA. Si el aparato guarda un turno de hace menos de cuatro
+      horas, el templo se abre por donde se dejó: el mismo encargo, los
+      sellos puestos, la cuenta del taller y el papiro ya encontrado si lo
+      estaba. Si no, se abre por el pasillo, como siempre. ── */
+{
+  const d = leeTurno();
+  document.body.dataset.modo = (d && d.modo === 'papel') ? 'papel' : 'pantalla';
+  if(document.body.dataset.modo === 'papel') $('bModo').textContent = 'Modo pantalla';
+  if(d){
+    enc = d.enc;
+    d.hechos.forEach(i => { if(i >= 0 && i < ENCARGOS.length) hechos.add(i); });
+    const t = d.taller || {};
+    taller.ac = t.ac|0; taller.racha = t.racha|0; taller.mejor = t.mejor|0;
+    if(d.papiro){
+      papiroVisto = true;
+      $('cerradura').classList.add('abierta');
+      $('papiro').hidden = false;   // sin scrollIntoView: se vuelve al encargo, no al papiro
+    }
+  }
+  pintaEncargo();
+  pintaTipos();                     // la cuenta del taller, con sus cifras restauradas
+}
 </script>
 </body></html>
