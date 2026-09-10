@@ -750,8 +750,70 @@ footer.pie svg circle{fill:var(--tenue)}
   letter-spacing:4px;text-align:center;padding:8px;border:1px solid var(--linea);
   border-radius:9px;background:var(--panel2);color:var(--tinta)}
 .cerradura.abierta{display:none}
+
+/* ── EL ARRANQUE ────────────────────────────────────────────────────────
+   Lo que no tenía: una entrada que diga de qué va esto antes de la primera
+   palabra. Y no es un adorno: es el pasillo, que es la idea entera de la
+   app. Una gata salta de tres en tres y otra de cuatro en cuatro, cada una
+   deja huella donde CAE, y en la doceava baldosa caen las dos. Ése es el
+   mínimo común múltiplo, y se ve antes de leer nada. Dos segundos y medio.
+   Usa las mismas variables que el templo, así que en modo papel entra en
+   claro sin tocar una regla.                                             */
+.boot{position:fixed;inset:0;z-index:9999;background:var(--noche);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  transition:opacity .5s ease;cursor:pointer;padding:16px}
+.boot.fuera{opacity:0;pointer-events:none}
+.boot .cenefa{position:absolute;left:0;right:0;width:auto;max-width:none;margin:0;opacity:.55}
+.boot .cenefa.arriba{top:14px}
+.boot .cenefa.abajo{bottom:56px;transform:scaleY(-1)}
+.boot .tit{font-family:'Rokkitt',serif;font-weight:700;font-size:clamp(24px,7vw,34px);
+  letter-spacing:.5px;color:var(--oro);text-align:center;line-height:1.08}
+.boot .lema{font-family:'Rokkitt',serif;font-weight:500;font-size:12px;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--tenue);margin:-8px 0 0;text-align:center}
+.bootSuelo{display:flex;gap:2px}
+.bb{position:relative;width:34px;height:64px;border-radius:3px;background:var(--arena);
+  border:1px solid var(--junta);display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:1px;font-family:'Space Mono',monospace;font-size:10px;color:#5A4630;
+  opacity:0;animation:bbEntra .3s ease-out forwards}
+.bb:nth-child(even){background:var(--arenaO)}
+.bb i{position:absolute;left:50%;width:16px;height:16px;opacity:0;
+  -webkit-mask:var(--pata) center/contain no-repeat;mask:var(--pata) center/contain no-repeat;
+  animation:bbPisa .28s ease-out forwards}
+.bb i.a{top:5px;background:var(--pataA);transform:translateX(-50%) rotate(-14deg)}
+.bb i.b{top:26px;background:var(--pataB);transform:translateX(-50%) rotate(13deg)}
+.bb.meta{animation:bbEntra .3s ease-out forwards, bbEnciende .5s ease-out 2.05s forwards}
+.boot .cuenta{font-family:'Space Mono',monospace;font-size:13px;color:var(--oro);
+  opacity:0;animation:bbPisa .4s ease-out 2.25s forwards;letter-spacing:.5px}
+.boot .lista{font-family:'Rokkitt',serif;font-weight:500;font-size:11.5px;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--tenue);display:flex;gap:12px;flex-wrap:wrap;
+  justify-content:center;max-width:420px}
+.boot .lista span{opacity:0;animation:bbPisa .3s ease-out forwards}
+.boot .saltar{position:absolute;bottom:24px;font-family:'Rokkitt',serif;font-weight:500;
+  font-size:11.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--tenue);opacity:.75}
+@keyframes bbEntra{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes bbPisa{from{opacity:0;transform:translateX(-50%) scale(.5)}to{opacity:1}}
+.boot .cuenta,.boot .lista span{animation-name:bbAparece}
+@keyframes bbAparece{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@keyframes bbEnciende{to{background:var(--oro);color:#3A2A06;
+  box-shadow:0 0 0 2px var(--pataA) inset, 0 0 16px rgba(224,178,74,.55)}}
+@media (max-width:430px){ .bb{width:26px;height:52px} .bb i{width:13px;height:13px} .bb i.b{top:21px} }
+@media (prefers-reduced-motion:reduce){
+  .boot .bb,.boot .bb i,.boot .cuenta,.boot .lista span{animation-duration:.001ms !important;animation-delay:0ms !important}
+  .bb.meta{background:var(--oro);color:#3A2A06}
+}
 </style>
 </head><body>
+<div class="boot" id="boot" role="status" aria-live="polite">
+  <div class="cenefa arriba" aria-hidden="true"></div>
+  <div class="tit">El templo de Miut</div>
+  <p class="lema">Divisibilidad · primos · mcd y mcm</p>
+  <div class="bootSuelo" id="bootSuelo" aria-hidden="true"></div>
+  <div class="cuenta" id="bootCuenta"></div>
+  <div class="lista" id="bootLista"></div>
+  <div class="cenefa abajo" aria-hidden="true"></div>
+  <div class="saltar">toca para saltar</div>
+</div>
+
 <header>
   <div class="cenefa" aria-hidden="true"></div>
   <h1>El templo de Miut</h1>
@@ -3058,6 +3120,36 @@ const ESCENAS = {
   }
   pintaEncargo();
   pintaTipos();                     // la cuenta del taller, con sus cifras restauradas
+}
+
+/* ── EL ARRANQUE ────────────────────────────────────────────────────────
+   El pasillo, en pequeño y solo: doce baldosas, la gata morada de tres en
+   tres y la roja de cuatro en cuatro. Donde caen las dos —la doce— se
+   enciende. Es la idea de la app entera, dicha sin una palabra. Se salta
+   tocando, y con «menos movimiento» dura lo que tarda en leerse.         */
+{
+  const suelo = $('bootSuelo'), A = 3, B = 4, HASTA = 12;
+  const rapido = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let pasoA = 0, pasoB = 0, ultima = 0;
+  for(let k = 1; k <= HASTA; k++){
+    const d = document.createElement('div');
+    d.className = 'bb' + (k % A === 0 && k % B === 0 ? ' meta' : '');
+    d.textContent = k;
+    d.style.animationDelay = (rapido ? 0 : .1 + k * .045) + 's';
+    if(k % A === 0){ const i = document.createElement('i'); i.className = 'a';
+      i.style.animationDelay = (rapido ? 0 : (ultima = .75 + pasoA++ * .3)) + 's'; d.appendChild(i); }
+    if(k % B === 0){ const i = document.createElement('i'); i.className = 'b';
+      i.style.animationDelay = (rapido ? 0 : (ultima = .85 + pasoB++ * .38)) + 's'; d.appendChild(i); }
+    suelo.appendChild(d);
+  }
+  $('bootCuenta').textContent = 'donde caen las dos: mcm(' + A + ', ' + B + ') = ' + mcm(A, B);
+  const salas = ['pasillo', 'sala', 'relojero', 'granero', 'escalera', 'criba', 'mural', 'red', 'collar'];
+  $('bootLista').innerHTML = salas.map((l, i) => '<span style="animation-delay:' + (rapido ? 0 : 2.4 + i * .07) + 's">' + l + '</span>').join('');
+  const fuera = () => { const b = $('boot'); if(!b || b.classList.contains('fuera')) return;
+    b.classList.add('fuera'); setTimeout(() => b.remove(), 600); };
+  $('boot').addEventListener('click', fuera);
+  addEventListener('keydown', e => { if(e.key === 'Escape' || e.key === ' ') fuera(); }, {once:true});
+  setTimeout(fuera, rapido ? 400 : 3200);
 }
 </script>
 </body></html>
