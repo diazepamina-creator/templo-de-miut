@@ -838,8 +838,38 @@ footer.pie svg circle{fill:var(--tenue)}
 /* el aviso del ascenso, dentro del informe */
 .sube-a{display:block;margin-top:7px;font-family:'Rokkitt',serif;font-size:15px;letter-spacing:.6px}
 .sube-a b{color:var(--oro)}
+
+/* ── LA GUÍA VISUAL ─────────────────────────────────────────────────────
+   Un recorrido que señala cada zona con su nombre. La misma de la Terminal
+   y de las apps del reino, vestida de templo: el foco es un recuadro de oro
+   con todo lo demás en penumbra, y el globo explica qué es eso. */
+.tourCapa{position:fixed;inset:0;z-index:80;cursor:pointer}
+.tourFoco{position:fixed;border-radius:12px;border:2px solid var(--oro);pointer-events:none;
+  box-shadow:0 0 0 9999px rgba(10,6,18,.7), 0 0 22px rgba(224,178,74,.5);transition:all .35s ease}
+.tourGlobo{position:fixed;max-width:320px;background:var(--panel);color:var(--tinta);
+  border:1px solid var(--linea);border-radius:12px;padding:12px 14px;
+  box-shadow:0 12px 30px rgba(0,0,0,.6);cursor:default;transition:top .35s ease,left .35s ease}
+.tourGlobo b{font-family:'Rokkitt',serif;font-weight:700;font-size:15px;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--oro);display:block;margin-bottom:4px}
+.tourGlobo p{margin:0 0 10px;font-size:14px;line-height:1.45}
+.tourGlobo .pie{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.tourGlobo .num{font-family:'Rokkitt',serif;font-weight:500;font-size:11.5px;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--tenue)}
+.tourGlobo button{font-family:'Rokkitt',serif;font-weight:700;font-size:13.5px;letter-spacing:1.2px;
+  text-transform:uppercase;padding:6px 12px;border-radius:9px;border:1px solid var(--linea);
+  background:var(--panel2);color:var(--tinta);cursor:pointer}
+.tourGlobo button.pri{background:var(--oro);border-color:var(--oro);color:#3A2A06}
+@media (prefers-reduced-motion:reduce){ .tourFoco,.tourGlobo{transition:none} }
 </style>
 </head><body>
+<div class="tourCapa" id="tourCapa" hidden>
+  <div class="tourFoco" id="tourFoco"></div>
+  <div class="tourGlobo" id="tourGlobo" role="dialog" aria-modal="true" tabindex="-1">
+    <b id="tourTit"></b><p id="tourTxt"></p>
+    <div class="pie"><span class="num" id="tourNum"></span>
+      <span><button id="tourSalir">Salir</button> <button class="pri" id="tourSig">Siguiente</button></span></div>
+  </div>
+</div>
 <div class="boot" id="boot" role="status" aria-live="polite">
   <div class="cenefa arriba" aria-hidden="true"></div>
   <div class="tit">El templo de Miut</div>
@@ -860,12 +890,13 @@ footer.pie svg circle{fill:var(--tenue)}
     </div>
     <div class="huellas" id="huellas" aria-label="Huellas de Miut"><i aria-hidden="true"></i><span>huellas</span><b id="huellasT">0</b></div>
   </div>
-  <nav class="barra">
+  <nav class="barra" id="barra">
     <!-- Enlace ABSOLUTO a propósito: la portada vive en la raíz del sitio
        y esta app en su propia carpeta, así que un enlace relativo la
        buscaría aquí dentro y no existe. Entre apps de la casa, siempre la
        URL entera. -->
     <a href="https://diazepamina-creator.github.io/">← Materiales</a>
+    <button id="bGuia">Guía</button>
     <button id="bTaller" aria-pressed="false">Taller</button>
     <button id="bIndice" aria-pressed="false">Salas</button>
     <span style="flex:1"></span>
@@ -3292,5 +3323,58 @@ const ESCENAS = {
   addEventListener('keydown', e => { if(e.key === 'Escape' || e.key === ' ') fuera(); }, {once:true});
   setTimeout(fuera, rapido ? 400 : 3200);
 }
+
+/* ── LA GUÍA VISUAL ─────────────────────────────────────────────────────
+   Ocho paradas. Las que llevan `sel` buscan dentro de la sala que esté
+   abierta en ese momento, sea cual sea: así la guía vale igual en el
+   pasillo que en la criba, sin una lista por sala. Si una parada no existe
+   —una sala sin veredicto, el papiro ya abierto—, se salta sola.        */
+const PASOS = [
+  {id:'franja',   t:'Tu oficio', d:'Empiezas de aguador. Cada cinco cuentas subes: wab, que se lava antes de entrar; lector, que dice el rollo en voz alta; escriba; profeta. Con las veinticinco, superior de los misterios.'},
+  {id:'huellas',  t:'Las huellas', d:'Una por cuenta hecha. Es la moneda de esta casa: Miut deja huella donde cae, y aquí se van juntando las tuyas.'},
+  {sel:'.panel.encargo', t:'El encargo', d:'Listahmes, el escriba, pide. Se hace abajo, en la sala, y se pulsa Comprobar. Contesta Miut, que se asoma a ver en qué ha quedado.'},
+  {sel:'.fila',   t:'Los mandos', d:'Lo que se puede tocar: de cuánto en cuánto salta la gata, cuántas losas tiene la sala, hasta dónde llega el mural. Se toca y la sala cambia.'},
+  {sala:true,     t:'La sala', d:'El manipulativo. Diez salas: el pasillo de baldosas, la sala que se enlosa, el taller del relojero, el granero, la escalera de Euclides, los rectángulos, la criba, el mural, la red y el collar.'},
+  {sel:'.veredicto', t:'Lo que va diciendo', d:'Debajo de cada sala se lee lo que está pasando, con las cuentas escritas. No es la solución: es lo que se ve, contado.'},
+  {id:'barra',    t:'La barra', d:'Taller para practicar suelto, con hoja imprimible; Salas para abrir cualquiera de las diez por su cuenta, o saltar a un encargo; y Modo papel, que lo aclara todo para proyectar.'},
+  {id:'cerradura', t:'El papiro', d:'El templo guarda un papiro cerrado con criterios de divisibilidad. Se abre con cuatro cifras, y el encargo veinticinco dice cuáles.'}
+];
+let paso = 0;
+function elDe(p){
+  if(p.id) return $(p.id);
+  if(p.sala) return document.querySelector(Object.values(SALAS).map(x => '#' + x + ':not([hidden])').join(', '));
+  const sala = document.querySelector(Object.values(SALAS).map(x => '#' + x + ':not([hidden])').join(', '));
+  if(p.sel === '.panel.encargo') return document.querySelector('.panel.encargo:not([hidden])');
+  return sala ? sala.querySelector(p.sel) : null;
+}
+function pintaPaso(){
+  const p = PASOS[paso], e = elDe(p);
+  if(!e || !e.offsetParent && e !== document.body){ paso++; if(paso >= PASOS.length){ cierraGuia(); return; } pintaPaso(); return; }
+  e.scrollIntoView({behavior:'smooth', block:'center'});
+  setTimeout(() => {
+    const r = e.getBoundingClientRect(), f = $('tourFoco');
+    f.style.top = (r.top - 6) + 'px'; f.style.left = (r.left - 6) + 'px';
+    f.style.width = (r.width + 12) + 'px'; f.style.height = (r.height + 12) + 'px';
+    const g = $('tourGlobo');
+    $('tourTit').textContent = p.t; $('tourTxt').textContent = p.d;
+    $('tourNum').textContent = (paso + 1) + ' de ' + PASOS.length;
+    $('tourSig').textContent = paso === PASOS.length - 1 ? 'Terminar' : 'Siguiente';
+    const abajo = r.bottom + 12, alto = g.offsetHeight || 150;
+    g.style.top = (abajo + alto < innerHeight - 8 ? abajo : Math.max(8, r.top - alto - 12)) + 'px';
+    g.style.left = Math.min(Math.max(12, r.left), innerWidth - (g.offsetWidth || 320) - 12) + 'px';
+    g.focus();
+  }, 320);
+}
+function abreGuia(){
+  if(!$('pTaller').hidden) $('bTaller').click();      // la guía enseña la sala, no el taller
+  if(!$('pIndice').hidden) $('bIndice').click();
+  paso = 0; $('tourCapa').hidden = false; pintaPaso();
+}
+function cierraGuia(){ $('tourCapa').hidden = true; }
+$('bGuia').addEventListener('click', abreGuia);
+$('tourSig').addEventListener('click', e => { e.stopPropagation(); paso++; if(paso >= PASOS.length) cierraGuia(); else pintaPaso(); });
+$('tourSalir').addEventListener('click', e => { e.stopPropagation(); cierraGuia(); });
+$('tourCapa').addEventListener('click', e => { if(e.target.id === 'tourCapa') cierraGuia(); });
+addEventListener('keydown', e => { if(e.key === 'Escape' && !$('tourCapa').hidden) cierraGuia(); });
 </script>
 </body></html>
