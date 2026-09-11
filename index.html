@@ -801,6 +801,43 @@ footer.pie svg circle{fill:var(--tenue)}
   .boot .bb,.boot .bb i,.boot .cuenta,.boot .lista span{animation-duration:.001ms !important;animation-delay:0ms !important}
   .bb.meta{background:var(--oro);color:#3A2A06}
 }
+
+/* ── LA FRANJA DEL OFICIO Y LAS HUELLAS ─────────────────────────────────
+   Lo que faltaba para no andar perdido: veinticinco encargos sin nada que
+   dijera cuánto llevas. Ahora hay un oficio del templo, que sube cada cinco
+   cuentas, con su amuleto en el cartucho; y en la cabecera, una huella por
+   cuenta hecha, que es la moneda de esta casa: Miut deja huella donde cae. */
+.cabeza{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.huellas{margin-left:auto;display:flex;align-items:center;gap:7px;
+  font-family:'Rokkitt',serif;font-weight:500;font-size:12.5px;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--tenue);border:1px solid var(--linea);
+  border-radius:20px;padding:3px 11px;transition:border-color .3s, box-shadow .3s}
+.huellas i{width:15px;height:15px;background:var(--oro);
+  -webkit-mask:var(--pata) center/contain no-repeat;mask:var(--pata) center/contain no-repeat}
+.huellas b{color:var(--oro);font-weight:700;font-variant-numeric:tabular-nums}
+.huellas.sube{border-color:var(--oro);box-shadow:0 0 16px rgba(224,178,74,.45)}
+.franja{margin-top:9px;padding:7px 11px;border:1px solid var(--linea);border-radius:11px;
+  background:var(--panel);display:grid;grid-template-columns:32px 1fr;gap:5px 10px;align-items:center}
+.franja .sello{grid-row:1/3;width:30px;height:37px}
+.franja .sello svg{width:100%;height:100%;display:block}
+.franja .linea1{display:flex;justify-content:space-between;align-items:baseline;gap:9px;flex-wrap:wrap}
+.franja .rango{font-family:'Rokkitt',serif;font-weight:700;font-size:15px;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--oro)}
+.franja .rango small{font-family:'Rokkitt',serif;font-weight:500;font-size:12px;letter-spacing:.6px;
+  text-transform:none;color:var(--tenue);margin-left:8px}
+.franja .cuenta{font-family:'Rokkitt',serif;font-weight:500;font-size:11.5px;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--tenue)}
+.franja .barraR{height:5px;border-radius:3px;background:var(--noche);overflow:hidden}
+.franja .barraR i{display:block;height:100%;width:0;border-radius:3px;
+  background:linear-gradient(90deg, var(--moradoF), var(--oro));transition:width .5s ease}
+.franja.sube{animation:asciende .9s ease-out}
+@keyframes asciende{0%{box-shadow:0 0 0 0 rgba(224,178,74,.5)}
+  40%{box-shadow:0 0 22px 3px rgba(224,178,74,.5)}100%{box-shadow:0 0 0 0 rgba(224,178,74,0)}}
+@media (prefers-reduced-motion:reduce){ .franja.sube{animation:none} }
+@media (max-width:380px){ .franja .rango small{display:none} }
+/* el aviso del ascenso, dentro del informe */
+.sube-a{display:block;margin-top:7px;font-family:'Rokkitt',serif;font-size:15px;letter-spacing:.6px}
+.sube-a b{color:var(--oro)}
 </style>
 </head><body>
 <div class="boot" id="boot" role="status" aria-live="polite">
@@ -816,8 +853,13 @@ footer.pie svg circle{fill:var(--tenue)}
 
 <header>
   <div class="cenefa" aria-hidden="true"></div>
-  <h1>El templo de Miut</h1>
-  <p class="sub">Divisibilidad · primos · mcd y mcm</p>
+  <div class="cabeza">
+    <div>
+      <h1>El templo de Miut</h1>
+      <p class="sub">Divisibilidad · primos · mcd y mcm</p>
+    </div>
+    <div class="huellas" id="huellas" aria-label="Huellas de Miut"><i aria-hidden="true"></i><span>huellas</span><b id="huellasT">0</b></div>
+  </div>
   <nav class="barra">
     <!-- Enlace ABSOLUTO a propósito: la portada vive en la raíz del sitio
        y esta app en su propia carpeta, así que un enlace relativo la
@@ -829,6 +871,14 @@ footer.pie svg circle{fill:var(--tenue)}
     <span style="flex:1"></span>
     <button id="bModo">Modo papel</button>
   </nav>
+  <div class="franja" id="franja">
+    <div class="sello" id="rangoSello" aria-hidden="true"></div>
+    <div class="linea1">
+      <span class="rango"><span id="rangoNom">Aguador</span><small id="rangoSig"></small></span>
+      <span class="cuenta" id="rangoCuenta"></span>
+    </div>
+    <div class="barraR"><i id="rangoBarra"></i></div>
+  </div>
 </header>
 
 <div class="panel encargo">
@@ -1964,6 +2014,7 @@ $('ixPapiro').addEventListener('click', () => {
 });
 $('ixTodo').addEventListener('click', () => {
   ENCARGOS.forEach((_, i) => hechos.add(i)); enc = ENCARGOS.length - 1;
+  ultimoRango = rangoDe(hechos.size).n;
   cierraLibre(); pintaIndice(); guardaTurno();
 });
 /* EMPEZAR DE CERO borra ahora también lo guardado en el aparato, así que
@@ -1982,6 +2033,7 @@ $('ixTodo').addEventListener('click', () => {
     }
     desarma(); borraTurno();
     hechos.clear(); enc = 0; taller.ac = 0; taller.racha = 0; taller.mejor = 0;
+    ultimoRango = RANGOS[0].n;
     cierraLibre(); pintaIndice(); pintaEncargo();
   });
 }
@@ -2763,6 +2815,80 @@ function pintaOpciones(){
     caja.appendChild(b);
   });
 }
+/* ── LOS OFICIOS DEL TEMPLO ─────────────────────────────────────────────
+   Veinticinco cuentas, cinco por oficio, y los oficios son los de verdad:
+   el aguador riega el patio, el wab se lava antes de entrar, el jeri-hebet
+   lee el rollo en voz alta, el escriba trabaja en la casa de la vida y el
+   hem-necher sirve al dios. El último, hery-seshta, es el superior de los
+   misterios: el que sabe lo que no se enseña fuera. Que es lo que son los
+   primos hasta que alguien los explica.
+   Cada oficio lleva su amuleto en un cartucho, que es el óvalo con la
+   cuerda donde los egipcios encerraban un nombre.                        */
+const RANGOS = [
+  {n:'Aguador',  s:'el que riega el patio',              hasta:5,  fig:'jarra'},
+  {n:'Puro',     s:'wab · se lava antes de entrar',      hasta:10, fig:'agua'},
+  {n:'Lector',   s:'jeri-hebet · lee el rollo en voz alta', hasta:15, fig:'rollo'},
+  {n:'Escriba',  s:'la casa de la vida',                 hasta:20, fig:'paleta'},
+  {n:'Profeta',  s:'hem-necher · servidor del dios',     hasta:25, fig:'pluma'},
+  {n:'Superior de los misterios', s:'hery-seshta · las veinticinco cuentas', hasta:99, fig:'ojo', oro:true}
+];
+const rangoDe = n => RANGOS.find(r => n < r.hasta) || RANGOS[RANGOS.length - 1];
+/* el cartucho con su amuleto: un óvalo de cuerda con la barra abajo */
+function cartucho(fig, oro){
+  const t = oro ? 'var(--oro)' : 'var(--morado)';
+  const F = {
+    jarra: '<path d="M13.5 14 H20.5 L19.5 17 Q23 19.5 23 24 Q23 30 17 30 Q11 30 11 24 Q11 19.5 14.5 17 Z" fill="none" stroke="' + t + '" stroke-width="1.7" stroke-linejoin="round"/>',
+    agua:  '<g fill="none" stroke="' + t + '" stroke-width="1.7" stroke-linecap="round">'
+         + '<path d="M10 17 q2.3 -2.4 4.7 0 q2.3 2.4 4.7 0 q2.3 -2.4 4.7 0"/>'
+         + '<path d="M10 22.5 q2.3 -2.4 4.7 0 q2.3 2.4 4.7 0 q2.3 -2.4 4.7 0"/>'
+         + '<path d="M10 28 q2.3 -2.4 4.7 0 q2.3 2.4 4.7 0 q2.3 -2.4 4.7 0"/></g>',
+    rollo: '<rect x="9" y="17" width="16" height="9" rx="1.6" fill="none" stroke="' + t + '" stroke-width="1.7"/>'
+         + '<path d="M25 17 a4.5 4.5 0 0 1 0 9" fill="none" stroke="' + t + '" stroke-width="1.7"/>'
+         + '<path d="M24.4 21.5 a2 2 0 1 1 .1 0" fill="none" stroke="' + t + '" stroke-width="1.3"/>'
+         + '<path d="M9 17 a4.5 4.5 0 0 0 0 9" fill="none" stroke="' + t + '" stroke-width="1.7"/>'
+         + '<g stroke="' + t + '" stroke-width="1.2" stroke-linecap="round" opacity=".85">'
+         + '<path d="M12 20 H21"/><path d="M12 23 H19"/></g>',
+    paleta:'<rect x="11" y="12" width="7.5" height="19" rx="1.8" fill="none" stroke="' + t + '" stroke-width="1.7"/>'
+         + '<circle cx="14.7" cy="16" r="1.7" fill="' + t + '"/><circle cx="14.7" cy="21.4" r="1.7" fill="none" stroke="' + t + '" stroke-width="1.3"/>'
+         + '<path d="M12.6 26.4 H16.8" stroke="' + t + '" stroke-width="1.3" stroke-linecap="round"/>'
+         + '<path d="M22.6 11.6 L20.2 31" stroke="' + t + '" stroke-width="1.7" stroke-linecap="round"/>'
+         + '<path d="M22.9 11.6 L24.2 13.4" stroke="' + t + '" stroke-width="1.4" stroke-linecap="round"/>',
+    pluma: '<path d="M17 31 V13 Q17 10.5 19.5 11.5" fill="none" stroke="' + t + '" stroke-width="1.7" stroke-linecap="round"/>'
+         + '<path d="M17 14 Q12 17 12.5 25 Q15 23.5 17 23.5" fill="none" stroke="' + t + '" stroke-width="1.5" stroke-linejoin="round"/>'
+         + '<path d="M17 14 Q22 17 21.5 25 Q19 23.5 17 23.5" fill="none" stroke="' + t + '" stroke-width="1.5" stroke-linejoin="round"/>',
+    ojo:   '<path d="M9 22 Q13 16.5 18 16.5 Q22.5 16.5 25 21" fill="none" stroke="' + t + '" stroke-width="1.8" stroke-linecap="round"/>'
+         + '<path d="M9 22 Q13 26.5 18 26.5 Q22.5 26.5 25 21" fill="none" stroke="' + t + '" stroke-width="1.8" stroke-linecap="round"/>'
+         + '<circle cx="17" cy="21.5" r="2.6" fill="' + t + '"/>'
+         + '<path d="M13.5 26.8 V30.5" stroke="' + t + '" stroke-width="1.6" stroke-linecap="round"/>'
+         + '<path d="M19.5 27 Q21 31 24.5 30.5" fill="none" stroke="' + t + '" stroke-width="1.6" stroke-linecap="round"/>'
+  }[fig] || '';
+  return '<svg viewBox="0 0 34 42" aria-hidden="true">'
+    + '<rect x="2.6" y="2.6" width="28.8" height="34" rx="14.4" fill="var(--panel2)" stroke="' + t + '" stroke-width="2"/>'
+    + '<path d="M6 38.4 H28" stroke="' + t + '" stroke-width="2.4" stroke-linecap="round"/>'
+    + F + '</svg>';
+}
+let ultimoRango = null;
+function pintaRango(){
+  const n = hechos.size, r = rangoDe(n), i = RANGOS.indexOf(r);
+  const desde = i ? RANGOS[i - 1].hasta : 0;
+  const tramo = Math.min(r.hasta, ENCARGOS.length) - desde;
+  $('rangoNom').textContent = r.n;
+  $('rangoSig').textContent = r.s;
+  $('rangoCuenta').textContent = n >= ENCARGOS.length
+    ? 'servicio cerrado · ' + n + ' de ' + ENCARGOS.length
+    : (n - desde) + ' de ' + tramo + ' para ' + RANGOS[i + 1].n.toLowerCase();
+  $('rangoBarra').style.width = (n >= ENCARGOS.length ? 100 : Math.round((n - desde) / tramo * 100)) + '%';
+  $('huellasT').textContent = n;
+  $('rangoSello').innerHTML = cartucho(r.fig, r.oro);
+  if(ultimoRango === null) ultimoRango = r.n;
+}
+/* el ascenso: la franja da un destello y el chip se enciende un momento */
+function asciende(){
+  const f = $('franja'), h = $('huellas');
+  f.classList.remove('sube'); void f.offsetWidth; f.classList.add('sube');
+  h.classList.add('sube'); setTimeout(() => h.classList.remove('sube'), 1800);
+}
+
 function pintaEncargo(){
   const e = ENCARGOS[enc], ultimo = enc === ENCARGOS.length - 1, hecho = hechos.has(enc);
   if(e.pre) e.pre();
@@ -2791,6 +2917,7 @@ function pintaEncargo(){
     z.className = 'sellazo'; z.textContent = 'SALA CERRADA';
     $('encTxt').after(z);
   }
+  pintaRango();
 }
 function revisa(){ /* al tocar el manipulativo, la respuesta vieja deja de valer */
   if(!hechos.has(enc)) $('informe').hidden = true;
@@ -2813,7 +2940,16 @@ $('comprobar').addEventListener('click', () => {
   inf.hidden = false;
   inf.className = 'panel informe' + (bien ? '' : ' mal');
   $('infTxt').innerHTML = dice;
-  if(bien){ hechos.add(enc); pintaEncargo(); inf.hidden = false; guardaTurno(); }
+  if(bien){
+    hechos.add(enc);
+    const r = rangoDe(hechos.size).n, sube = r !== ultimoRango;
+    pintaEncargo(); inf.hidden = false;
+    if(sube){ ultimoRango = r; asciende();
+      $('infTxt').innerHTML += '<span class="sube-a"><b>' + (hechos.size >= ENCARGOS.length
+        ? 'Servicio cerrado: Miut te hace superior de los misterios.'
+        : 'Asciendes a ' + r.toLowerCase() + '.') + '</b></span>'; }
+    guardaTurno();
+  }
   asomate(inf, bien);
 });
 $('bModo').addEventListener('click', () => {
