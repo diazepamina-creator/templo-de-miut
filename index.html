@@ -860,6 +860,32 @@ footer.pie svg circle{fill:var(--tenue)}
   background:var(--panel2);color:var(--tinta);cursor:pointer}
 .tourGlobo button.pri{background:var(--oro);border-color:var(--oro);color:#3A2A06}
 @media (prefers-reduced-motion:reduce){ .tourFoco,.tourGlobo{transition:none} }
+
+/* ── EL MODO AULA ───────────────────────────────────────────────────────
+   Para la pizarra digital. Dos cosas, y ninguna más: todo un tercio más
+   grande, que es lo que se nota desde el fondo de la clase; y, si hay
+   sitio, el encargo a la izquierda y la sala a la derecha, para que se
+   vean a la vez y no haya que rodar con el dedo mientras se explica.
+   El zoom escala TODO a la vez —letra, botones, baldosas, dibujos—, así
+   que no hay que tocar ni un tamaño suelto y nada se descoloca.          */
+@media (min-width:900px){
+  body[data-aula="si"]{zoom:1.32;max-width:1430px}
+}
+@media (min-width:1100px){
+  body[data-aula="si"] .aulaRejilla{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.06fr);
+    gap:0 14px;align-items:start}
+  /* las columnas dejan de ser transparentes SOLO aquí: fuera del modo aula
+     son `display:contents` y la página se lee en fila, como siempre */
+  body[data-aula="si"] .colIzq,
+  body[data-aula="si"] .colDer{display:block;min-width:0}
+  body[data-aula="si"] .colIzq > .panel:first-child,
+  body[data-aula="si"] .colDer > .panel:first-child{margin-top:0}
+  body[data-aula="si"] .colIzq > footer.pie{margin-top:18px}
+}
+/* fuera del modo aula la rejilla no existe: los paneles siguen en fila,
+   uno detrás de otro, exactamente como estaban */
+.aulaRejilla,.colIzq,.colDer{display:contents}
+.barra button.aula[aria-pressed="true"]{color:var(--oro);border-bottom-color:var(--oro)}
 </style>
 </head><body>
 <div class="tourCapa" id="tourCapa" hidden>
@@ -900,6 +926,7 @@ footer.pie svg circle{fill:var(--tenue)}
     <button id="bTaller" aria-pressed="false">Taller</button>
     <button id="bIndice" aria-pressed="false">Salas</button>
     <span style="flex:1"></span>
+    <button id="bAula" class="aula" aria-pressed="false">Aula</button>
     <button id="bModo">Modo papel</button>
   </nav>
   <div class="franja" id="franja">
@@ -2807,7 +2834,8 @@ function guardaTurno(){
       v:1, ts:Date.now(), enc:enc, hechos:[...hechos],
       taller:{ac:taller.ac, racha:taller.racha, mejor:taller.mejor},
       papiro: papiroVisto,
-      modo: document.body.dataset.modo
+      modo: document.body.dataset.modo,
+      aula: document.body.dataset.aula
     }));
   }catch(e){ /* sin almacén disponible: se sigue igual, sin guardar */ }
 }
@@ -3278,6 +3306,8 @@ const ESCENAS = {
 {
   const d = leeTurno();
   document.body.dataset.modo = (d && d.modo === 'papel') ? 'papel' : 'pantalla';
+  document.body.dataset.aula = (d && d.aula === 'si') ? 'si' : 'no';
+  if(window.pintaAula) pintaAula();
   if(document.body.dataset.modo === 'papel') $('bModo').textContent = 'Modo pantalla';
   if(d){
     enc = d.enc;
@@ -3376,5 +3406,48 @@ $('tourSig').addEventListener('click', e => { e.stopPropagation(); paso++; if(pa
 $('tourSalir').addEventListener('click', e => { e.stopPropagation(); cierraGuia(); });
 $('tourCapa').addEventListener('click', e => { if(e.target.id === 'tourCapa') cierraGuia(); });
 addEventListener('keydown', e => { if(e.key === 'Escape' && !$('tourCapa').hidden) cierraGuia(); });
+
+/* ── EL MODO AULA ───────────────────────────────────────────────────────
+   La rejilla se monta aquí y no en el HTML: se envuelven los paneles que
+   ya existen, sin tocar el orden del documento. Fuera del modo aula los
+   envoltorios son `display:contents`, o sea que no pintan nada y la página
+   se lee como siempre, también para un lector de pantalla.               */
+{
+  const rej = document.createElement('div'); rej.className = 'aulaRejilla';
+  const izq = document.createElement('div'); izq.className = 'colIzq';
+  const der = document.createElement('div'); der.className = 'colDer';
+  const enc = document.querySelector('.panel.encargo');
+  enc.parentNode.insertBefore(rej, enc);
+  rej.appendChild(izq); rej.appendChild(der);
+  izq.appendChild(enc); izq.appendChild($('informe'));
+  der.appendChild($('rotuloLibre'));
+  Object.values(SALAS).forEach(id => der.appendChild($(id)));
+
+  /* el papiro y el pie se mudan a la columna de la izquierda, que se queda
+     vacía bajo el encargo: así el alto de la página es el de la columna más
+     alta y no la suma, que es lo que hacía rodar la criba y el granero */
+  const papiro = $('cerradura'), pie = document.querySelector('footer.pie');
+  const marcaP = document.createComment('papiro'), marcaF = document.createComment('pie');
+  papiro.before(marcaP); pie.before(marcaF);
+  const muda = si => {
+    if(si){ izq.appendChild(papiro); izq.appendChild(pie); }
+    else { marcaP.after(papiro); marcaF.after(pie); }
+  };
+
+  const pinta = () => {
+    const si = document.body.dataset.aula === 'si';
+    muda(si && innerWidth >= 1100);
+    $('bAula').setAttribute('aria-pressed', String(si));
+    $('bAula').textContent = si ? 'Salir del aula' : 'Aula';
+  };
+  $('bAula').addEventListener('click', () => {
+    document.body.dataset.aula = document.body.dataset.aula === 'si' ? 'no' : 'si';
+    pinta(); guardaTurno();
+    if(!$('tourCapa').hidden) pintaPaso();     // la guía, si estaba abierta, recoloca el foco
+  });
+  window.pintaAula = pinta;
+  addEventListener('resize', pinta);
+  pinta();
+}
 </script>
 </body></html>
