@@ -204,6 +204,11 @@
   --pataA:#4E3565; --pataB:#8A2C1B; --pataC:#31562A;
   --sombra:rgba(0,0,0,.12);
 }
+/* EL TAMAÑO DEL TEXTO y EL MOVIMIENTO, en ajustes. Una sola variable
+   manda en todo el cuerpo, así que subir el texto no descoloca nada. */
+:root{--texto:15px}
+body[data-texto="grande"]{--texto:17.5px}
+body[data-movimiento="menos"] *{animation-duration:.001ms !important;transition-duration:.001ms !important}
 *{box-sizing:border-box}
 /* `hidden` es una promesa del HTML y cualquier display de autor la
    rompe sin avisar. Se blinda una vez y para siempre. */
@@ -215,7 +220,7 @@ body{margin:0;color:var(--tinta);
     repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 4px),
     var(--noche);
   background-attachment:fixed}
-body{font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-size:15px;line-height:1.55;
+body{font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-size:var(--texto);line-height:1.55;
   padding:12px 12px 40px;max-width:560px;margin:0 auto;-webkit-text-size-adjust:100%}
 /* una cenefa de lotos, dibujada una vez y repetida: el remate de arriba,
    como el canto de regla de la portada de la casa */
@@ -226,18 +231,78 @@ h1{font-family:'Rokkitt',serif;font-weight:700;font-size:25px;letter-spacing:.5p
   margin:0;color:var(--oro);line-height:1.08}
 .sub{font-family:'Rokkitt',serif;font-weight:500;font-size:11.5px;letter-spacing:1.3px;
   text-transform:uppercase;color:var(--tenue);margin:2px 0 0;opacity:.85}
-.barra{display:flex;gap:4px 14px;align-items:center;flex-wrap:wrap;
-  padding-top:7px;margin-top:7px;border-top:1px solid var(--linea)}
-.barra a,.barra button{font-family:'Rokkitt',serif;font-weight:500;font-size:12.5px;letter-spacing:1.4px;
-  text-transform:uppercase;color:var(--tenue);background:none;border:0;padding:3px 0;
-  cursor:pointer;text-decoration:none;border-bottom:1px solid transparent}
-.barra a:hover,.barra button:hover{color:var(--tinta);border-bottom-color:var(--oro)}
+/* ── LA REGLETA ─────────────────────────────────────────────────────────
+   La barra de acciones de la casa. Sale de las dos apps que mejor se leen,
+   el pulso de los dioses y la terminal J&L, y el gesto es el mismo en las
+   dos: UNA cosa con volumen —el chip, que dice dónde estás— y las acciones
+   en letra pequeña, sin caja ni fondo, repartidas de lado a lado como una
+   regleta de pestañas. Se subrayan al pasar por encima y se quedan
+   subrayadas mientras están abiertas.
+
+   SEIS ACCIONES Y NO MÁS, en este orden: Guía, Glosario, Taller, Ajustes,
+   Acta, Aula. Lo demás —volver a Materiales, el modo papel, el texto, el
+   movimiento, empezar de cero— vive DENTRO de Ajustes, que es donde se
+   busca. El índice de salas cuelga del chip: se toca y se abre.
+
+   Por qué no cajas: cinco o seis botones con borde son lo primero que ve
+   el alumno al abrir, y pesan más que la app. En letra pequeña están para
+   quien las busca y no le disputan la atención al encargo.              */
+.regleta{display:flex;flex-direction:column;align-items:flex-start;gap:9px;
+  padding-top:9px;margin-top:7px;border-top:1px solid var(--linea)}
+.regleta .acciones{display:flex;width:100%;justify-content:space-between;gap:6px}
+.regleta .acciones button{font-family:'Rokkitt',serif;font-weight:500;font-size:12.5px;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--tenue);background:none;border:0;border-radius:0;padding:3px 0;
+  min-height:0;cursor:pointer;text-decoration:none;border-bottom:1px solid transparent;white-space:nowrap}
+.regleta .acciones button:hover,.regleta .acciones button:focus-visible{color:var(--tinta);border-bottom-color:var(--oro);outline:none}
+.regleta .acciones button[aria-pressed="true"]{color:var(--oro);border-bottom-color:var(--oro)}
+/* el chip: lo único con volumen, porque es lo único que hay que leer.
+   Dice en qué sala estás y, tocándolo, abre el índice de las diez. */
+.regleta .chip{font-family:'Rokkitt',serif;font-weight:700;font-size:11.5px;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--morado);background:none;cursor:pointer;
+  border:1px solid var(--junta);border-radius:20px;padding:5px 12px;min-height:0;
+  display:inline-flex;align-items:center;gap:7px;transition:color .15s, border-color .15s}
+.regleta .chip::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.7}
+.regleta .chip:hover,.regleta .chip:focus-visible{color:var(--oro);border-color:var(--oro);outline:none}
+.regleta .chip[aria-pressed="true"]{color:var(--oro);border-color:var(--oro)}
+@media (max-width:440px){
+  .regleta .acciones{gap:4px}
+  .regleta .acciones button{font-size:11px;letter-spacing:.6px}
+}
 .panel{position:relative;background:linear-gradient(180deg, var(--panel2), var(--panel));
   border:1px solid var(--linea);border-radius:13px;padding:14px;margin-top:13px;
   box-shadow:0 6px 18px var(--sombra)}
 /* el filo de oro de la cornisa: una línea que se apaga hacia los lados */
 .panel::before{content:'';position:absolute;left:14px;right:14px;top:-1px;height:1px;
   background:linear-gradient(90deg, transparent, rgba(224,178,74,.55), transparent)}
+
+/* ── EL GLOSARIO, LOS AJUSTES Y EL ACTA ────────────────────────────────
+   Las tres piezas que le faltaban al templo para estar a la altura de la
+   terminal y del pulso. El glosario da las palabras; los ajustes recogen
+   todo lo que antes andaba suelto por la barra; el acta se lleva la sesión
+   a un papel.                                                           */
+.glosa{border-top:1px solid var(--linea);padding:9px 0;display:grid;
+  grid-template-columns:178px 1fr;gap:4px 14px}
+.glosa:last-child{border-bottom:1px solid var(--linea)}
+.glosa b{font-family:'Rokkitt',serif;font-weight:700;font-size:17px;color:var(--oro);line-height:1.2}
+.glosa i{display:block;font-family:'Rokkitt',serif;font-style:normal;font-size:11px;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--tenue)}
+.glosa p{margin:0;font-size:14.5px;color:var(--tinta)}
+@media (max-width:480px){ .glosa{grid-template-columns:1fr} }
+.ajFila{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px}
+.ajFila > .etq{min-width:96px}
+a.b{font-family:'Rokkitt',serif;font-weight:700;font-size:14px;letter-spacing:1.2px;
+  text-transform:uppercase;padding:8px 12px;min-height:40px;border-radius:9px;
+  border:1px solid var(--linea);background:linear-gradient(180deg, var(--panel2), var(--panel));
+  color:var(--tinta);cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.28);
+  display:inline-flex;align-items:center;text-decoration:none}
+a.b:hover{border-color:var(--morado)}
+.ajFila button.b,.ajFila a.b{font-size:12.5px;padding:6px 11px;min-height:34px}
+.acta{font-family:'Space Mono',monospace;font-size:12.5px;line-height:1.6;white-space:pre-wrap;
+  background:var(--noche);border:1px solid var(--linea);border-radius:9px;padding:11px 13px;
+  color:var(--tinta);word-break:break-all;margin-top:9px}
+.acta .sello{color:var(--oro)}
+input.nombre{font-family:inherit;font-size:15px;padding:8px 10px;border-radius:9px;
+  border:1px solid var(--linea);background:var(--noche);color:var(--tinta);width:100%;max-width:320px}
 
 /* ── EL ENCARGO. Listahmes pregunta, y su retrato va al lado, como en las
    demás apps de la casa. ── */
@@ -531,7 +596,7 @@ button.b.no{border-color:#B0392C;color:#E8A192} button.b.no:hover{background:rgb
 .marcador{display:flex;gap:8px 16px;flex-wrap:wrap;font-family:'Rokkitt',serif;font-size:13px;
   letter-spacing:1.4px;text-transform:uppercase;color:var(--tenue);margin-top:10px}
 .marcador b{color:var(--oro)}
-.barra button[aria-pressed="true"]{color:var(--oro);border-bottom-color:var(--oro)}
+.regleta .acciones button[aria-pressed="true"]{color:var(--oro);border-bottom-color:var(--oro)}
 
 /* la hoja de diez: solo existe para imprimirse */
 .hoja{display:none}
@@ -885,7 +950,7 @@ footer.pie svg circle{fill:var(--tenue)}
 /* fuera del modo aula la rejilla no existe: los paneles siguen en fila,
    uno detrás de otro, exactamente como estaban */
 .aulaRejilla,.colIzq,.colDer{display:contents}
-.barra button.aula[aria-pressed="true"]{color:var(--oro);border-bottom-color:var(--oro)}
+.regleta .acciones button.aula[aria-pressed="true"]{color:var(--oro);border-bottom-color:var(--oro)}
 </style>
 </head><body>
 <div class="tourCapa" id="tourCapa" hidden>
@@ -916,18 +981,17 @@ footer.pie svg circle{fill:var(--tenue)}
     </div>
     <div class="huellas" id="huellas" aria-label="Huellas de Miut"><i aria-hidden="true"></i><span>huellas</span><b id="huellasT">0</b></div>
   </div>
-  <nav class="barra" id="barra">
-    <!-- Enlace ABSOLUTO a propósito: la portada vive en la raíz del sitio
-       y esta app en su propia carpeta, así que un enlace relativo la
-       buscaría aquí dentro y no existe. Entre apps de la casa, siempre la
-       URL entera. -->
-    <a href="https://diazepamina-creator.github.io/">← Materiales</a>
-    <button id="bGuia">Guía</button>
-    <button id="bTaller" aria-pressed="false">Taller</button>
-    <button id="bIndice" aria-pressed="false">Salas</button>
-    <span style="flex:1"></span>
-    <button id="bAula" class="aula" aria-pressed="false">Aula</button>
-    <button id="bModo">Modo papel</button>
+  <nav class="regleta" id="barra" aria-label="Acciones">
+    <!-- El chip dice en qué sala se está y abre el índice de las diez. -->
+    <button class="chip" id="chipSala" aria-pressed="false">El pasillo</button>
+    <span class="acciones">
+      <button id="bGuia">Guía</button>
+      <button id="bGlosario" aria-pressed="false">Glosario</button>
+      <button id="bTaller" aria-pressed="false">Taller</button>
+      <button id="bAjustes" aria-pressed="false">Ajustes</button>
+      <button id="bActa" aria-pressed="false">Acta</button>
+      <button id="bAula" class="aula" aria-pressed="false">Aula</button>
+    </span>
   </nav>
   <div class="franja" id="franja">
     <div class="sello" id="rangoSello" aria-hidden="true"></div>
@@ -974,6 +1038,46 @@ footer.pie svg circle{fill:var(--tenue)}
   <div class="diag" id="diag" hidden></div>
 </div>
 <p class="salaLibre" id="rotuloLibre" hidden></p>
+
+<!-- ═══ EL GLOSARIO ═══ -->
+<div class="panel" id="pGlosario" hidden>
+  <div class="quien" style="color:var(--morado)">El glosario</div>
+  <p class="pista" style="margin-top:4px">Las palabras del templo y las de las cuentas. Cada una dice lo mismo dos veces: en corto y con calma.</p>
+  <div id="glosas"></div>
+</div>
+
+<!-- ═══ LOS AJUSTES ═══ -->
+<div class="panel" id="pAjustes" hidden>
+  <div class="quien" style="color:var(--morado)">Ajustes</div>
+  <p class="pista" style="margin-top:4px">Para el aula y para cada aparato. Se guardan aquí, en el propio navegador.</p>
+  <div class="ajFila"><span class="etq">tema</span><span id="ajTema"></span></div>
+  <div class="ajFila"><span class="etq">texto</span><span id="ajTexto"></span></div>
+  <div class="ajFila"><span class="etq">movimiento</span><span id="ajMov"></span></div>
+  <div class="ajFila"><span class="etq">vista</span><span id="ajVista"></span></div>
+  <div class="ajFila"><span class="etq">las salas</span>
+    <button class="b" id="ajSalas">Índice de las diez</button>
+    <span class="etq" style="min-width:0;font-weight:500;letter-spacing:.6px;text-transform:none">o toca el chip de arriba</span></div>
+  <div class="ajFila"><span class="etq">la casa</span>
+    <!-- Enlace ABSOLUTO a propósito: la portada vive en la raíz del sitio
+         y esta app en su propia carpeta, así que un enlace relativo la
+         buscaría aquí dentro y no existe. Entre apps de la casa, siempre
+         la URL entera. -->
+    <a class="b" href="https://diazepamina-creator.github.io/">← Volver a Materiales</a></div>
+  <p class="pista" style="margin-top:12px">El templo de Miut · divisibilidad, primos, mcd y mcm · prototipo v0.4</p>
+</div>
+
+<!-- ═══ EL ACTA ═══ -->
+<div class="panel" id="pActa" hidden>
+  <div class="quien" style="color:var(--morado)">El acta del templo</div>
+  <p class="pista" style="margin-top:4px">Lo hecho en esta sesión, para copiar donde haga falta. El sello lleva dentro la cuenta entera.</p>
+  <div class="ajFila"><span class="etq">nombre</span>
+    <input class="nombre" id="actaNombre" placeholder="Nombre de quien lo firma" autocomplete="off" aria-label="Nombre"></div>
+  <div class="acta" id="actaTexto"></div>
+  <div class="fila">
+    <button class="b ok" id="actaCopiar">Copiar</button>
+    <span class="etq" id="actaAviso" style="min-width:0;font-weight:500;letter-spacing:.6px;text-transform:none"></span>
+  </div>
+</div>
 
 <!-- ═══ EL TALLER ═══ -->
 <div class="panel taller" id="pTaller" hidden>
@@ -2023,7 +2127,7 @@ function abreSalaLibre(k){
   document.querySelector('.panel.encargo').hidden = true;
   $('informe').hidden = true;
   $('pTaller').hidden = true;
-  taller.enTaller = false; $('bTaller').setAttribute('aria-pressed','false'); $('bTaller').textContent = 'Taller';
+  taller.enTaller = false; $('bTaller').setAttribute('aria-pressed','false');
   muestraSala(k);
   $('rotuloLibre').hidden = false;
   $('rotuloLibre').textContent = NOMBRES[k] + ' · sala suelta';
@@ -2058,13 +2162,38 @@ function pintaIndice(){
     l.appendChild(b);
   });
 }
-$('bIndice').addEventListener('click', () => {
-  indice.abierto = !indice.abierto;
-  $('pIndice').hidden = !indice.abierto;
-  $('bIndice').setAttribute('aria-pressed', String(indice.abierto));
-  if(indice.abierto){ pintaIndice(); $('pIndice').scrollIntoView({behavior:'smooth', block:'start'}); }
-  else if(indice.libre) cierraLibre();
-});
+/* ── LOS PANELES DE LA REGLETA ──────────────────────────────────────────
+   Glosario, ajustes, acta e índice son cuatro paneles que ocupan el mismo
+   sitio, así que se abre uno y se cierran los demás: apilados no se leen,
+   y con dos abiertos ya hay que rodar para ver la sala.                 */
+const PANELES = {chipSala:'pIndice', bGlosario:'pGlosario', bAjustes:'pAjustes', bActa:'pActa'};
+function cierraPaneles(salvo){
+  Object.entries(PANELES).forEach(([b, p]) => {
+    if(b === salvo) return;
+    $(p).hidden = true; $(b).setAttribute('aria-pressed', 'false');
+  });
+  if(salvo !== 'chipSala') indice.abierto = false;
+}
+function abrePanel(boton){
+  const p = $(PANELES[boton]), abre = p.hidden;
+  cierraPaneles(abre ? boton : null);
+  p.hidden = !abre;
+  $(boton).setAttribute('aria-pressed', String(abre));
+  if(abre){
+    if(boton === 'chipSala'){ indice.abierto = true; pintaIndice(); }
+    if(boton === 'bGlosario') pintaGlosario();
+    if(boton === 'bActa') pintaActa();
+    p.scrollIntoView({behavior:'smooth', block:'start'});
+  }else{
+    if(boton === 'chipSala'){ indice.abierto = false; if(indice.libre) cierraLibre(); }
+  }
+}
+Object.keys(PANELES).forEach(b => $(b).addEventListener('click', () => abrePanel(b)));
+/* el chip dice en qué sala se está: es lo único que hay que leer de la regleta */
+function pintaChip(){
+  const k = indice.libre || (ENCARGOS[enc] && ENCARGOS[enc].sala);
+  $('chipSala').textContent = (NOMBRES[k] || 'Las salas');
+}
 $('ixPapiro').addEventListener('click', () => {
   $('cerradura').classList.add('abierta'); $('papiro').hidden = false;
   papiroVisto = true; guardaTurno();
@@ -2095,6 +2224,41 @@ $('ixTodo').addEventListener('click', () => {
     cierraLibre(); pintaIndice(); pintaEncargo();
   });
 }
+
+/* ── EL ACTA ────────────────────────────────────────────────────────────
+   Lo hecho en la sesión, en un papel que se copia y se pega donde haga
+   falta. El sello lleva dentro el estado entero en base64: no es para
+   leerlo, es para que dos actas iguales no puedan salir de sesiones
+   distintas.                                                            */
+function textoActa(){
+  const n = hechos.size, r = rangoDe(n), min = Math.max(1, Math.round((Date.now() - t0) / 60000));
+  const f = new Date(), fecha = f.toLocaleDateString('es-ES') + ' ' + f.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
+  const estado = {v:1, h:[...hechos], t:[taller.ac, taller.racha, taller.mejor], p:papiroVisto ? 1 : 0, min};
+  const sello = 'TMI1.' + btoa(unescape(encodeURIComponent(JSON.stringify(estado)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const nombre = $('actaNombre').value.trim() || '(sin nombre)';
+  return 'EL TEMPLO DE MIUT · acta\n'
+    + 'Firma ' + nombre + '\n'
+    + 'Fecha: ' + fecha + '\n'
+    + 'Oficio: ' + r.n + ' · ' + r.s + '\n'
+    + 'Huellas: ' + n + ' de ' + ENCARGOS.length + (n ? ' · ' + [...hechos].sort((a, b) => a - b).map(i => i + 1).join(' ') : '') + '\n'
+    + 'Taller: ' + taller.ac + ' aciertos · racha ' + taller.racha + ' · mejor ' + taller.mejor + '\n'
+    + 'El papiro: ' + (papiroVisto ? 'abierto' : 'cerrado') + '\n'
+    + 'Tiempo en el templo: ' + min + ' min\n'
+    + 'Sello: ' + sello;
+}
+function pintaActa(){
+  $('actaTexto').innerHTML = textoActa().replace(/</g, '&lt;').replace(/(Sello: .*)/, '<span class="sello">$1</span>');
+}
+$('actaNombre').addEventListener('input', () => { pintaActa(); guardaTurno(); });
+$('actaCopiar').addEventListener('click', async () => {
+  const t = textoActa();
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){ await navigator.clipboard.writeText(t); $('actaAviso').textContent = 'copiado'; return; }
+  }catch(e){}
+  const r = document.createRange(); r.selectNodeContents($('actaTexto'));
+  const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+  $('actaAviso').textContent = 'seleccionado: copie con el sistema';
+});
 
 /* ── AUTODIAGNÓSTICO. Cada motor se prueba contra sí mismo: los generadores
    del taller aceptan su propia solución y rechazan basura; las reglas del
@@ -2286,8 +2450,7 @@ function entraTaller(dentro){
   document.querySelector('.panel.encargo').hidden = dentro;
   $('informe').hidden = dentro ? true : !hechos.has(enc);
   $('bTaller').setAttribute('aria-pressed', String(dentro));
-  $('bTaller').textContent = dentro ? 'Misiones' : 'Taller';
-  if(dentro){ pintaTipos(); nuevoEjercicio(); for(const k in SALAS) $(SALAS[k]).hidden = true; }
+  if(dentro){ cierraPaneles(); pintaTipos(); nuevoEjercicio(); for(const k in SALAS) $(SALAS[k]).hidden = true; }
   else pintaEncargo();
 }
 $('bTaller').addEventListener('click', () => entraTaller(!taller.enTaller));
@@ -2825,16 +2988,20 @@ const hechos = new Set();
       clave que se ha descubierto una vez no se vuelve a pedir—. El «empezar
       de cero» del índice de salas borra también esto.                    */
 let papiroVisto = false;          // la clave, una vez dada, no se vuelve a pedir
+let t0 = Date.now();              // cuándo se entró al templo, para el acta
 const GUARDADO = 'miut.turno.v1';
 const CADUCA = 4*60*60*1000;
 
 function guardaTurno(){
   try{
     localStorage.setItem(GUARDADO, JSON.stringify({
-      v:1, ts:Date.now(), enc:enc, hechos:[...hechos],
+      v:1, ts:Date.now(), t0, enc:enc, hechos:[...hechos],
       taller:{ac:taller.ac, racha:taller.racha, mejor:taller.mejor},
       papiro: papiroVisto,
+      nombre: ($('actaNombre') || {}).value || '',
       modo: document.body.dataset.modo,
+      texto: document.body.dataset.texto,
+      movimiento: document.body.dataset.movimiento,
       aula: document.body.dataset.aula
     }));
   }catch(e){ /* sin almacén disponible: se sigue igual, sin guardar */ }
@@ -2851,6 +3018,7 @@ function leeTurno(){
 function borraTurno(){ try{ localStorage.removeItem(GUARDADO); }catch(e){} }
 function muestraSala(cual){
   for(const k in SALAS) $(SALAS[k]).hidden = (k !== cual);
+  if(window.pintaChip) pintaChip();
   if(cual === 'pasillo') pintaPasillo();
   else if(cual === 'sala') pintaSala();
   else if(cual === 'resto') pintaResto();
@@ -2883,6 +3051,43 @@ function pintaOpciones(){
    primos hasta que alguien los explica.
    Cada oficio lleva su amuleto en un cartucho, que es el óvalo con la
    cuerda donde los egipcios encerraban un nombre.                        */
+/* ── EL GLOSARIO ────────────────────────────────────────────────────────
+   Las palabras que el templo usa, dichas dos veces: en corto, como se
+   dicen en clase, y con calma, como hay que entenderlas. Las del templo
+   —el papiro, el cartucho, los oficios— van al final, que también son
+   palabras.                                                             */
+const GLOSARIO = [
+  ['divisor', 'cabe justo', 'Un número cabe en otro un número entero de veces y no sobra nada: 4 es divisor de 12 porque 12 = 4 × 3. En el pasillo, la gata que salta de cuatro en cuatro cae justo en el doce.'],
+  ['múltiplo', 'al revés', 'Lo mismo mirado del otro lado: 12 es múltiplo de 4. Los múltiplos de 4 son las baldosas donde cae la gata: 4, 8, 12, 16… y no se acaban nunca.'],
+  ['divisible', 'sin resto', 'Un número es divisible entre otro cuando al repartir no sobra nada. Es decir la misma cosa con un adjetivo: 12 es divisible entre 4.'],
+  ['resto', 'lo que sobra', 'Lo que queda cuando ya no se puede repartir más sin partir nada: 13 entre 4 son 3 y sobra 1. En el granero, el montón que no llena un saco.'],
+  ['cociente', 'cuántas veces', 'Las veces que cabe: 12 entre 4 da cociente 3. Con el resto, es lo que da una división entera.'],
+  ['criterio de divisibilidad', 'sin dividir', 'Una regla que dice si un número es divisible mirándolo, sin hacer la división: entre 2 si acaba en cifra par, entre 3 si sus cifras suman un múltiplo de 3, entre 5 si acaba en 0 o 5. Los diecisiete del papiro.'],
+  ['primo', 'sin repuesto', 'Un número mayor que 1 que solo tiene dos divisores, el 1 y él mismo. En los rectángulos, el número que solo admite una fila: 7 no se puede poner en rectángulo que no sea 1 × 7.'],
+  ['compuesto', 'hecho de otros', 'Un número que tiene más divisores que esos dos, y que por tanto se puede escribir como producto de números menores. Todos los del mural menos los primos y el uno.'],
+  ['el uno', 'ni lo uno ni lo otro', 'No es primo ni compuesto. No es primo porque tiene un solo divisor, no dos; y si fuera primo, cada número tendría infinitas descomposiciones (12 = 2·2·3 = 1·2·2·3 = 1·1·2·2·3…) y se rompería lo único que importa: que la descomposición es una sola.'],
+  ['criba', 'tachar hasta que queden', 'El método de Eratóstenes: se escriben los números, se tacha lo que es múltiplo de alguno anterior, y lo que queda sin tachar son los primos. Basta tachar hasta la raíz cuadrada del mayor.'],
+  ['descomposición en factores primos', 'de qué está hecho', 'Escribir un número como producto de primos: 60 = 2² · 3 · 5. Todo número mayor que 1 tiene una, y solo una, sin contar el orden. Es lo que el mural pinta con colores.'],
+  ['factor', 'cada pieza', 'Cada uno de los números que se multiplican. En 2² · 3 · 5, los factores primos son 2, 3 y 5.'],
+  ['exponente', 'cuántas veces se repite', 'El numerito de arriba: en 2² el exponente es 2, y dice que el 2 se multiplica dos veces. En la descomposición dice cuántas piezas iguales lleva el número.'],
+  ['máximo común divisor', 'el mayor que cabe en los dos', 'El mayor número que es divisor de los dos a la vez. Se llama mcd. Es el lado de la baldosa más grande que enlosa justo una sala, y en el mural es lo que comparten dos descomposiciones.'],
+  ['mínimo común múltiplo', 'donde vuelven a coincidir', 'El menor número que es múltiplo de los dos a la vez. Se llama mcm. Es la primera baldosa del pasillo donde caen las dos gatas, y el diente del relojero que vuelve a su hueco.'],
+  ['coprimos', 'no comparten nada', 'Dos números cuyo mcd es 1: no tienen ningún divisor común salvo el uno. 8 y 9 lo son, aunque ninguno de los dos sea primo. Entonces su mcm es el producto.'],
+  ['algoritmo de Euclides', 'restar hasta que no sobre', 'La manera de sacar el mcd sin descomponer: se quita el pequeño del grande y se repite con lo que queda, hasta que no sobra. Es de hace veintitrés siglos y sigue siendo la más rápida.'],
+  ['la relación mcd · mcm', 'lo que se reparten', 'Para dos números, mcd × mcm = el producto de los dos. Lo que uno se lleva, el otro lo suelta: por eso en la red el suelo y el techo se miran.'],
+  ['cuadrado perfecto', 'un número con forma', 'El que admite un rectángulo cuadrado: 36 = 6 × 6. En los rectángulos es el que tiene un número impar de divisores, porque uno de ellos se empareja consigo mismo.'],
+  ['número perfecto', 'igual a sus partes', 'El que suma exactamente sus divisores propios: 6 = 1 + 2 + 3. El siguiente es 28, y luego 496. Los conocían los griegos y aún no se sabe si hay alguno impar.'],
+  ['papiro', 'el rollo de la casa de la vida', 'El documento escrito. El del templo guarda los criterios de divisibilidad y se abre con cuatro cifras.'],
+  ['cartucho', 'el óvalo del nombre', 'El aro de cuerda donde los egipcios encerraban un nombre para protegerlo. Aquí encierra el amuleto de cada oficio.'],
+  ['hery-seshta', 'superior de los misterios', 'El sacerdote que sabe lo que no se enseña fuera. Es el último oficio del templo, el de las veinticinco cuentas. Y es lo que son los primos hasta que alguien los explica.']
+];
+function pintaGlosario(){
+  const c = $('glosas'); if(c.dataset.puesto) return;
+  c.dataset.puesto = '1';
+  c.innerHTML = GLOSARIO.map(([p, corto, def]) =>
+    '<div class="glosa"><div><b>' + p + '</b><i>' + corto + '</i></div><p>' + def + '</p></div>').join('');
+}
+
 const RANGOS = [
   {n:'Aguador',  s:'el que riega el patio',              hasta:5,  fig:'jarra'},
   {n:'Puro',     s:'wab · se lava antes de entrar',      hasta:10, fig:'agua'},
@@ -3011,12 +3216,33 @@ $('comprobar').addEventListener('click', () => {
   }
   asomate(inf, bien);
 });
-$('bModo').addEventListener('click', () => {
-  const papel = document.body.dataset.modo === 'papel';
-  document.body.dataset.modo = papel ? 'pantalla' : 'papel';
-  $('bModo').textContent = papel ? 'Modo papel' : 'Modo pantalla';
-  guardaTurno();
-});
+/* ── LOS AJUSTES ────────────────────────────────────────────────────────
+   Todo lo que antes andaba suelto por la barra —el modo papel, el enlace a
+   Materiales— y dos cosas que faltaban: el tamaño del texto, para la fila
+   de atrás, y el movimiento, para quien lo prefiera quieto. Cada uno es
+   una tira de botones que se enciende, como en el pulso.                */
+const AJ_OPS = {
+  modo:      {etq:'ajTema',  dato:'modo',       ops:[['pantalla','De noche'], ['papel','De papiro · proyector']]},
+  texto:     {etq:'ajTexto', dato:'texto',      ops:[['normal','Normal'], ['grande','Grande']]},
+  movimiento:{etq:'ajMov',   dato:'movimiento', ops:[['normal','Normal'], ['menos','Menos']]},
+  aula:      {etq:'ajVista', dato:'aula',       ops:[['no','Normal'], ['si','Aula · pizarra']]}
+};
+function pintaAjustes(){
+  Object.values(AJ_OPS).forEach(o => {
+    const c = $(o.etq); c.innerHTML = '';
+    o.ops.forEach(([v, t]) => {
+      const b = document.createElement('button'); b.className = 'b'; b.textContent = t;
+      b.setAttribute('aria-pressed', String(document.body.dataset[o.dato] === v));
+      b.addEventListener('click', () => {
+        document.body.dataset[o.dato] = v;
+        if(o.dato === 'aula' && window.pintaAula) pintaAula();
+        pintaAjustes(); guardaTurno();
+      });
+      c.appendChild(b);
+    });
+  });
+}
+$('ajSalas').addEventListener('click', () => abrePanel('chipSala'));
 
 /* ── EL PAPIRO SECRETO ──────────────────────────────────────────────────
    Se abre tecleando 1001 en cualquier momento. Precedente en la casa: el
@@ -3306,10 +3532,14 @@ const ESCENAS = {
 {
   const d = leeTurno();
   document.body.dataset.modo = (d && d.modo === 'papel') ? 'papel' : 'pantalla';
+  document.body.dataset.texto = (d && d.texto === 'grande') ? 'grande' : 'normal';
+  document.body.dataset.movimiento = (d && d.movimiento === 'menos') ? 'menos' : 'normal';
   document.body.dataset.aula = (d && d.aula === 'si') ? 'si' : 'no';
   if(window.pintaAula) pintaAula();
-  if(document.body.dataset.modo === 'papel') $('bModo').textContent = 'Modo pantalla';
+  pintaAjustes();
   if(d){
+    t0 = d.t0 || Date.now();
+    if(d.nombre) $('actaNombre').value = d.nombre;
     enc = d.enc;
     d.hechos.forEach(i => { if(i >= 0 && i < ENCARGOS.length) hechos.add(i); });
     const t = d.taller || {};
@@ -3321,6 +3551,7 @@ const ESCENAS = {
     }
   }
   pintaEncargo();
+  pintaChip();
   pintaTipos();                     // la cuenta del taller, con sus cifras restauradas
 }
 
@@ -3366,7 +3597,8 @@ const PASOS = [
   {sel:'.fila',   t:'Los mandos', d:'Lo que se puede tocar: de cuánto en cuánto salta la gata, cuántas losas tiene la sala, hasta dónde llega el mural. Se toca y la sala cambia.'},
   {sala:true,     t:'La sala', d:'El manipulativo. Diez salas: el pasillo de baldosas, la sala que se enlosa, el taller del relojero, el granero, la escalera de Euclides, los rectángulos, la criba, el mural, la red y el collar.'},
   {sel:'.veredicto', t:'Lo que va diciendo', d:'Debajo de cada sala se lee lo que está pasando, con las cuentas escritas. No es la solución: es lo que se ve, contado.'},
-  {id:'barra',    t:'La barra', d:'Taller para practicar suelto, con hoja imprimible; Salas para abrir cualquiera de las diez por su cuenta, o saltar a un encargo; y Modo papel, que lo aclara todo para proyectar.'},
+  {id:'chipSala', t:'Dónde estás', d:'El chip dice en qué sala te ha metido el encargo. Tócalo y se abre el índice: las diez salas sueltas, los veinticinco encargos y el papiro.'},
+  {id:'barra',    t:'La regleta', d:'Seis acciones en letra pequeña: Guía, Glosario con las palabras, Taller para practicar suelto con hoja imprimible, Ajustes, Acta para llevarte la sesión y Aula para la pizarra. El modo papiro y la vuelta a Materiales están dentro de Ajustes.'},
   {id:'cerradura', t:'El papiro', d:'El templo guarda un papiro cerrado con criterios de divisibilidad. Se abre con cuatro cifras, y el encargo veinticinco dice cuáles.'}
 ];
 let paso = 0;
@@ -3397,7 +3629,7 @@ function pintaPaso(){
 }
 function abreGuia(){
   if(!$('pTaller').hidden) $('bTaller').click();      // la guía enseña la sala, no el taller
-  if(!$('pIndice').hidden) $('bIndice').click();
+  cierraPaneles();
   paso = 0; $('tourCapa').hidden = false; pintaPaso();
 }
 function cierraGuia(){ $('tourCapa').hidden = true; }
@@ -3438,11 +3670,10 @@ addEventListener('keydown', e => { if(e.key === 'Escape' && !$('tourCapa').hidde
     const si = document.body.dataset.aula === 'si';
     muda(si && innerWidth >= 1100);
     $('bAula').setAttribute('aria-pressed', String(si));
-    $('bAula').textContent = si ? 'Salir del aula' : 'Aula';
   };
   $('bAula').addEventListener('click', () => {
     document.body.dataset.aula = document.body.dataset.aula === 'si' ? 'no' : 'si';
-    pinta(); guardaTurno();
+    pinta(); pintaAjustes(); guardaTurno();
     if(!$('tourCapa').hidden) pintaPaso();     // la guía, si estaba abierta, recoloca el foco
   });
   window.pintaAula = pinta;
