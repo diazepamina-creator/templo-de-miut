@@ -275,11 +275,44 @@ h1{font-family:'Rokkitt',serif;font-weight:700;font-size:25px;letter-spacing:.5p
 .panel::before{content:'';position:absolute;left:14px;right:14px;top:-1px;height:1px;
   background:linear-gradient(90deg, transparent, rgba(224,178,74,.55), transparent)}
 
+/* ── EL POP-UP ──────────────────────────────────────────────────────────
+   Lo que la regleta abre no se mete en la página: se pone encima. Es como
+   trabaja la terminal J&L, y es lo que menos carga: el templo se queda
+   donde estaba —no salta ni empuja nada— y el papel de encima tiene un
+   solo botón, VOLVER AL TEMPLO, que es lo único que hay que saber para
+   salir. También se sale con Escape o tocando fuera.
+
+   Todos iguales: capa oscura con el fondo desenfocado, una caja centrada
+   con la huella de Miut, el título y su apostilla, el cuerpo, y el botón
+   de volver abajo.                                                       */
+.modal{position:fixed;inset:0;background:rgba(12,8,20,.82);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  display:grid;place-items:center;padding:16px;z-index:60;overflow:auto}
+.modal .caja{position:relative;width:min(580px,100%);background:linear-gradient(180deg, var(--panel2), var(--panel));
+  border:1px solid var(--linea);border-radius:16px;padding:18px 20px 16px;
+  box-shadow:0 24px 60px rgba(0,0,0,.55);max-height:92vh;overflow:auto}
+/* Miut se asoma por el borde de arriba del papel, así que ahí no se recorta */
+.modal .caja.taller{overflow:visible;max-height:none;margin:56px 0 8px}
+.modal:has(.caja.taller){align-items:start;padding-top:8px}
+.caja > .cab{display:flex;align-items:center;gap:12px;border-bottom:1px dashed var(--linea);
+  padding-bottom:11px;margin-bottom:13px}
+.caja > .cab i{flex:0 0 22px;width:22px;height:22px;background:var(--oro);
+  -webkit-mask:var(--pata) center/contain no-repeat;mask:var(--pata) center/contain no-repeat}
+.caja > .cab b{display:block;font-family:'Rokkitt',serif;font-weight:700;font-size:17px;
+  letter-spacing:2px;text-transform:uppercase;color:var(--oro);line-height:1.15}
+.caja > .cab small{display:block;font-family:'Rokkitt',serif;font-size:12.5px;letter-spacing:.6px;
+  color:var(--tenue)}
+.caja .pie{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:15px;
+  border-top:1px dashed var(--linea);padding-top:13px}
+.caja .pie .etq{min-width:0;font-weight:500;letter-spacing:.6px;text-transform:none}
+@media (max-width:440px){ .modal{padding:8px} .modal .caja{padding:15px 14px 13px} }
+
 /* ── EL GLOSARIO, LOS AJUSTES Y EL ACTA ────────────────────────────────
    Las tres piezas que le faltaban al templo para estar a la altura de la
    terminal y del pulso. El glosario da las palabras; los ajustes recogen
    todo lo que antes andaba suelto por la barra; el acta se lleva la sesión
    a un papel.                                                           */
+.glosas{max-height:58vh;overflow:auto;padding-right:4px}
 .glosa{border-top:1px solid var(--linea);padding:9px 0;display:grid;
   grid-template-columns:178px 1fr;gap:4px 14px}
 .glosa:last-child{border-bottom:1px solid var(--linea)}
@@ -1020,9 +1053,9 @@ footer.pie svg circle{fill:var(--tenue)}
 </div>
 
 <!-- ═══ EL ÍNDICE DE SALAS ═══ -->
-<div class="panel indice" id="pIndice" hidden>
-  <div class="quien" style="color:var(--morado)">Índice de salas</div>
-  <p class="pista" style="margin-top:4px">Abre cualquier sala suelta, o salta a un encargo concreto.</p>
+<div class="modal" id="mIndice" hidden>
+ <div class="caja indice" role="dialog" aria-modal="true" aria-labelledby="ixTit">
+  <div class="cab"><i aria-hidden="true"></i><div><b id="ixTit">El índice del templo</b><small>Las diez salas sueltas, los veinticinco encargos y el papiro</small></div></div>
   <div class="rejilla" id="rejSalas"></div>
   <div class="fila">
     <button class="b" id="ixPapiro">Abrir el papiro</button>
@@ -1036,20 +1069,24 @@ footer.pie svg circle{fill:var(--tenue)}
     <span class="etq">prueba los generadores contra sí mismos</span>
   </div>
   <div class="diag" id="diag" hidden></div>
+  <div class="pie"><button class="b ok" data-cierra>Volver al templo</button></div>
+ </div>
 </div>
 <p class="salaLibre" id="rotuloLibre" hidden></p>
 
 <!-- ═══ EL GLOSARIO ═══ -->
-<div class="panel" id="pGlosario" hidden>
-  <div class="quien" style="color:var(--morado)">El glosario</div>
-  <p class="pista" style="margin-top:4px">Las palabras del templo y las de las cuentas. Cada una dice lo mismo dos veces: en corto y con calma.</p>
-  <div id="glosas"></div>
+<div class="modal" id="mGlosario" hidden>
+ <div class="caja" role="dialog" aria-modal="true" aria-labelledby="glTit">
+  <div class="cab"><i aria-hidden="true"></i><div><b id="glTit">El glosario</b><small>Cada palabra dicha dos veces: en corto y con calma</small></div></div>
+  <div class="glosas" id="glosas"></div>
+  <div class="pie"><button class="b ok" data-cierra>Volver al templo</button></div>
+ </div>
 </div>
 
 <!-- ═══ LOS AJUSTES ═══ -->
-<div class="panel" id="pAjustes" hidden>
-  <div class="quien" style="color:var(--morado)">Ajustes</div>
-  <p class="pista" style="margin-top:4px">Para el aula y para cada aparato. Se guardan aquí, en el propio navegador.</p>
+<div class="modal" id="mAjustes" hidden>
+ <div class="caja" role="dialog" aria-modal="true" aria-labelledby="ajTit">
+  <div class="cab"><i aria-hidden="true"></i><div><b id="ajTit">Ajustes</b><small>Para el aula y para cada aparato. Se guardan en este navegador</small></div></div>
   <div class="ajFila"><span class="etq">tema</span><span id="ajTema"></span></div>
   <div class="ajFila"><span class="etq">texto</span><span id="ajTexto"></span></div>
   <div class="ajFila"><span class="etq">movimiento</span><span id="ajMov"></span></div>
@@ -1063,25 +1100,30 @@ footer.pie svg circle{fill:var(--tenue)}
          buscaría aquí dentro y no existe. Entre apps de la casa, siempre
          la URL entera. -->
     <a class="b" href="https://diazepamina-creator.github.io/">← Volver a Materiales</a></div>
-  <p class="pista" style="margin-top:12px">El templo de Miut · divisibilidad, primos, mcd y mcm · prototipo v0.4</p>
+  <div class="pie"><button class="b ok" data-cierra>Volver al templo</button>
+    <span class="etq">El templo de Miut · prototipo v0.4</span></div>
+ </div>
 </div>
 
 <!-- ═══ EL ACTA ═══ -->
-<div class="panel" id="pActa" hidden>
-  <div class="quien" style="color:var(--morado)">El acta del templo</div>
-  <p class="pista" style="margin-top:4px">Lo hecho en esta sesión, para copiar donde haga falta. El sello lleva dentro la cuenta entera.</p>
+<div class="modal" id="mActa" hidden>
+ <div class="caja" role="dialog" aria-modal="true" aria-labelledby="acTit">
+  <div class="cab"><i aria-hidden="true"></i><div><b id="acTit">El acta del templo</b><small>Lo hecho en esta sesión, para copiar donde haga falta</small></div></div>
   <div class="ajFila"><span class="etq">nombre</span>
     <input class="nombre" id="actaNombre" placeholder="Nombre de quien lo firma" autocomplete="off" aria-label="Nombre"></div>
   <div class="acta" id="actaTexto"></div>
-  <div class="fila">
+  <div class="pie">
     <button class="b ok" id="actaCopiar">Copiar</button>
-    <span class="etq" id="actaAviso" style="min-width:0;font-weight:500;letter-spacing:.6px;text-transform:none"></span>
+    <button class="b" data-cierra>Volver al templo</button>
+    <span class="etq" id="actaAviso"></span>
   </div>
+ </div>
 </div>
 
 <!-- ═══ EL TALLER ═══ -->
-<div class="panel taller" id="pTaller" hidden>
-  <div class="quien" style="color:var(--oro)">El taller · práctica libre</div>
+<div class="modal" id="mTaller" hidden>
+ <div class="caja taller" role="dialog" aria-modal="true" aria-labelledby="taTit">
+  <div class="cab"><i aria-hidden="true"></i><div><b id="taTit">El taller</b><small>Práctica libre: se elige el tipo y salen cuentas sin final</small></div></div>
   <div class="tipos" id="tipos"></div>
   <div class="ejer" id="ejer"></div>
   <div class="fila" style="margin-top:6px" id="filaSiNo" hidden>
@@ -1101,10 +1143,12 @@ footer.pie svg circle{fill:var(--tenue)}
     <span>aciertos <b id="tAc">0</b></span><span>racha <b id="tRacha">0</b></span>
     <span>mejor racha <b id="tMejor">0</b></span>
   </div>
-  <div class="fila">
+  <div class="pie">
+    <button class="b ok" data-cierra>Volver al templo</button>
     <button class="b" id="hojaDiez">Imprimir una hoja de diez</button>
     <span class="etq">con la clave en hoja aparte</span>
   </div>
+ </div>
 </div>
 <div class="hoja" id="hoja"></div>
 
@@ -2123,11 +2167,10 @@ const NOMBRES = {
 };
 const indice = {abierto:false, libre:null};
 function abreSalaLibre(k){
-  indice.libre = k;
+  if(modalAbierto) cierraModal();            // la sala está debajo: se aparta el papel
+  indice.libre = k;                          // después de cerrar: cerrar deshace la sala suelta
   document.querySelector('.panel.encargo').hidden = true;
   $('informe').hidden = true;
-  $('pTaller').hidden = true;
-  taller.enTaller = false; $('bTaller').setAttribute('aria-pressed','false');
   muestraSala(k);
   $('rotuloLibre').hidden = false;
   $('rotuloLibre').textContent = NOMBRES[k] + ' · sala suelta';
@@ -2162,33 +2205,57 @@ function pintaIndice(){
     l.appendChild(b);
   });
 }
-/* ── LOS PANELES DE LA REGLETA ──────────────────────────────────────────
-   Glosario, ajustes, acta e índice son cuatro paneles que ocupan el mismo
-   sitio, así que se abre uno y se cierran los demás: apilados no se leen,
-   y con dos abiertos ya hay que rodar para ver la sala.                 */
-const PANELES = {chipSala:'pIndice', bGlosario:'pGlosario', bAjustes:'pAjustes', bActa:'pActa'};
-function cierraPaneles(salvo){
-  Object.entries(PANELES).forEach(([b, p]) => {
-    if(b === salvo) return;
-    $(p).hidden = true; $(b).setAttribute('aria-pressed', 'false');
-  });
-  if(salvo !== 'chipSala') indice.abierto = false;
+/* ── LOS POP-UPS DE LA REGLETA ──────────────────────────────────────────
+   Índice, glosario, taller, ajustes y acta no se meten en la página: se
+   ponen encima. El templo se queda donde estaba —no salta ni empuja nada—
+   y de cada papel se sale por donde se entró: el botón de volver, Escape,
+   o tocando fuera de la caja. Solo puede haber uno abierto.
+
+   Al abrir, el foco se va al primer botón del papel; al cerrar, vuelve al
+   botón de la regleta que lo abrió, que es donde estaba la mano.        */
+const MODALES = {chipSala:'mIndice', bGlosario:'mGlosario', bTaller:'mTaller', bAjustes:'mAjustes', bActa:'mActa'};
+let modalAbierto = null;
+function cierraModal(){
+  if(!modalAbierto) return;
+  const boton = modalAbierto;
+  $(MODALES[boton]).hidden = true;
+  $(boton).setAttribute('aria-pressed', 'false');
+  modalAbierto = null;
+  if(boton === 'chipSala'){ indice.abierto = false; if(indice.libre) cierraLibre(); }
+  if(boton === 'bTaller') entraTaller(false);
+  const b = $(boton); if(b && b.focus) b.focus();
 }
-function abrePanel(boton){
-  const p = $(PANELES[boton]), abre = p.hidden;
-  cierraPaneles(abre ? boton : null);
-  p.hidden = !abre;
-  $(boton).setAttribute('aria-pressed', String(abre));
-  if(abre){
-    if(boton === 'chipSala'){ indice.abierto = true; pintaIndice(); }
-    if(boton === 'bGlosario') pintaGlosario();
-    if(boton === 'bActa') pintaActa();
-    p.scrollIntoView({behavior:'smooth', block:'start'});
-  }else{
-    if(boton === 'chipSala'){ indice.abierto = false; if(indice.libre) cierraLibre(); }
-  }
+function abreModal(boton){
+  if(modalAbierto === boton){ cierraModal(); return; }
+  cierraModal();
+  modalAbierto = boton;
+  const m = $(MODALES[boton]);
+  m.hidden = false;
+  $(boton).setAttribute('aria-pressed', 'true');
+  if(boton === 'chipSala'){ indice.abierto = true; pintaIndice(); }
+  if(boton === 'bGlosario') pintaGlosario();
+  if(boton === 'bActa') pintaActa();
+  if(boton === 'bTaller') entraTaller(true);
+  if(boton === 'bAjustes') pintaAjustes();
+  m.scrollTop = 0;
+  const primero = m.querySelector('button, input');
+  if(primero && primero.focus) primero.focus({preventScroll:true});
 }
-Object.keys(PANELES).forEach(b => $(b).addEventListener('click', () => abrePanel(b)));
+Object.keys(MODALES).forEach(b => $(b).addEventListener('click', () => abreModal(b)));
+/* el botón de volver, el clic fuera de la caja y Escape: tres salidas */
+document.querySelectorAll('[data-cierra]').forEach(b => b.addEventListener('click', cierraModal));
+Object.values(MODALES).forEach(id => $(id).addEventListener('click', e => { if(e.target.id === id) cierraModal(); }));
+addEventListener('keydown', e => { if(e.key === 'Escape' && modalAbierto) cierraModal(); });
+/* que se quede dentro: tabular en un papel abierto no se sale a la página */
+addEventListener('keydown', e => {
+  if(e.key !== 'Tab' || !modalAbierto) return;
+  const caja = $(MODALES[modalAbierto]).querySelector('.caja');
+  const f = [...caja.querySelectorAll('button, input, a[href], [tabindex]:not([tabindex="-1"])')].filter(x => !x.disabled && x.offsetParent);
+  if(!f.length) return;
+  const primero = f[0], ultimo = f[f.length - 1];
+  if(e.shiftKey && document.activeElement === primero){ e.preventDefault(); ultimo.focus(); }
+  else if(!e.shiftKey && document.activeElement === ultimo){ e.preventDefault(); primero.focus(); }
+});
 /* el chip dice en qué sala se está: es lo único que hay que leer de la regleta */
 function pintaChip(){
   const k = indice.libre || (ENCARGOS[enc] && ENCARGOS[enc].sala);
@@ -2434,26 +2501,20 @@ function corrige(dado){
     ver.innerHTML = 'No. La respuesta era <b>' + taller.ej.sol + '</b>. ' + taller.ej.exp; }
   taller.corregido = true;
   $('verlo').hidden = false;
-  asomate($('pTaller'), bien);
+  asomate($('mTaller').querySelector('.caja'), bien);
   guardaTurno();
   pintaTipos();
 }
 function verEnSala(){
   const e = taller.ej; if(!e) return;
+  cierraModal();
   e.pon(); muestraSala(e.sala);
   $(SALAS[e.sala]).scrollIntoView({behavior:'smooth', block:'start'});
 }
 function entraTaller(dentro){
-  if(indice.libre){ indice.libre = null; $('rotuloLibre').hidden = true; }
   taller.enTaller = dentro;
-  $('pTaller').hidden = !dentro;
-  document.querySelector('.panel.encargo').hidden = dentro;
-  $('informe').hidden = dentro ? true : !hechos.has(enc);
-  $('bTaller').setAttribute('aria-pressed', String(dentro));
-  if(dentro){ cierraPaneles(); pintaTipos(); nuevoEjercicio(); for(const k in SALAS) $(SALAS[k]).hidden = true; }
-  else pintaEncargo();
+  if(dentro){ pintaTipos(); nuevoEjercicio(); }
 }
-$('bTaller').addEventListener('click', () => entraTaller(!taller.enTaller));
 $('corrige').addEventListener('click', () => corrige());
 $('bSi').addEventListener('click', () => corrige('sí'));
 $('bNo').addEventListener('click', () => corrige('no'));
@@ -3242,7 +3303,7 @@ function pintaAjustes(){
     });
   });
 }
-$('ajSalas').addEventListener('click', () => abrePanel('chipSala'));
+$('ajSalas').addEventListener('click', () => abreModal('chipSala'));
 
 /* ── EL PAPIRO SECRETO ──────────────────────────────────────────────────
    Se abre tecleando 1001 en cualquier momento. Precedente en la casa: el
@@ -3628,8 +3689,7 @@ function pintaPaso(){
   }, 320);
 }
 function abreGuia(){
-  if(!$('pTaller').hidden) $('bTaller').click();      // la guía enseña la sala, no el taller
-  cierraPaneles();
+  cierraModal();                            // la guía enseña el templo, no el papel de encima
   paso = 0; $('tourCapa').hidden = false; pintaPaso();
 }
 function cierraGuia(){ $('tourCapa').hidden = true; }
