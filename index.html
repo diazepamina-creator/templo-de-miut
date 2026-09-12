@@ -247,23 +247,13 @@ h1{font-family:'Rokkitt',serif;font-weight:700;font-size:25px;letter-spacing:.5p
    Por qué no cajas: cinco o seis botones con borde son lo primero que ve
    el alumno al abrir, y pesan más que la app. En letra pequeña están para
    quien las busca y no le disputan la atención al encargo.              */
-.regleta{display:flex;flex-direction:column;align-items:flex-start;gap:9px;
-  padding-top:9px;margin-top:7px;border-top:1px solid var(--linea)}
+.regleta{padding-top:9px;margin-top:7px;border-top:1px solid var(--linea)}
 .regleta .acciones{display:flex;width:100%;justify-content:space-between;gap:6px}
 .regleta .acciones button{font-family:'Rokkitt',serif;font-weight:500;font-size:12.5px;letter-spacing:1.4px;
   text-transform:uppercase;color:var(--tenue);background:none;border:0;border-radius:0;padding:3px 0;
   min-height:0;cursor:pointer;text-decoration:none;border-bottom:1px solid transparent;white-space:nowrap}
 .regleta .acciones button:hover,.regleta .acciones button:focus-visible{color:var(--tinta);border-bottom-color:var(--oro);outline:none}
 .regleta .acciones button[aria-pressed="true"]{color:var(--oro);border-bottom-color:var(--oro)}
-/* el chip: lo único con volumen, porque es lo único que hay que leer.
-   Dice en qué sala estás y, tocándolo, abre el índice de las diez. */
-.regleta .chip{font-family:'Rokkitt',serif;font-weight:700;font-size:11.5px;letter-spacing:1.6px;
-  text-transform:uppercase;color:var(--morado);background:none;cursor:pointer;
-  border:1px solid var(--junta);border-radius:20px;padding:5px 12px;min-height:0;
-  display:inline-flex;align-items:center;gap:7px;transition:color .15s, border-color .15s}
-.regleta .chip::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.7}
-.regleta .chip:hover,.regleta .chip:focus-visible{color:var(--oro);border-color:var(--oro);outline:none}
-.regleta .chip[aria-pressed="true"]{color:var(--oro);border-color:var(--oro)}
 @media (max-width:440px){
   .regleta .acciones{gap:4px}
   .regleta .acciones button{font-size:11px;letter-spacing:.6px}
@@ -906,19 +896,40 @@ footer.pie svg circle{fill:var(--tenue)}
    cuentas, con su amuleto en el cartucho; y en la cabecera, una huella por
    cuenta hecha, que es la moneda de esta casa: Miut deja huella donde cae. */
 .cabeza{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
-.huellas{margin-left:auto;display:flex;align-items:center;gap:7px;
-  font-family:'Rokkitt',serif;font-weight:500;font-size:12.5px;letter-spacing:1.4px;
-  text-transform:uppercase;color:var(--tenue);border:1px solid var(--linea);
-  border-radius:20px;padding:3px 11px;transition:border-color .3s, box-shadow .3s}
-.huellas i{width:15px;height:15px;background:var(--oro);
+/* las huellas ya no son un chip aparte: viven en la franja, con el oficio
+   y la barra, que es su misma familia —cuánto llevas— */
+.huellas{display:inline-flex;align-items:center;gap:5px}
+.huellas i{width:13px;height:13px;background:var(--oro);
   -webkit-mask:var(--pata) center/contain no-repeat;mask:var(--pata) center/contain no-repeat}
 .huellas b{color:var(--oro);font-weight:700;font-variant-numeric:tabular-nums}
-.huellas.sube{border-color:var(--oro);box-shadow:0 0 16px rgba(224,178,74,.45)}
-.franja{margin-top:9px;padding:7px 11px;border:1px solid var(--linea);border-radius:11px;
-  background:var(--panel);display:grid;grid-template-columns:32px 1fr;gap:5px 10px;align-items:center}
+.huellas.sube b{text-shadow:0 0 14px var(--oro)}
+
+/* ── LA FRANJA DEL OFICIO ────────────────────────────────────────────────
+   El templo decía tres veces lo mismo en tres bandas: el contador de
+   huellas arriba a la derecha, el chip de la sala, y esta barra. En el
+   móvil cada pastilla se quedaba sola en su línea y la cabecera salía
+   rota. Ahora es una sola banda: el oficio, las huellas, lo que falta y
+   la barra. Y como es la de «dónde estás», tocándola se abre «dónde
+   puedes ir»: el índice de las diez salas.
+
+   El chip de la sala sobraba: la sala se dice justo debajo, en el rótulo
+   de su panel. Es lo que hace el pulso, que esconde el suyo cuando hay
+   misión porque «el panel de abajo ya lo dice».                          */
+.franja{width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;
+  margin-top:9px;padding:7px 11px;border:1px solid var(--linea);border-radius:11px;
+  background:var(--panel);display:grid;grid-template-columns:32px 1fr;gap:5px 10px;align-items:center;
+  transition:border-color .2s, box-shadow .3s}
+.franja:hover,.franja:focus-visible{border-color:var(--oro);outline:none}
+.franja .linea2{display:flex;align-items:center;gap:10px}
+.franja .barraR{flex:1;display:block}
+.franja .ir{font-family:'Rokkitt',serif;font-weight:500;font-size:11px;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--tenue);white-space:nowrap}
+.franja:hover .ir,.franja:focus-visible .ir{color:var(--oro)}
+.franja[aria-expanded="true"]{border-color:var(--oro)}
+.franja[aria-expanded="true"] .ir{color:var(--oro)}
 .franja .sello{grid-row:1/3;width:30px;height:37px}
 .franja .sello svg{width:100%;height:100%;display:block}
-.franja .linea1{display:flex;justify-content:space-between;align-items:baseline;gap:9px;flex-wrap:wrap}
+.franja .linea1{display:flex;justify-content:space-between;align-items:baseline;gap:4px 12px;flex-wrap:wrap}
 .franja .rango{font-family:'Rokkitt',serif;font-weight:700;font-size:15px;letter-spacing:1.4px;
   text-transform:uppercase;color:var(--oro)}
 .franja .rango small{font-family:'Rokkitt',serif;font-weight:500;font-size:12px;letter-spacing:.6px;
@@ -1012,11 +1023,8 @@ footer.pie svg circle{fill:var(--tenue)}
       <h1>El templo de Miut</h1>
       <p class="sub">Divisibilidad · primos · mcd y mcm</p>
     </div>
-    <div class="huellas" id="huellas" aria-label="Huellas de Miut"><i aria-hidden="true"></i><span>huellas</span><b id="huellasT">0</b></div>
   </div>
   <nav class="regleta" id="barra" aria-label="Acciones">
-    <!-- El chip dice en qué sala se está y abre el índice de las diez. -->
-    <button class="chip" id="chipSala" aria-pressed="false">El pasillo</button>
     <span class="acciones">
       <button id="bGuia">Guía</button>
       <button id="bGlosario" aria-pressed="false">Glosario</button>
@@ -1026,14 +1034,19 @@ footer.pie svg circle{fill:var(--tenue)}
       <button id="bAula" class="aula" aria-pressed="false">Aula</button>
     </span>
   </nav>
-  <div class="franja" id="franja">
-    <div class="sello" id="rangoSello" aria-hidden="true"></div>
-    <div class="linea1">
+  <!-- La franja es un botón: dice dónde estás y abre dónde puedes ir. -->
+  <button class="franja" id="franja" aria-expanded="false" aria-controls="mIndice"
+          aria-label="Tu oficio y tus huellas. Abre el índice de las salas">
+    <span class="sello" id="rangoSello" aria-hidden="true"></span>
+    <span class="linea1">
       <span class="rango"><span id="rangoNom">Aguador</span><small id="rangoSig"></small></span>
-      <span class="cuenta" id="rangoCuenta"></span>
-    </div>
-    <div class="barraR"><i id="rangoBarra"></i></div>
-  </div>
+      <span class="cuenta"><span class="huellas" id="huellas"><i aria-hidden="true"></i><b id="huellasT">0</b> huellas</span> · <span id="rangoCuenta"></span></span>
+    </span>
+    <span class="linea2">
+      <span class="barraR"><i id="rangoBarra"></i></span>
+      <span class="ir">las salas →</span>
+    </span>
+  </button>
 </header>
 
 <div class="panel encargo">
@@ -1093,7 +1106,7 @@ footer.pie svg circle{fill:var(--tenue)}
   <div class="ajFila"><span class="etq">vista</span><span id="ajVista"></span></div>
   <div class="ajFila"><span class="etq">las salas</span>
     <button class="b" id="ajSalas">Índice de las diez</button>
-    <span class="etq" style="min-width:0;font-weight:500;letter-spacing:.6px;text-transform:none">o toca el chip de arriba</span></div>
+    <span class="etq" style="min-width:0;font-weight:500;letter-spacing:.6px;text-transform:none">o toca la franja del oficio</span></div>
   <div class="ajFila"><span class="etq">la casa</span>
     <!-- Enlace ABSOLUTO a propósito: la portada vive en la raíz del sitio
          y esta app en su propia carpeta, así que un enlace relativo la
@@ -2213,15 +2226,15 @@ function pintaIndice(){
 
    Al abrir, el foco se va al primer botón del papel; al cerrar, vuelve al
    botón de la regleta que lo abrió, que es donde estaba la mano.        */
-const MODALES = {chipSala:'mIndice', bGlosario:'mGlosario', bTaller:'mTaller', bAjustes:'mAjustes', bActa:'mActa'};
+const MODALES = {franja:'mIndice', bGlosario:'mGlosario', bTaller:'mTaller', bAjustes:'mAjustes', bActa:'mActa'};
 let modalAbierto = null;
 function cierraModal(){
   if(!modalAbierto) return;
   const boton = modalAbierto;
   $(MODALES[boton]).hidden = true;
-  $(boton).setAttribute('aria-pressed', 'false');
+  $(boton).setAttribute(boton === 'franja' ? 'aria-expanded' : 'aria-pressed', 'false');
   modalAbierto = null;
-  if(boton === 'chipSala'){ indice.abierto = false; if(indice.libre) cierraLibre(); }
+  if(boton === 'franja'){ indice.abierto = false; if(indice.libre) cierraLibre(); }
   if(boton === 'bTaller') entraTaller(false);
   const b = $(boton); if(b && b.focus) b.focus();
 }
@@ -2231,8 +2244,8 @@ function abreModal(boton){
   modalAbierto = boton;
   const m = $(MODALES[boton]);
   m.hidden = false;
-  $(boton).setAttribute('aria-pressed', 'true');
-  if(boton === 'chipSala'){ indice.abierto = true; pintaIndice(); }
+  $(boton).setAttribute(boton === 'franja' ? 'aria-expanded' : 'aria-pressed', 'true');
+  if(boton === 'franja'){ indice.abierto = true; pintaIndice(); }
   if(boton === 'bGlosario') pintaGlosario();
   if(boton === 'bActa') pintaActa();
   if(boton === 'bTaller') entraTaller(true);
@@ -2256,11 +2269,7 @@ addEventListener('keydown', e => {
   if(e.shiftKey && document.activeElement === primero){ e.preventDefault(); ultimo.focus(); }
   else if(!e.shiftKey && document.activeElement === ultimo){ e.preventDefault(); primero.focus(); }
 });
-/* el chip dice en qué sala se está: es lo único que hay que leer de la regleta */
-function pintaChip(){
-  const k = indice.libre || (ENCARGOS[enc] && ENCARGOS[enc].sala);
-  $('chipSala').textContent = (NOMBRES[k] || 'Las salas');
-}
+
 $('ixPapiro').addEventListener('click', () => {
   $('cerradura').classList.add('abierta'); $('papiro').hidden = false;
   papiroVisto = true; guardaTurno();
@@ -3079,7 +3088,6 @@ function leeTurno(){
 function borraTurno(){ try{ localStorage.removeItem(GUARDADO); }catch(e){} }
 function muestraSala(cual){
   for(const k in SALAS) $(SALAS[k]).hidden = (k !== cual);
-  if(window.pintaChip) pintaChip();
   if(cual === 'pasillo') pintaPasillo();
   else if(cual === 'sala') pintaSala();
   else if(cual === 'resto') pintaResto();
@@ -3303,7 +3311,7 @@ function pintaAjustes(){
     });
   });
 }
-$('ajSalas').addEventListener('click', () => abreModal('chipSala'));
+$('ajSalas').addEventListener('click', () => abreModal('franja'));
 
 /* ── EL PAPIRO SECRETO ──────────────────────────────────────────────────
    Se abre tecleando 1001 en cualquier momento. Precedente en la casa: el
@@ -3612,7 +3620,6 @@ const ESCENAS = {
     }
   }
   pintaEncargo();
-  pintaChip();
   pintaTipos();                     // la cuenta del taller, con sus cifras restauradas
 }
 
@@ -3652,14 +3659,13 @@ const ESCENAS = {
    pasillo que en la criba, sin una lista por sala. Si una parada no existe
    —una sala sin veredicto, el papiro ya abierto—, se salta sola.        */
 const PASOS = [
-  {id:'franja',   t:'Tu oficio', d:'Empiezas de aguador. Cada cinco cuentas subes: wab, que se lava antes de entrar; lector, que dice el rollo en voz alta; escriba; profeta. Con las veinticinco, superior de los misterios.'},
-  {id:'huellas',  t:'Las huellas', d:'Una por cuenta hecha. Es la moneda de esta casa: Miut deja huella donde cae, y aquí se van juntando las tuyas.'},
+  {id:'franja',   t:'Tu oficio', d:'Empiezas de aguador. Cada cinco cuentas subes: wab, que se lava antes de entrar; lector, que dice el rollo en voz alta; escriba; profeta. Con las veinticinco, superior de los misterios. Las huellas son la moneda de la casa: una por cuenta hecha. Y tocando la franja se abre el índice de las diez salas.'},
+
   {sel:'.panel.encargo', t:'El encargo', d:'Listahmes, el escriba, pide. Se hace abajo, en la sala, y se pulsa Comprobar. Contesta Miut, que se asoma a ver en qué ha quedado.'},
   {sel:'.fila',   t:'Los mandos', d:'Lo que se puede tocar: de cuánto en cuánto salta la gata, cuántas losas tiene la sala, hasta dónde llega el mural. Se toca y la sala cambia.'},
   {sala:true,     t:'La sala', d:'El manipulativo. Diez salas: el pasillo de baldosas, la sala que se enlosa, el taller del relojero, el granero, la escalera de Euclides, los rectángulos, la criba, el mural, la red y el collar.'},
   {sel:'.veredicto', t:'Lo que va diciendo', d:'Debajo de cada sala se lee lo que está pasando, con las cuentas escritas. No es la solución: es lo que se ve, contado.'},
-  {id:'chipSala', t:'Dónde estás', d:'El chip dice en qué sala te ha metido el encargo. Tócalo y se abre el índice: las diez salas sueltas, los veinticinco encargos y el papiro.'},
-  {id:'barra',    t:'La regleta', d:'Seis acciones en letra pequeña: Guía, Glosario con las palabras, Taller para practicar suelto con hoja imprimible, Ajustes, Acta para llevarte la sesión y Aula para la pizarra. El modo papiro y la vuelta a Materiales están dentro de Ajustes.'},
+  {id:'barra',    t:'La regleta', d:'Seis acciones en letra pequeña, y cada una abre un papel encima que se cierra con su botón, con Escape o tocando fuera: Guía, Glosario con las palabras, Taller para practicar suelto con hoja imprimible, Ajustes, Acta para llevarte la sesión y Aula para la pizarra. El modo papiro y la vuelta a Materiales están dentro de Ajustes.'},
   {id:'cerradura', t:'El papiro', d:'El templo guarda un papiro cerrado con criterios de divisibilidad. Se abre con cuatro cifras, y el encargo veinticinco dice cuáles.'}
 ];
 let paso = 0;
