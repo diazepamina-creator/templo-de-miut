@@ -227,6 +227,23 @@ body{font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-size:var(--te
 .cenefa{height:13px;margin:0 -12px 9px;
   background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='34' height='16'><g fill='none' stroke='%23A98BBC' stroke-width='1.4' stroke-linecap='round'><path d='M4 15 V9'/><path d='M4 9 Q0.5 5 2 1'/><path d='M4 9 Q7.5 5 6 1'/><path d='M4 9 V2'/><path d='M21 15 V11'/><path d='M17 15 Q21 6 25 15'/></g><circle cx='21' cy='9.6' r='1.5' fill='%23E0B24A'/></svg>") repeat-x center / 34px 16px;
   opacity:.5}
+/* ── EL RÓTULO, UN BLOQUE ────────────────────────────────────────────────
+   Antes el título y la regleta flotaban sueltos sobre el fondo y el primer
+   borde de la página era el de la franja. La terminal reparte TODO en
+   bloques —rótulo, rango, misión— y por eso se lee de un vistazo: cada
+   caja es una cosa. Aquí igual: el rótulo con su sello, su versión y su
+   reloj, y la regleta dentro, forman el primer bloque.                   */
+.rotulo{padding:12px 13px 9px}
+@media (max-width:420px){ .rotulo .sub{font-size:11px;letter-spacing:1px} }
+.rotulo .cabeza{display:flex;align-items:center;gap:11px;flex-wrap:nowrap}
+.rotulo .cabeza > div{min-width:0}
+.sello1001{font-family:'Space Mono',monospace;font-weight:700;font-size:15px;letter-spacing:1px;
+  color:#2A1D06;background:linear-gradient(180deg,#F0C765,var(--oro));border-radius:8px;
+  padding:7px 9px;box-shadow:0 0 14px rgba(224,178,74,.3);flex:0 0 auto}
+.ver{font-family:'Rokkitt',serif;font-size:11.5px;letter-spacing:1.3px;text-transform:uppercase;
+  color:var(--tenue);opacity:.8}
+.reloj{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--oro);
+  margin:3px 0 0;opacity:.85;font-variant-numeric:tabular-nums}
 h1{font-family:'Rokkitt',serif;font-weight:700;font-size:25px;letter-spacing:.5px;
   margin:0;color:var(--oro);line-height:1.08}
 .sub{font-family:'Rokkitt',serif;font-weight:500;font-size:11.5px;letter-spacing:1.3px;
@@ -329,10 +346,25 @@ input.nombre{font-family:inherit;font-size:15px;padding:8px 10px;border-radius:9
 
 /* ── EL ENCARGO. Listahmes pregunta, y su retrato va al lado, como en las
    demás apps de la casa. ── */
-.encargo{position:relative;padding-left:74px;min-height:76px;
-  border-left:4px solid var(--morado)}
-.cara{position:absolute;left:8px;top:6px;width:58px}
+/* ── LOS DIÁLOGOS, CAJAS DENTRO DE CAJAS ────────────────────────────────
+   En la terminal, dentro del manifiesto cada cosa va en su caja: el lote,
+   lo que dice Listillo, la respuesta. Se lee de un vistazo porque cada
+   caja es una cosa y se ve dónde empieza y dónde acaba.
+
+   Aquí igual: el panel es el encargo, y dentro, en su caja, lo que dice
+   Listahmes; en la suya, lo que contesta Miut. El retrato deja de flotar
+   sobre el borde del panel y entra en la caja con quien habla.          */
+.encargo{position:relative}
+.cabEnc{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  margin:-2px 0 9px;font-family:'Rokkitt',serif;font-weight:700;font-size:12px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--tenue)}
+.dialogo{display:grid;grid-template-columns:52px 1fr;gap:4px 11px;align-items:start;
+  background:var(--noche);border:1px solid var(--linea);border-radius:10px;padding:10px 12px}
+.dialogo .cara{grid-row:1/3;width:52px;align-self:center}
 .cara svg{width:100%;height:auto;display:block}
+/* Miut no lleva retrato en la caja: su entrada es asomarse por encima */
+.informe .dialogo{grid-template-columns:1fr;border-color:var(--junta)}
+.informe.mal .dialogo{border-color:var(--rojo)}
 .quien{font-family:'Rokkitt',serif;font-weight:700;font-size:12.5px;letter-spacing:2px;
   text-transform:uppercase;color:var(--morado);margin-bottom:2px}
 .encTxt{margin:0}
@@ -353,8 +385,7 @@ button.b.ok{background:linear-gradient(180deg,#F0C765,var(--oro));color:#2A1D06;
 button.b:disabled{opacity:.4;cursor:default}
 .etq{font-family:'Rokkitt',serif;font-weight:700;font-size:12px;letter-spacing:1.8px;
   text-transform:uppercase;color:var(--tenue)}
-.informe{border-left:4px solid var(--oro);margin-top:11px;position:relative}
-.informe.mal{border-left-color:var(--rojo)}
+.informe{margin-top:11px;position:relative}
 .op{display:block;width:100%;text-align:left;margin-bottom:6px;
   font-family:inherit;font-size:14.5px;text-transform:none;letter-spacing:0}
 .op.fallada{border-color:var(--rojo);color:var(--rojo)}
@@ -916,18 +947,21 @@ footer.pie svg circle{fill:var(--tenue)}
    de su panel. Es lo que hace el pulso, que esconde el suyo cuando hay
    misión porque «el panel de abajo ya lo dice».                          */
 .franja{width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;
-  margin-top:9px;padding:7px 11px;border:1px solid var(--linea);border-radius:11px;
-  background:var(--panel);display:grid;grid-template-columns:32px 1fr;gap:5px 10px;align-items:center;
+  margin-top:9px;padding:8px 11px;border:1px solid var(--linea);border-radius:11px;
+  background:var(--panel);display:grid;grid-template-columns:32px 1fr;gap:4px 10px;align-items:center;
   transition:border-color .2s, box-shadow .3s}
 .franja:hover,.franja:focus-visible{border-color:var(--oro);outline:none}
-.franja .linea2{display:flex;align-items:center;gap:10px}
-.franja .barraR{flex:1;display:block}
+/* la barra va SOLA en su fila, de lado a lado. Antes compartía fila con el
+   rótulo de «las salas» y quedaba un escalón: cinco píxeles de barra al
+   lado de diecisiete de letra, cada uno centrado a su altura. La terminal
+   lo hace así: el nombre y la cuenta arriba, y la barra entera debajo. */
+.franja .barraR{display:block;grid-column:2}
 .franja .ir{font-family:'Rokkitt',serif;font-weight:500;font-size:11px;letter-spacing:1.4px;
   text-transform:uppercase;color:var(--tenue);white-space:nowrap}
 .franja:hover .ir,.franja:focus-visible .ir{color:var(--oro)}
 .franja[aria-expanded="true"]{border-color:var(--oro)}
 .franja[aria-expanded="true"] .ir{color:var(--oro)}
-.franja .sello{grid-row:1/3;width:30px;height:37px}
+.franja .sello{grid-row:1/4;width:30px;height:37px;align-self:center}
 .franja .sello svg{width:100%;height:100%;display:block}
 .franja .linea1{display:flex;justify-content:space-between;align-items:baseline;gap:4px 12px;flex-wrap:wrap}
 .franja .rango{font-family:'Rokkitt',serif;font-weight:700;font-size:15px;letter-spacing:1.4px;
@@ -994,6 +1028,9 @@ footer.pie svg circle{fill:var(--tenue)}
 /* fuera del modo aula la rejilla no existe: los paneles siguen en fila,
    uno detrás de otro, exactamente como estaban */
 .aulaRejilla,.colIzq,.colDer{display:contents}
+/* en la pizarra el bloque del rótulo es muy ancho y las seis acciones se
+   quedaban a medio metro unas de otras: se agrupan a la izquierda */
+body[data-aula="si"] .regleta .acciones{justify-content:flex-start;gap:46px;width:auto}
 .regleta .acciones button.aula[aria-pressed="true"]{color:var(--oro);border-bottom-color:var(--oro)}
 </style>
 </head><body>
@@ -1018,10 +1055,13 @@ footer.pie svg circle{fill:var(--tenue)}
 
 <header>
   <div class="cenefa" aria-hidden="true"></div>
+  <div class="panel rotulo">
   <div class="cabeza">
+    <span class="sello1001" aria-hidden="true">1001</span>
     <div>
       <h1>El templo de Miut</h1>
       <p class="sub">Divisibilidad · primos · mcd y mcm</p>
+      <p class="reloj"><span id="reloj" aria-label="Tiempo en el templo">0:00:00</span><span class="ver"> · prototipo v0.5</span></p>
     </div>
   </div>
   <nav class="regleta" id="barra" aria-label="Acciones">
@@ -1034,35 +1074,41 @@ footer.pie svg circle{fill:var(--tenue)}
       <button id="bAula" class="aula" aria-pressed="false">Aula</button>
     </span>
   </nav>
+  </div>
   <!-- La franja es un botón: dice dónde estás y abre dónde puedes ir. -->
   <button class="franja" id="franja" aria-expanded="false" aria-controls="mIndice"
           aria-label="Tu oficio y tus huellas. Abre el índice de las salas">
     <span class="sello" id="rangoSello" aria-hidden="true"></span>
     <span class="linea1">
       <span class="rango"><span id="rangoNom">Aguador</span><small id="rangoSig"></small></span>
-      <span class="cuenta"><span class="huellas" id="huellas"><i aria-hidden="true"></i><b id="huellasT">0</b> huellas</span> · <span id="rangoCuenta"></span></span>
-    </span>
-    <span class="linea2">
-      <span class="barraR"><i id="rangoBarra"></i></span>
       <span class="ir">las salas →</span>
     </span>
+    <span class="linea1">
+      <span class="cuenta"><span class="huellas" id="huellas"><i aria-hidden="true"></i><b id="huellasT">0</b> huellas</span> · <span id="rangoCuenta"></span></span>
+    </span>
+    <span class="barraR"><i id="rangoBarra"></i></span>
   </button>
 </header>
 
 <div class="panel encargo">
-  <div class="cara" id="cara"></div>
-  <div class="quien">Listahmes, escriba</div>
-  <p class="encTxt" id="encTxt"></p>
+  <div class="cabEnc"><span>El encargo</span><span class="paso" id="cual"></span></div>
+  <div class="dialogo">
+    <div class="cara" id="cara"></div>
+    <div class="quien">Listahmes, escriba</div>
+    <p class="encTxt" id="encTxt"></p>
+  </div>
   <div class="ops" id="ops" hidden></div>
   <div class="fila">
     <button class="b" id="atras" aria-label="Encargo anterior">◀</button>
     <button class="b ok" id="comprobar">Comprobar</button>
-    <span class="paso" id="cual"></span>
   </div>
 </div>
 <div class="panel informe" id="informe" hidden>
-  <div class="quien" style="color:var(--oro)">Miut</div>
-  <p class="encTxt" id="infTxt"></p>
+  <div class="cabEnc"><span>Lo que contesta</span></div>
+  <div class="dialogo">
+    <div class="quien" style="color:var(--oro)">Miut</div>
+    <p class="encTxt" id="infTxt"></p>
+  </div>
 </div>
 
 <!-- ═══ EL ÍNDICE DE SALAS ═══ -->
@@ -3235,7 +3281,7 @@ function pintaEncargo(){
       + 'La clave son cuatro cifras, y es el número que abre el 7, el 11 y el 13 <b>de una vez</b>.'
     : e.t;
   $('cual').textContent = (ultimo && hecho) ? 'sala cerrada'
-    : 'encargo ' + (enc + 1) + ' de ' + ENCARGOS.length;
+    : (enc + 1) + ' de ' + ENCARGOS.length;   // «el encargo» ya lo dice el rótulo de la caja
   $('atras').disabled = enc === 0;
   $('comprobar').textContent = !hecho ? 'Comprobar'
     : (ultimo ? 'Empezar de nuevo' : 'Siguiente encargo →');
@@ -3621,6 +3667,20 @@ const ESCENAS = {
   }
   pintaEncargo();
   pintaTipos();                     // la cuenta del taller, con sus cifras restauradas
+}
+
+/* ── EL RELOJ ───────────────────────────────────────────────────────────
+   Lo que se lleva dentro del templo, contado desde que se entró. La
+   terminal tiene el suyo y sirve para lo mismo: en clase, saber de un
+   vistazo cuánto llevan sin preguntar. Va en el rótulo, y es el mismo
+   número que sale en el acta.                                           */
+{
+  const dosCifras = n => String(n).padStart(2, '0');
+  const pinta = () => {
+    const seg = Math.max(0, Math.floor((Date.now() - t0) / 1000));
+    $('reloj').textContent = Math.floor(seg / 3600) + ':' + dosCifras(Math.floor(seg / 60) % 60) + ':' + dosCifras(seg % 60);
+  };
+  pinta(); setInterval(pinta, 1000);
 }
 
 /* ── EL ARRANQUE ────────────────────────────────────────────────────────
