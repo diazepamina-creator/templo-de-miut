@@ -878,6 +878,26 @@ footer.pie svg circle{fill:var(--tenue)}
    mínimo común múltiplo, y se ve antes de leer nada. Dos segundos y medio.
    Usa las mismas variables que el templo, así que en modo papel entra en
    claro sin tocar una regla.                                             */
+/* ── LA PUERTA ──────────────────────────────────────────────────────────
+   El templo cerrado hasta que llegue su lección. Esto no guarda un secreto
+   —el código de este archivo se lee con dos clics—: guarda el ritmo, para
+   que nadie se gaste las diez salas la semana antes de que toquen. La llave
+   la dice el profesor, y se recuerda en este navegador junto con las de las
+   demás aplicaciones: se pide una vez. Va por encima del arranque, que con
+   la puerta puesta no llega a verse.                                     */
+.modal.puerta{z-index:10000}
+.puerta .etq{display:block;font-family:'Space Mono',monospace;font-size:10.5px;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--tenue);margin:0 0 7px}
+.puerta input{width:100%;background:var(--noche);border:1px solid var(--linea);
+  border-radius:9px;padding:11px 12px;color:var(--tinta);
+  font-family:'Space Mono',monospace;font-size:14px;letter-spacing:1px}
+.puerta input:focus{outline:none;border-color:var(--oro)}
+.puerta .pista{font-size:13.5px;color:var(--tenue);margin:11px 0 0;line-height:1.5}
+.puerta .aviso{font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:1px;
+  min-height:17px;margin:9px 0 0;color:var(--tenue)}
+.puerta .aviso.bien{color:var(--verde)}
+.puerta .aviso.mal{color:var(--rojo)}
+
 .boot{position:fixed;inset:0;z-index:9999;background:var(--noche);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
   transition:opacity .5s ease;cursor:pointer;padding:16px}
@@ -1041,6 +1061,20 @@ body[data-aula="si"] .regleta .acciones{justify-content:flex-start;gap:46px;widt
     <div class="pie"><span class="num" id="tourNum"></span>
       <span><button id="tourSalir">Salir</button> <button class="pri" id="tourSig">Siguiente</button></span></div>
   </div>
+</div>
+<!-- ═══ LA PUERTA ═══ -->
+<div class="modal puerta" id="mPuerta" hidden>
+ <div class="caja" role="dialog" aria-modal="true" aria-labelledby="puTit">
+  <div class="cab"><i aria-hidden="true"></i><div><b id="puTit">La puerta del templo</b><small>Esta lección aún no toca: hace falta la llave</small></div></div>
+  <label class="etq" for="puLlave">La llave</label>
+  <input id="puLlave" type="text" autocomplete="off" autocapitalize="off"
+    autocorrect="off" spellcheck="false" placeholder="una palabra">
+  <p class="pista">La dice el profesor cuando toca esta lección. Se pide una
+  sola vez: este navegador se acuerda.</p>
+  <p class="aviso" id="puAviso" role="status"></p>
+  <div class="pie"><button class="b ok" id="puAbrir">Abrir</button>
+    <a class="b" href="https://diazepamina-creator.github.io/">Volver a la casa</a></div>
+ </div>
 </div>
 <div class="boot" id="boot" role="status" aria-live="polite">
   <div class="cenefa arriba" aria-hidden="true"></div>
@@ -3683,12 +3717,64 @@ const ESCENAS = {
   pinta(); setInterval(pinta, 1000);
 }
 
+/* ── LA PUERTA ──────────────────────────────────────────────────────────
+   El arca de las llaves es de la casa entera: la portada y las trece
+   aplicaciones viven en el mismo sitio y cambia la carpeta, no el origen,
+   así que comparten localStorage. Lo que se abre en la portada lo sabe esta
+   página, y al revés. Aquí sólo se comprueba una: la de este templo.
+
+   La maestra abre también este templo; para abrir las trece de golpe está
+   la portada, que es la que lleva la lista.                              */
+const PUERTA = (() => {
+  const ARCA = 'casa.llaves.v1', YO = 'templo-de-miut';
+  const PALABRA = 'escriba', MAESTRA = 'hipatia';
+  const limpia = t => String(t || '').toLowerCase().normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
+  let arca;
+  try{ const o = JSON.parse(localStorage.getItem(ARCA) || '{}');
+       arca = new Set(Array.isArray(o.a) ? o.a : []); }
+  catch(e){ arca = new Set(); }
+
+  return {
+    abierta: arca.has(YO),
+    pide(sigue){
+      const caja = $('mPuerta'), campo = $('puLlave'), aviso = $('puAviso'), bot = $('boot');
+      bot.style.display = 'none';
+      caja.hidden = false; campo.focus();
+      const di = (t, c) => { aviso.textContent = t; aviso.className = 'aviso' + (c ? ' ' + c : ''); };
+      const intenta = () => {
+        const v = limpia(campo.value);
+        if(!v){ di('escribe la llave', 'mal'); return; }
+        if(v !== limpia(PALABRA) && v !== limpia(MAESTRA)){
+          di('esa llave no es de aquí', 'mal'); campo.select(); return;
+        }
+        arca.add(YO);
+        try{ localStorage.setItem(ARCA, JSON.stringify({v:1, a:[...arca]})); }catch(e){}
+        di('adelante', 'bien');
+        setTimeout(() => { caja.hidden = true; bot.style.display = ''; sigue(); }, 420);
+      };
+      $('puAbrir').addEventListener('click', intenta);
+      campo.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); intenta(); } });
+      /* El tabulador no sale de la caja: detrás no hay nada que tocar. */
+      caja.addEventListener('keydown', e => {
+        if(e.key !== 'Tab') return;
+        const f = [...caja.querySelectorAll('input,button,a')];
+        const pri = f[0], ult = f[f.length - 1];
+        if(e.shiftKey && document.activeElement === pri){ e.preventDefault(); ult.focus(); }
+        else if(!e.shiftKey && document.activeElement === ult){ e.preventDefault(); pri.focus(); }
+      });
+    }
+  };
+})();
+
 /* ── EL ARRANQUE ────────────────────────────────────────────────────────
    El pasillo, en pequeño y solo: doce baldosas, la gata morada de tres en
    tres y la roja de cuatro en cuatro. Donde caen las dos —la doce— se
    enciende. Es la idea de la app entera, dicha sin una palabra. Se salta
-   tocando, y con «menos movimiento» dura lo que tarda en leerse.         */
-{
+   tocando, y con «menos movimiento» dura lo que tarda en leerse. Con la
+   puerta puesta no empieza hasta que se abre: el pasillo es lo primero que
+   se ve del templo, y se ve entero o no se ve.                           */
+function arranque(){
   const suelo = $('bootSuelo'), A = 3, B = 4, HASTA = 12;
   const rapido = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let pasoA = 0, pasoB = 0, ultima = 0;
@@ -3712,6 +3798,7 @@ const ESCENAS = {
   addEventListener('keydown', e => { if(e.key === 'Escape' || e.key === ' ') fuera(); }, {once:true});
   setTimeout(fuera, rapido ? 400 : 3200);
 }
+if(PUERTA.abierta) arranque(); else PUERTA.pide(arranque);
 
 /* ── LA GUÍA VISUAL ─────────────────────────────────────────────────────
    Ocho paradas. Las que llevan `sel` buscan dentro de la sala que esté
