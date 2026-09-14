@@ -1193,7 +1193,6 @@ body[data-aula="si"] .regleta .acciones{justify-content:flex-start;gap:46px;widt
   <div class="ajFila"><span class="etq">tema</span><span id="ajTema"></span></div>
   <div class="ajFila"><span class="etq">texto</span><span id="ajTexto"></span></div>
   <div class="ajFila"><span class="etq">movimiento</span><span id="ajMov"></span></div>
-  <div class="ajFila"><span class="etq">vista</span><span id="ajVista"></span></div>
   <div class="ajFila"><span class="etq">las salas</span>
     <button class="b" id="ajSalas">Índice de las diez</button>
     <span class="etq" style="min-width:0;font-weight:500;letter-spacing:.6px;text-transform:none">o toca la franja del oficio</span></div>
@@ -3155,6 +3154,7 @@ const hechos = new Set();
 let papiroVisto = false;          // la clave, una vez dada, no se vuelve a pedir
 let t0 = Date.now();              // cuándo se entró al templo, para el acta
 const GUARDADO = 'miut.turno.v1';
+const AULA = 'aula.v1';   /* el modo aula es del aparato: llave aparte */
 const CADUCA = 4*60*60*1000;
 
 function guardaTurno(){
@@ -3166,8 +3166,7 @@ function guardaTurno(){
       nombre: ($('actaNombre') || {}).value || '',
       modo: document.body.dataset.modo,
       texto: document.body.dataset.texto,
-      movimiento: document.body.dataset.movimiento,
-      aula: document.body.dataset.aula
+      movimiento: document.body.dataset.movimiento
     }));
   }catch(e){ /* sin almacén disponible: se sigue igual, sin guardar */ }
 }
@@ -3388,8 +3387,7 @@ $('comprobar').addEventListener('click', () => {
 const AJ_OPS = {
   modo:      {etq:'ajTema',  dato:'modo',       ops:[['pantalla','De noche'], ['papel','De papiro · proyector']]},
   texto:     {etq:'ajTexto', dato:'texto',      ops:[['normal','Normal'], ['grande','Grande']]},
-  movimiento:{etq:'ajMov',   dato:'movimiento', ops:[['normal','Normal'], ['menos','Menos']]},
-  aula:      {etq:'ajVista', dato:'aula',       ops:[['no','Normal'], ['si','Aula · pizarra']]}
+  movimiento:{etq:'ajMov',   dato:'movimiento', ops:[['normal','Normal'], ['menos','Menos']]}
 };
 function pintaAjustes(){
   Object.values(AJ_OPS).forEach(o => {
@@ -3698,7 +3696,10 @@ const ESCENAS = {
   document.body.dataset.modo = (d && d.modo === 'papel') ? 'papel' : 'pantalla';
   document.body.dataset.texto = (d && d.texto === 'grande') ? 'grande' : 'normal';
   document.body.dataset.movimiento = (d && d.movimiento === 'menos') ? 'menos' : 'normal';
-  document.body.dataset.aula = (d && d.aula === 'si') ? 'si' : 'no';
+  /* el aula NO sale del turno: es de la pizarra, no del alumno. Vive en su
+     propia llave y no caduca a las cuatro horas como el resto. */
+  try{ document.body.dataset.aula = localStorage.getItem(AULA) === 'si' ? 'si' : 'no'; }
+  catch(e){ document.body.dataset.aula = 'no'; }
   if(window.pintaAula) pintaAula();
   pintaAjustes();
   if(d){
@@ -3894,14 +3895,22 @@ addEventListener('keydown', e => { if(e.key === 'Escape' && !$('tourCapa').hidde
     else { marcaP.after(papiro); marcaF.after(pie); }
   };
 
+  /* La palabra dice a dónde lleva el botón, no dónde estás: «Aula» para
+     entrar y «Salir del aula» para volver, que es como lo hace la terminal
+     J&L. El aula no es un ajuste que se marca: es un sitio en el que se
+     entra y del que se sale, y quien lo toca está de pie ante la pizarra
+     con treinta críos mirando. */
   const pinta = () => {
     const si = document.body.dataset.aula === 'si';
     muda(si && innerWidth >= 1100);
     $('bAula').setAttribute('aria-pressed', String(si));
+    $('bAula').textContent = si ? 'Salir del aula' : 'Aula';
   };
   $('bAula').addEventListener('click', () => {
-    document.body.dataset.aula = document.body.dataset.aula === 'si' ? 'no' : 'si';
-    pinta(); pintaAjustes(); guardaTurno();
+    const si = document.body.dataset.aula !== 'si';
+    document.body.dataset.aula = si ? 'si' : 'no';
+    try{ localStorage.setItem(AULA, si ? 'si' : 'no'); }catch(e){}
+    pinta();
     if(!$('tourCapa').hidden) pintaPaso();     // la guía, si estaba abierta, recoloca el foco
   });
   window.pintaAula = pinta;
