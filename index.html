@@ -796,6 +796,7 @@ button.b.armado{border-color:var(--rojo);color:var(--rojo)}
 
 /* EL PIE. La licencia va abajo, con su sello dibujado: cuatro medallones
    —CC, BY, NC, SA— en el color tenue, que es de la casa y no del templo. */
+footer.pie .cierre{display:block;margin:0 auto 16px;font-size:13px;padding:11px 20px}
 footer.pie{margin-top:28px;padding-top:14px;border-top:1px solid var(--linea);
   display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;
   font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:1.2px;
@@ -950,9 +951,9 @@ footer.pie svg circle{fill:var(--tenue)}
 /* las huellas ya no son un chip aparte: viven en la franja, con el oficio
    y la barra, que es su misma familia —cuánto llevas— */
 .huellas{display:inline-flex;align-items:center;gap:5px}
-.huellas i{width:13px;height:13px;background:var(--oro);
+.huellas i{width:11px;height:11px;background:var(--oro);
   -webkit-mask:var(--pata) center/contain no-repeat;mask:var(--pata) center/contain no-repeat}
-.huellas b{color:var(--oro);font-weight:700;font-variant-numeric:tabular-nums}
+.huellas b{color:var(--oro);font-weight:500;font-variant-numeric:tabular-nums}
 .huellas.sube b{text-shadow:0 0 14px var(--oro)}
 
 /* ── LA FRANJA DEL OFICIO ────────────────────────────────────────────────
@@ -983,11 +984,18 @@ footer.pie svg circle{fill:var(--tenue)}
 .franja[aria-expanded="true"] .ir{color:var(--oro)}
 .franja .sello{grid-row:1/4;width:30px;height:37px;align-self:center}
 .franja .sello svg{width:100%;height:100%;display:block}
-.franja .linea1{display:flex;justify-content:space-between;align-items:baseline;gap:4px 12px;flex-wrap:wrap}
-.franja .rango{font-family:'Rokkitt',serif;font-weight:700;font-size:15px;letter-spacing:1.4px;
+.franja .linea1{display:flex;justify-content:space-between;align-items:baseline;gap:4px 12px;
+  flex-wrap:nowrap;min-width:0}
+/* Un solo registro. Antes en la misma línea había tres: el oficio en
+   versales de quince, el apodo en minúsculas de doce y «las salas» en
+   versales de once. Tres tamaños y dos cajas de letra seguidos hacen un
+   salto raro al leer. Ahora todo son versales pequeñas y lo que distingue
+   al oficio es el oro, no el tamaño. */
+.franja .rango{font-family:'Rokkitt',serif;font-weight:700;font-size:13px;letter-spacing:1.6px;
   text-transform:uppercase;color:var(--oro)}
-.franja .rango small{font-family:'Rokkitt',serif;font-weight:500;font-size:12px;letter-spacing:.6px;
-  text-transform:none;color:var(--tenue);margin-left:8px}
+.franja .rango small{font-family:'Rokkitt',serif;font-weight:500;font-size:11.5px;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--tenue);margin-left:7px}
+.franja .rango small::before{content:'· '}
 .franja .cuenta{font-family:'Rokkitt',serif;font-weight:500;font-size:11.5px;letter-spacing:1.4px;
   text-transform:uppercase;color:var(--tenue)}
 .franja .barraR{height:5px;border-radius:3px;background:var(--noche);overflow:hidden}
@@ -997,7 +1005,10 @@ footer.pie svg circle{fill:var(--tenue)}
 @keyframes asciende{0%{box-shadow:0 0 0 0 rgba(224,178,74,.5)}
   40%{box-shadow:0 0 22px 3px rgba(224,178,74,.5)}100%{box-shadow:0 0 0 0 rgba(224,178,74,0)}}
 @media (prefers-reduced-motion:reduce){ .franja.sube{animation:none} }
-@media (max-width:380px){ .franja .rango small{display:none} }
+/* El apodo del oficio es un gusto, no un dato: en un móvil no cabe al lado
+   de «las salas» sin partir la línea en dos, y partida queda peor que sin
+   apodo. En la pizarra, que es donde se lee en voz alta, sí cabe. */
+@media (max-width:520px){ .franja .rango small{display:none} }
 /* el aviso del ascenso, dentro del informe */
 .sube-a{display:block;margin-top:7px;font-family:'Rokkitt',serif;font-size:15px;letter-spacing:.6px}
 .sube-a b{color:var(--oro)}
@@ -1104,7 +1115,6 @@ body[data-aula="si"] .regleta .acciones{justify-content:flex-start;gap:46px;widt
       <button id="bGlosario" aria-pressed="false">Glosario</button>
       <button id="bTaller" aria-pressed="false">Taller</button>
       <button id="bAjustes" aria-pressed="false">Ajustes</button>
-      <button id="bActa" aria-pressed="false">Acta</button>
       <button id="bAula" class="aula" aria-pressed="false">Aula</button>
     </span>
   </nav>
@@ -1492,6 +1502,11 @@ body[data-aula="si"] .regleta .acciones{justify-content:flex-start;gap:46px;widt
   <div class="veredicto" id="verCollar"></div>
 </div>
 <footer class="pie">
+  <!-- EL ACTA, al final de la página y no en la regleta: es lo último que
+       se hace, después de trabajar, y así la cabecera se queda con cinco
+       palabras en vez de seis. Es lo que hace la terminal J&L con el
+       «cerrar turno · albarán». -->
+  <button class="b ok cierre" id="bActa" aria-pressed="false">Cerrar la sesión · acta</button>
   <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" rel="license"
      aria-label="Licencia Creative Commons Reconocimiento-NoComercial-CompartirIgual 4.0">
     <svg viewBox="0 0 100 22" aria-hidden="true">
@@ -3812,7 +3827,7 @@ const PASOS = [
   {sel:'.fila',   t:'Los mandos', d:'Lo que se puede tocar: de cuánto en cuánto salta la gata, cuántas losas tiene la sala, hasta dónde llega el mural. Se toca y la sala cambia.'},
   {sala:true,     t:'La sala', d:'El manipulativo. Diez salas: el pasillo de baldosas, la sala que se enlosa, el taller del relojero, el granero, la escalera de Euclides, los rectángulos, la criba, el mural, la red y el collar.'},
   {sel:'.veredicto', t:'Lo que va diciendo', d:'Debajo de cada sala se lee lo que está pasando, con las cuentas escritas. No es la solución: es lo que se ve, contado.'},
-  {id:'barra',    t:'La regleta', d:'Seis acciones en letra pequeña, y cada una abre un papel encima que se cierra con su botón, con Escape o tocando fuera: Guía, Glosario con las palabras, Taller para practicar suelto con hoja imprimible, Ajustes, Acta para llevarte la sesión y Aula para la pizarra. El modo papiro y la vuelta a Materiales están dentro de Ajustes.'},
+  {id:'barra',    t:'La regleta', d:'Cinco acciones en letra pequeña, y cada una abre un papel encima que se cierra con su botón, con Escape o tocando fuera: Guía, Glosario con las palabras, Taller para practicar suelto con hoja imprimible, Ajustes y Aula para la pizarra. El modo papiro y la vuelta a Materiales están dentro de Ajustes, y el acta para llevarte la sesión está al final de la página, que es cuando se hace.'},
   {id:'cerradura', t:'El papiro', d:'El templo guarda un papiro cerrado con criterios de divisibilidad. Se abre con cuatro cifras, y el encargo veinticinco dice cuáles.'}
 ];
 let paso = 0;
