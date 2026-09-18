@@ -395,60 +395,56 @@ button.b:disabled{opacity:.4;cursor:default}
    templo. Las gatas saltan por encima y dejan huella donde caen; donde
    coinciden las dos, la baldosa se enciende. ── */
 .pasillo{position:relative;background:var(--panel2);border:1px solid var(--linea);border-radius:10px;
-  padding:10px 8px 8px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  padding:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
   scroll-behavior:smooth;
-  /* dos sombras pegadas a los bordes que solo se ven si hay suelo fuera:
-     así se sabe que el pasillo sigue sin tener que probar a arrastrar */
-  background-image:linear-gradient(90deg, var(--panel2), transparent 22px),
-    linear-gradient(270deg, var(--panel2), transparent 22px),
-    linear-gradient(90deg, rgba(0,0,0,.35), transparent 16px),
-    linear-gradient(270deg, rgba(0,0,0,.35), transparent 16px);
+  /* dos sombras pegadas a los bordes que solo se ven si hay suelo fuera —así
+     se sabe que el pasillo sigue sin probar a arrastrar— y, debajo, la luz
+     de una lámpara: un resplandor de oro apagado que no se mueve con el
+     suelo, como una lámpara que cuelga del techo del corredor */
+  background-image:linear-gradient(90deg, rgba(0,0,0,.42), transparent 18px),
+    linear-gradient(270deg, rgba(0,0,0,.42), transparent 18px),
+    radial-gradient(ellipse 55% 70% at 50% 28%, rgba(224,178,74,.16), transparent 72%);
   background-repeat:no-repeat;
-  background-size:26px 100%, 26px 100%, 18px 100%, 18px 100%;
-  background-position:0 0, 100% 0, 0 0, 100% 0;
-  background-attachment:local, local, scroll, scroll}
-.suelo{display:flex;gap:2px;min-width:min-content;padding-bottom:2px}
-.bald{position:relative;flex:0 0 auto;width:30px;height:56px;border-radius:3px;
-  background:var(--arena);border:1px solid var(--junta);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.28), inset 0 -2px 3px rgba(90,60,30,.18);
-  display:flex;align-items:flex-end;justify-content:center;padding-bottom:1px;
-  font-family:'Space Mono',monospace;font-size:10px;color:#5A4630;transition:background .18s}
-.bald:nth-child(even){background:var(--arenaO)}
-.bald::after{content:'';position:absolute;inset:0;border-radius:3px;pointer-events:none;
-  background:repeating-linear-gradient(97deg, rgba(120,85,45,.06) 0 2px, transparent 2px 7px)}
-.bald.cero{background:var(--panel);color:var(--tenue);border-color:var(--linea)}
-/* las huellas: la de oro es la gata A, la roja la gata B */
-/* La huella es una PATA: almohadilla y cuatro dedos, recortada con una
-   máscara para que el color venga de la variable y cambie solo en papel.
-   Ladeadas y alternando el lado, como anda un gato de verdad. */
-.bald .hA,.bald .hB{position:absolute;left:50%;width:14px;height:14px;opacity:0;
-  transition:opacity .22s;
-  -webkit-mask:var(--pata) center/contain no-repeat;
-  mask:var(--pata) center/contain no-repeat}
-.bald .hA{top:3px;background:var(--pataA);transform:translateX(-50%) rotate(-14deg);
-  filter:drop-shadow(0 0 1.2px rgba(255,255,255,.5))}
-.bald .hB{top:19px;background:var(--pataB);transform:translateX(-50%) rotate(13deg);
-  filter:drop-shadow(0 0 1.2px rgba(255,255,255,.45))}
-.bald:nth-child(4n) .hA{transform:translateX(-50%) rotate(11deg)}
-.bald:nth-child(4n+2) .hB{transform:translateX(-50%) rotate(-12deg)}
-.bald.pA .hA,.bald.pB .hB{opacity:1}
-.bald.ambas{background:var(--oro);color:#3A2A06;
-  box-shadow:0 0 0 2px var(--pataA) inset, 0 0 14px rgba(224,178,74,.45)}
-.bald.meta{outline:2px solid var(--oro);outline-offset:1px}
-/* Con TRES gatas hace falta una fila más de huellas: la baldosa crece y
-   cada una tiene su altura. La tercera es la del mcm — salta justo en los
-   encuentros de las otras dos, y en ninguna más. */
-.suelo.tres .bald{height:70px}
-.bald .hC{position:absolute;left:50%;top:35px;width:14px;height:14px;opacity:0;
-  transition:opacity .22s;background:var(--pataC);
-  transform:translateX(-50%) rotate(-9deg);
-  filter:drop-shadow(0 0 1.2px rgba(255,255,255,.5));
-  -webkit-mask:var(--pata) center/contain no-repeat;
-  mask:var(--pata) center/contain no-repeat}
-.bald.pC .hC{opacity:1}
-@media (max-width:420px){ .suelo.tres .bald{height:64px} .bald .hC{top:31px;width:12px;height:12px} }
-@media (max-width:420px){ .bald{width:26px;height:52px;font-size:9px}
-  .bald .hA,.bald .hB{width:12px;height:12px} .bald .hB{top:17px} }
+  background-size:20px 100%, 20px 100%, 100% 100%;
+  background-position:0 0, 100% 0, 0 0;
+  background-attachment:scroll, scroll, scroll}
+.pasillo .suelo{display:block;line-height:0}
+.corredor{display:block}
+.corredor .bald .cara{fill:var(--arena);stroke:var(--junta);stroke-width:1;stroke-linejoin:round;transition:fill .25s}
+.corredor .bald.impar .cara{fill:var(--arenaO)}
+.corredor .bald .canto{fill:var(--arenaO);stroke:var(--junta);stroke-width:1;stroke-linejoin:round}
+.corredor .bald.impar .canto{fill:var(--arena)}
+.corredor .bald .lado{fill:#000;opacity:.22;stroke:var(--junta);stroke-width:.6}
+.corredor .bald .num{font-family:'Space Mono',monospace;font-size:10px;fill:#5A4630}
+.corredor .bald.cero .cara,.corredor .bald.cero .canto{fill:var(--panel);stroke:var(--linea)}
+.corredor .bald.cero .num{fill:var(--tenue)}
+/* la huella: escondida hasta que la gata cae; entonces BROTA, con el rebote
+   de algo que se posa */
+.corredor .huella{display:none;transform-box:fill-box;transform-origin:center}
+.corredor .huella.puesta{display:inline;animation:brota .34s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes brota{from{scale:0}to{scale:1}}
+/* el encuentro: la cara de arriba se vuelve de oro y prende cuando la
+   segunda gata cae encima */
+.corredor .bald.encendida .cara{fill:var(--oro);filter:url(#brilloOro)}
+.corredor .bald.encendida .canto{fill:#B08430}
+.corredor .bald.encendida .num{fill:#3A2A06;font-weight:700}
+.corredor .bald.encendida:not(.yaEstaba) .cara{animation:prendeOro .6s ease-out both}
+@keyframes prendeOro{0%{filter:none}40%{filter:url(#brilloOro) brightness(1.5)}100%{filter:url(#brilloOro)}}
+.corredor .bald.meta .cara{stroke:var(--oro);stroke-width:2.2}
+/* LAS GATAS, quietas: parpadean cada pocos segundos y mueven la cola */
+.corredor .gata .postura{overflow:visible}
+.corredor .parpados{opacity:0;animation:parpadea 4.6s linear infinite}
+.corredor .gataB .parpados{animation-delay:1.7s}
+.corredor .gataC .parpados{animation-delay:3.1s}
+@keyframes parpadea{0%,93%{opacity:0}95%,98%{opacity:1}100%{opacity:0}}
+.corredor .colaG{transform-box:view-box;transform-origin:31.8px 41.4px;animation:menea 2.8s ease-in-out infinite alternate}
+.corredor .gataB .colaG{animation-delay:-1.3s}
+@keyframes menea{from{rotate:-7deg}to{rotate:7deg}}
+@media (prefers-reduced-motion:reduce){
+  .corredor .huella.puesta,.corredor .bald.encendida .cara,.corredor .parpados,.corredor .colaG{animation:none}
+}
+body[data-movimiento="menos"] .corredor .parpados,body[data-movimiento="menos"] .corredor .colaG{animation:none}
+@media (max-width:420px){ .corredor .bald .num{font-size:9.5px} }
 
 /* ── LA SALA. Un suelo rectangular a·b y una baldosa cuadrada de lado k:
    si sobra recorte, k no vale. La más grande que no deja recorte es el
@@ -616,7 +612,6 @@ button.b:disabled{opacity:.4;cursor:default}
    —las huellas aparecen por orden, no todas a la vez—; los granos CAEN en
    sus filas; los anillos del mural se ENCIENDEN barriendo la pared; el sello
    CAE sobre el papel. Y todo se apaga si el aparato pide menos movimiento. */
-.bald .hA,.bald .hB,.bald .hC{transition:opacity .25s ease var(--tarda, 0s)}
 .granero .g{animation:cae .35s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:var(--tarda,0s)}
 @keyframes cae{from{transform:translateY(-14px);opacity:0}}
 .mural button{animation:prende .4s ease both;animation-delay:var(--tarda,0s)}
@@ -1227,14 +1222,14 @@ body[data-aula="si"] .regleta .acciones{justify-content:flex-start;gap:46px;widt
     <span id="botA"></span>
   </div>
   <div class="fila" id="filaB">
-    <span class="etq">salto de la otra gata</span>
+    <span class="etq">salto de Nedjem</span>
     <span id="botB"></span>
   </div>
   <div class="pasillo"><div class="suelo" id="suelo"></div></div>
   <p class="pista" id="pistaPasillo">Cada huella es una baldosa donde cae la gata; donde caen las dos, la baldosa se enciende. <b>El pasillo es largo: se arrastra de lado.</b></p>
   <div class="lectura">
     <span>Miut, de <b id="lecA">3</b> en <b id="lecA2">3</b>: <b id="mulA"></b></span>
-    <span id="wrapB">La otra, de <b id="lecB">4</b> en <b id="lecB2">4</b>: <b id="mulB"></b></span>
+    <span id="wrapB">Nedjem, de <b id="lecB">4</b> en <b id="lecB2">4</b>: <b id="mulB"></b></span>
   </div>
   <div class="veredicto" id="verPasillo"></div>
 </div>
@@ -1542,74 +1537,401 @@ $('cara').innerHTML = `<svg viewBox="0 0 46 48" aria-hidden="true">
 
 
 /* ── EL PASILLO ─────────────────────────────────────────────────────────
-   Las baldosas son la recta numérica: la baldosa k ES el número k. La
-   gata de oro salta de a en a y la roja de b en b, y cada una deja huella
-   donde CAE —no por donde pasa—, que es justo la diferencia entre un
-   múltiplo y un número cualquiera. Donde caen las dos, la baldosa se
-   enciende: eso es un múltiplo común, y el primero es el mcm. */
+   Las baldosas son la recta numérica: la baldosa k ES el número k. Miut
+   salta de a en a y Nedjem de b en b, y cada una deja huella donde CAE —no
+   por donde pasa—, que es justo la diferencia entre un múltiplo y un número
+   cualquiera. Donde caen las dos, la baldosa se enciende: eso es un
+   múltiplo común, y el primero es el mcm. Tamiu, la tercera, salta de mcm
+   en mcm y cae exactamente en los encuentros.
+
+   AHORA SE VE SALTAR. Antes el pasillo era una fila de rectángulos y la
+   gata, una huella que aparecía. Ahora es un CORREDOR dibujado en oblicuo
+   —cada baldosa con su cara de arriba y su canto, el muro detrás con sus
+   columnas, la luz de una lámpara— y las gatas son SPRITES con las cuatro
+   posturas aprobadas: sentada, agachada, en el aire, aterrizando. Saltan de
+   verdad, de baldosa en baldosa, y la huella brota al caer. La cabeza de
+   cada gata es la de la línea del tiempo, sin tocar; lo que cambia entre
+   posturas es el cuerpo (la misma forma a otra escala), las patas (más
+   juntas o más separadas) y la cola (otra curva). La sombra se encoge en
+   el aire: es lo que hace ver la altura sin dibujar nada en 3D.
+
+   Con «menos movimiento» no hay carrera: cada gata aparece sentada en su
+   última baldosa y todas las huellas ya puestas. Lo que enseña el pasillo
+   se enseña igual, solo más quieto.                                     */
 const pasillo = {a:3, b:4, hasta:24, doble:true, tercera:false};
 let primerPintado = true;
-function pintaPasillo(){
-  const suelo = $('suelo'); suelo.innerHTML = '';
-  suelo.className = 'suelo' + (pasillo.tercera ? ' tres' : '');
-  for(let k = 0; k <= pasillo.hasta; k++){
-    const d = document.createElement('div');
-    d.className = 'bald' + (k === 0 ? ' cero' : '');
-    const cae = n => n && k > 0 && k % n === 0;
-    const pa = cae(pasillo.a), pb = pasillo.doble && cae(pasillo.b);
-    const m = pasillo.doble ? mcm(pasillo.a, pasillo.b) : 0;
-    const pc = pasillo.tercera && cae(m);
-    if(pa) d.classList.add('pA');
-    if(pb) d.classList.add('pB');
-    if(pc) d.classList.add('pC');
-    if(pa && pb) d.classList.add('ambas');
-    d.innerHTML = '<span class="hA"></span><span class="hB"></span><span class="hC"></span>' + k;
-    d.style.setProperty('--tarda', (k * 35) + 'ms');       // la gata va llegando
-    suelo.appendChild(d);
+
+/* LAS TRES GATAS. Mismo dibujo, tres pelajes; y cada una su colgante,
+   para que no parezcan la misma con otro color: Miut lleva el anj, Nedjem
+   un escarabeo de lapislázuli, Tamiu el pilar dyed. */
+const GATAS = {
+  A: {nombre:'Miut',   pelo:'#8A6A9E', sombra:'#5F4470', luz:'#C0A9CE', peluca:'#2E4E8C', pelucaLuz:'#4A6BAE', huella:'var(--pataA)',
+      colgante:`<g transform="translate(23 36.2)"><ellipse cx="0" cy="-2.2" rx="2" ry="2.4" fill="none" stroke="#F0CE72" stroke-width="1.5"/>
+        <path d="M0 .2 V5" stroke="#F0CE72" stroke-width="1.7" stroke-linecap="round"/><path d="M-2.9 1.4 H2.9" stroke="#F0CE72" stroke-width="1.7" stroke-linecap="round"/></g>`},
+  B: {nombre:'Nedjem', pelo:'#B8674A', sombra:'#7A3A24', luz:'#DDA08A', peluca:'#2F7A72', pelucaLuz:'#4FA398', huella:'var(--pataB)',
+      colgante:`<g transform="translate(23 37.4)"><ellipse cx="0" cy="0" rx="3.1" ry="3.7" fill="#2D4C8F" stroke="#F0CE72" stroke-width="1.2"/>
+        <path d="M-3.1 -.6 H3.1 M0 -3.7 V3.7" stroke="#F0CE72" stroke-width=".8" opacity=".9"/>
+        <path d="M-3.4 -1.8 Q-6 -3.6 -5.4 -.4 M3.4 -1.8 Q6 -3.6 5.4 -.4" fill="none" stroke="#F0CE72" stroke-width="1.1" stroke-linecap="round"/></g>`},
+  C: {nombre:'Tamiu',  pelo:'#8C9A78', sombra:'#59674A', luz:'#C6D0B4', peluca:'#3A3550', pelucaLuz:'#5C5678', huella:'var(--pataC)',
+      colgante:`<g transform="translate(23 36.6)"><path d="M-1.6 -2.4 H1.6 V5 H-1.6 Z" fill="#F0CE72" stroke="#241C36" stroke-width=".6"/>
+        <path d="M-3 -2.4 H3 M-3 -.6 H3 M-3 1.2 H3 M-3 3 H3" stroke="#F0CE72" stroke-width="1.3" stroke-linecap="round"/></g>`}
+};
+
+/* LA CABEZA, verbatim de la línea del tiempo (mechones, orejas, cabeza,
+   flequillo, diadema y cara). Los colores del pelo y la peluca se cambian
+   por gata; los ids de los clipPath se renombran para que no choquen. */
+const CABEZA_MIUT = `
+  <g fill="#2E4E8C" stroke="#241C36" stroke-width="1.3" stroke-linejoin="round">
+    <path d="M13.2 11.4 Q8.8 20 9.6 30.4 Q10.2 36 13.8 36.8 Q16.3 37 16.7 33.8 Q13.8 26 15.8 12.6 Z"/>
+    <path d="M32.8 11.4 Q37.2 20 36.4 30.4 Q35.8 36 32.2 36.8 Q29.7 37 29.3 33.8 Q32.2 26 30.2 12.6 Z"/>
+  </g>
+  <g stroke="#4A6BAE" stroke-width=".8" opacity=".85">
+    <path d="M11.5 16.4 Q10.5 25 11.7 33.4"/><path d="M13.4 14.8 Q12.6 24 13.8 34"/>
+    <path d="M34.5 16.4 Q35.5 25 34.3 33.4"/><path d="M32.6 14.8 Q33.4 24 32.2 34"/>
+  </g>
+  <g fill="#8A6A9E" stroke="#241C36" stroke-width="1.4" stroke-linejoin="round">
+    <path d="M14.2 13.4 L11 1.6 L20.2 9.2 Z"/><path d="M31.8 13.4 L35 1.6 L25.8 9.2 Z"/>
+  </g>
+  <path d="M15.2 11.4 L13.3 5.2 L18.4 8.8 Z" fill="#E0A8BE"/>
+  <path d="M30.8 11.4 L32.7 5.2 L27.6 8.8 Z" fill="#E0A8BE"/>
+  <path d="M23 5.8 Q32.8 5.8 33.4 14 L33.2 18.6 Q32.8 21 30.4 25
+           Q28 28.8 23 29.8 Q18 28.8 15.6 25 Q13.2 21 12.8 18.6 L12.6 14 Q13.2 5.8 23 5.8 Z"
+        fill="#8A6A9E" stroke="#241C36" stroke-width="1.4" stroke-linejoin="round"/>
+  <path d="M23 5.8 Q13.2 5.8 12.6 14 L12.8 18.6 Q13.2 21 15.6 25 Q17.2 27.4 19.4 28.6
+           Q15.8 23.2 15.6 18.4 L15.4 14.6 Q15.8 7.8 23 5.8 Z" fill="#5F4470" opacity=".24"/>
+  <path d="M12.9 13.8 Q13.6 5.6 23 5.6 Q32.4 5.6 33.1 13.8 Q31 10.6 23 10.2 Q15 10.6 12.9 13.8 Z"
+        fill="#2E4E8C" stroke="#241C36" stroke-width="1.3" stroke-linejoin="round"/>
+  <g stroke="#4A6BAE" stroke-width=".8" opacity=".85">
+    <path d="M17 8.2 V12.2"/><path d="M20 6.9 V11"/><path d="M23 6.5 V10.8"/>
+    <path d="M26 6.9 V11"/><path d="M29 8.2 V12.2"/>
+  </g>
+  <path d="M12.6 10.2 Q23 5 33.4 10.2 L33 12.2 Q23 7.4 13 12.2 Z"
+        fill="#E0B24A" stroke="#241C36" stroke-width="1.2" stroke-linejoin="round"/>
+  <g fill="#241C36" opacity=".5">
+    <circle cx="16.6" cy="9.8" r=".55"/><circle cx="19.8" cy="8.6" r=".55"/>
+    <circle cx="26.2" cy="8.6" r=".55"/><circle cx="29.4" cy="9.8" r=".55"/>
+  </g>
+  <g fill="#F0CE72" stroke="#241C36" stroke-width=".9" stroke-linejoin="round">
+    <path d="M20.4 7.8 Q18.6 6.2 19.6 4.4 Q21 5.2 21.2 7.2 Z"/>
+    <path d="M25.6 7.8 Q27.4 6.2 26.4 4.4 Q25 5.2 24.8 7.2 Z"/>
+  </g>
+  <g fill="#F0CE72" stroke="#241C36" stroke-width="1" stroke-linejoin="round">
+    <path d="M23 2.6 Q24.6 4.6 24.2 7.4 L21.8 7.4 Q21.4 4.6 23 2.6 Z"/>
+    <path d="M21.6 7.4 Q19.6 6.2 19.8 4 Q21.4 5 22 7.4 Z"/>
+    <path d="M24.4 7.4 Q26.4 6.2 26.2 4 Q24.6 5 24 7.4 Z"/>
+  </g>
+  <path d="M15.2 13.4 Q18.4 11.2 21.6 12.9" fill="none" stroke="#241C36" stroke-width="1.15" stroke-linecap="round"/>
+  <path d="M30.8 13.4 Q27.6 11.2 24.4 12.9" fill="none" stroke="#241C36" stroke-width="1.15" stroke-linecap="round"/>
+  <clipPath id="@I">
+    <path d="M21.400000000000002 17.9 Q18.1 12.9 14.700000000000001 16.3 Q18.1 20.9 21.400000000000002 17.9 Z"/>
+  </clipPath>
+  <path d="M21.400000000000002 17.9 Q18.1 12.9 14.700000000000001 16.3 Q18.1 20.9 21.400000000000002 17.9 Z" fill="#F6F1E6"/>
+  <g clip-path="url(#@I)">
+    <circle cx="18.1" cy="17.1" r="2.75" fill="#4E9B46"/>
+    <circle cx="18.1" cy="17.1" r="2.75" fill="none" stroke="#6FC05E" stroke-width="1.1"/>
+    <ellipse cx="18.1" cy="17.1" rx="1.05" ry="2.6" fill="#241C36"/>
+    <path d="M21.400000000000002 17.9 Q18.1 13.6 14.700000000000001 16.3 Q18.1 15.4 21.400000000000002 17.9 Z" fill="#8FB6DE" opacity=".55"/>
+  </g>
+  <circle cx="17.1" cy="15.7" r=".62" fill="#fff"/>
+  <path d="M21.400000000000002 17.9 Q18.1 20.9 14.700000000000001 16.3" fill="none" stroke="#241C36" stroke-width=".9" stroke-linecap="round"/>
+  <path d="M21.400000000000002 17.9 Q18.1 12.6 14.700000000000001 16.3 L11.3 14.4
+           Q18.1 11.9 21.400000000000002 17.599999999999998 Z" fill="#241C36"/>
+  <path d="M21.3 12.9 Q18.1 11.1 14.700000000000001 12.7" fill="none" stroke="#241C36"
+        stroke-width="1" stroke-linecap="round" opacity=".9"/>
+  <clipPath id="@D">
+    <path d="M24.599999999999998 17.9 Q27.9 12.9 31.299999999999997 16.3 Q27.9 20.9 24.599999999999998 17.9 Z"/>
+  </clipPath>
+  <path d="M24.599999999999998 17.9 Q27.9 12.9 31.299999999999997 16.3 Q27.9 20.9 24.599999999999998 17.9 Z" fill="#F6F1E6"/>
+  <g clip-path="url(#@D)">
+    <circle cx="27.9" cy="17.1" r="2.75" fill="#4E9B46"/>
+    <circle cx="27.9" cy="17.1" r="2.75" fill="none" stroke="#6FC05E" stroke-width="1.1"/>
+    <ellipse cx="27.9" cy="17.1" rx="1.05" ry="2.6" fill="#241C36"/>
+    <path d="M24.599999999999998 17.9 Q27.9 13.6 31.299999999999997 16.3 Q27.9 15.4 24.599999999999998 17.9 Z" fill="#8FB6DE" opacity=".55"/>
+  </g>
+  <circle cx="28.9" cy="15.7" r=".62" fill="#fff"/>
+  <path d="M24.599999999999998 17.9 Q27.9 20.9 31.299999999999997 16.3" fill="none" stroke="#241C36" stroke-width=".9" stroke-linecap="round"/>
+  <path d="M24.599999999999998 17.9 Q27.9 12.6 31.299999999999997 16.3 L34.699999999999996 14.4
+           Q27.9 11.9 24.599999999999998 17.599999999999998 Z" fill="#241C36"/>
+  <path d="M24.7 12.9 Q27.9 11.1 31.299999999999997 12.7" fill="none" stroke="#241C36"
+        stroke-width="1" stroke-linecap="round" opacity=".9"/>
+  <path d="M18.8 22.6 Q23 21 27.2 22.6 Q27.4 26 25 27.8 Q23 29 21 27.8 Q18.6 26 18.8 22.6 Z"
+        fill="#C0A9CE" stroke="#241C36" stroke-width="1.15" stroke-linejoin="round"/>
+  <path d="M21.6 23.3 Q23 22.6 24.4 23.3 Q24 25 23 25.5 Q22 25 21.6 23.3 Z"
+        fill="#E58AA6" stroke="#241C36" stroke-width=".9" stroke-linejoin="round"/>
+  <path d="M23 25.5 V26.5" stroke="#241C36" stroke-width=".9"/>
+  <path d="M23 26.5 Q21.4 28.1 20.2 26.8" fill="none" stroke="#241C36" stroke-width=".9" stroke-linecap="round"/>
+  <path d="M23 26.5 Q24.6 28.1 25.8 26.8" fill="none" stroke="#241C36" stroke-width=".9" stroke-linecap="round"/>
+  <g stroke="#F6F1E6" stroke-width=".7" stroke-linecap="round" opacity=".78">
+    <path d="M19.4 23.8 Q17.4 23.4 16.4 23.9"/><path d="M19.6 25.6 Q17.6 26 16.8 26.9"/>
+    <path d="M26.6 23.8 Q28.6 23.4 29.6 23.9"/><path d="M26.4 25.6 Q28.4 26 29.2 26.9"/>
+  </g>
+  <!-- los párpados: dos almendras del color del pelo sobre los ojos, que
+       solo se ven un instante cada pocos segundos. Es el parpadeo, y no
+       toca el dibujo del ojo: se pone encima. -->
+  <g class="parpados" fill="#8A6A9E" stroke="#241C36" stroke-width=".9" stroke-linejoin="round">
+    <path d="M21.400000000000002 17.9 Q18.1 12.9 14.700000000000001 16.3 Q18.1 20.9 21.400000000000002 17.9 Z"/>
+    <path d="M24.599999999999998 17.9 Q27.9 12.9 31.299999999999997 16.3 Q27.9 20.9 24.599999999999998 17.9 Z"/>
+  </g>`;
+
+/* EL PECTORAL, verbatim; el colgante lo pone cada gata. */
+const pectoral = p => `
+  <g transform="translate(0 -1.4)">
+  <g fill="none" stroke-linecap="butt">
+    <path d="M13.6 30.3 Q23 41.4 32.4 30.3" stroke="${p.sombra}" stroke-width="8.8"/>
+    <path d="M13.7 30.4 Q23 41.2 32.3 30.4" stroke="#E0B24A" stroke-width="2.4"/>
+    <path d="M15.3 31.2 Q23 39.8 30.7 31.2" stroke="#3FA192" stroke-width="2.3"/>
+    <path d="M17 32.2 Q23 38.6 29 32.2" stroke="#B0392C" stroke-width="2"/>
+    <path d="M18.6 33.2 Q23 37.6 27.4 33.2" stroke="#E0B24A" stroke-width="1.7"/>
+  </g>
+  <g stroke="#241C36" stroke-width=".75" opacity=".5">
+    <path d="M16.4 30.8 L19.2 36.2"/><path d="M29.6 30.8 L26.8 36.2"/>
+  </g>
+  ${p.colgante}
+  </g>`;
+
+/* EL CUERPO, verbatim, con la escala sobre su base como único parámetro: en
+   la línea es scale(1.15 1.32). Aplastar y estirar es cambiar dos números. */
+const cuerpoGata = (p, sx, sy) => `
+  <g transform="translate(23 45.6) scale(${sx} ${sy}) translate(-23 -45.6)">
+  <path d="M16 45.6 Q15.4 38 18.3 34.4 Q20.6 31.8 23 31.2 Q25.4 31.8 27.7 34.4 Q30.6 38 30 45.6 Z"
+        fill="${p.pelo}" stroke="#241C36" stroke-width="1.4" stroke-linejoin="round"/>
+  <path d="M16 45.6 Q15.4 38 18.3 34.4 Q20.6 31.8 23 31.2 Q19.8 35.4 19.4 45.6 Z" fill="${p.luz}" opacity=".3"/>
+  </g>`;
+/* LAS PATAS, verbatim, separadas `ap` a cada lado y subidas `arriba`. */
+const patasGata = (p, ap, arriba = 0) => `
+  <g transform="translate(0 ${-arriba})">
+  <g fill="${p.luz}" stroke="#241C36" stroke-width="1.3" stroke-linejoin="round">
+    <path transform="translate(${-ap} 0)" d="M17.6 45.6 Q17.6 41 19.9 41 Q22.2 41 22.2 45.6 Z"/>
+    <path transform="translate(${ap} 0)" d="M23.8 45.6 Q23.8 41 26.1 41 Q28.4 41 28.4 45.6 Z"/>
+  </g>
+  <g fill="#E0B24A" stroke="#241C36" stroke-width="1">
+    <rect x="${17.3 - ap}" y="42.2" width="5.2" height="2" rx="1"/>
+    <rect x="${23.5 + ap}" y="42.2" width="5.2" height="2" rx="1"/>
+  </g></g>`;
+/* LA COLA: el trazo doble de la línea con la curva como parámetro. */
+const colaGata = (p, d, clase = '') => `<g class="${clase}">
+  <path d="${d}" fill="none" stroke="#241C36" stroke-width="4.4" stroke-linecap="round"/>
+  <path d="${d}" fill="none" stroke="${p.pelo}" stroke-width="2.9" stroke-linecap="round"/></g>`;
+const sombraGata = (rx, ry, op) => `<ellipse class="sombraG" cx="23" cy="45.8" rx="${rx}" ry="${ry}" fill="#140F1F" opacity="${op}"/>`;
+const cabezaGata = (p, id, tf) => `<g transform="${tf} translate(23 16) scale(.74) translate(-23 -16)">`
+  + CABEZA_MIUT.replace(/@I/g, id + 'I').replace(/@D/g, id + 'D').replace(/#8A6A9E/g, p.pelo).replace(/#5F4470/g, p.sombra)
+      .replace(/#C0A9CE/g, p.luz).replace(/#2E4E8C/g, p.peluca).replace(/#4A6BAE/g, p.pelucaLuz)
+  + '</g>';
+
+/* LAS CUATRO POSTURAS. La misma gata: el cuerpo a otra escala, las patas a
+   otra distancia, la cola en otra curva, la cabeza desplazada —nunca
+   deformada—. Cada postura es un <svg> anidado con el mismo viewBox, y se
+   enseña una a la vez. */
+function posturaGata(p, id, cual){
+  const pect = tf => `<g transform="${tf}">${pectoral(p)}</g>`;
+  let d = '';
+  if(cual === 'sentada'){
+    d = sombraGata(13, 2, .45) + cuerpoGata(p, 1.15, 1.32) + cabezaGata(p, id, '') + pect('') + patasGata(p, 0)
+      + colaGata(p, 'M31.8 41.4 Q37.4 43.4 34.4 45.6 Q28.6 47.6 20 46.8 Q13.6 46.2 12.6 43.6', 'colaG');
+  }else if(cual === 'agachada'){
+    d = sombraGata(15, 2, .45) + cuerpoGata(p, 1.5, .95) + colaGata(p, 'M29.5 40.5 Q38 37 36.4 28.6 Q35.6 25.6 33 26')
+      + cabezaGata(p, id, 'translate(0 5)') + pect('translate(0 5)') + patasGata(p, 3.2);
+  }else if(cual === 'aire'){
+    d = sombraGata(7, 1.4, .3) + '<g transform="translate(0 -9)">' + cuerpoGata(p, 1.02, 1.62)
+      + colaGata(p, 'M29 42.6 Q36 45.4 34.2 53') + cabezaGata(p, id, 'translate(0 -2.5) rotate(-3 23 16)')
+      + pect('translate(0 -2.5) rotate(-3 23 16)') + patasGata(p, -1.2, 4) + '</g>';
+  }else{
+    d = sombraGata(16.5, 2.2, .5) + cuerpoGata(p, 1.7, .8) + colaGata(p, 'M30 41.6 Q40 40 40.6 30.4')
+      + cabezaGata(p, id, 'translate(0 7) rotate(3 23 16)') + pect('translate(0 7) rotate(3 23 16)') + patasGata(p, 5.6);
   }
-  const lista = n => { const v = []; for(let k = n; k <= pasillo.hasta; k += n) v.push(k); return v.join(', '); };
+  return `<svg class="postura" data-pose="${cual}" viewBox="0 -12 46 62" width="${GC.CW}" height="${GC.CH}" overflow="visible">${d}</svg>`;
+}
+
+/* LA GEOMETRÍA DEL CORREDOR. Cada baldosa: cara de arriba (un paralelogramo
+   que se va hacia atrás y a la derecha) y canto (la cara de delante, con el
+   número). Las gatas se plantan en el centro de la cara de arriba. */
+const GC = {TW:44, GAP:2, SK:13, DP:20, FH:13, SUELO:150, H:172, CW:58, CH:78, MURO:134};
+GC.PASO = GC.TW + GC.GAP;
+GC.PIES = (45.8 + 12) / 62 * GC.CH;          // dónde están los pies dentro del svg de la gata
+const baldX = k => 6 + k * GC.PASO;
+const centroBald = k => ({x: baldX(k) + GC.TW / 2 + GC.SK / 2, y: GC.SUELO - GC.DP / 2});
+
+const PATA_PATH = '<ellipse cx="7" cy="9.6" rx="4.4" ry="3.6"/><ellipse cx="2.4" cy="5.6" rx="1.7" ry="2"/><ellipse cx="5.6" cy="3" rx="1.8" ry="2.1"/><ellipse cx="9" cy="3.2" rx="1.8" ry="2.1"/><ellipse cx="11.9" cy="6" rx="1.6" ry="1.9"/>';
+
+let carreraId = 0;
+const gatasEnSuelo = {};
+function pintaPasillo(){
+  carreraId++;                                   // lo que estuviera corriendo se para
+  const suelo = $('suelo'); suelo.innerHTML = '';
+  const N = pasillo.hasta, W = baldX(N) + GC.TW + GC.SK + 8;
+  const cae = (k, n) => n && k > 0 && k % n === 0;
+  const m = pasillo.doble ? mcm(pasillo.a, pasillo.b) : 0;
+
+  let s = `<svg class="corredor" width="${W}" height="${GC.H}" viewBox="0 0 ${W} ${GC.H}" aria-hidden="true">
+    <defs>
+      <symbol id="pataS" viewBox="0 0 14 14">${PATA_PATH}</symbol>
+      <linearGradient id="muroG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--noche)"/><stop offset="1" stop-color="var(--panel2)"/></linearGradient>
+      <filter id="brilloOro" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4" result="b"/><feFlood flood-color="#E0B24A" flood-opacity=".7"/><feComposite in2="b" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <rect class="muro" x="0" y="0" width="${W}" height="${GC.MURO}" fill="url(#muroG)"/>
+    <rect x="0" y="${GC.MURO - 3}" width="${W}" height="3" fill="#000" opacity=".28"/>`;
+  /* las columnas, cada seis baldosas, con su capitel de loto: son lo que
+     dice que esto es un templo y no una regla */
+  for(let k = 0; k <= N; k += 6){
+    const x = baldX(k) + 4;
+    s += `<g class="columna">
+      <rect x="${x}" y="22" width="16" height="${GC.MURO - 22}" fill="var(--arenaO)" stroke="var(--junta)" stroke-width="1"/>
+      <rect x="${x + 3}" y="22" width="4" height="${GC.MURO - 22}" fill="#fff" opacity=".10"/>
+      <path d="M${x - 4} 22 L${x + 20} 22 L${x + 17} 10 Q${x + 8} 4 ${x - 1} 10 Z" fill="var(--arena)" stroke="var(--junta)" stroke-width="1" stroke-linejoin="round"/>
+      <path d="M${x + 2} 20 Q${x + 8} 9 ${x + 14} 20" fill="none" stroke="var(--junta)" stroke-width=".8" opacity=".7"/>
+    </g>`;
+  }
+  /* la cenefa del muro: dos líneas de oro apagado */
+  s += `<path d="M0 8 H${W} M0 12 H${W}" stroke="var(--oro)" stroke-width="1" opacity=".22"/>`;
+
+  /* las baldosas, de atrás hacia delante: primero todas las caras de
+     arriba y los cantos, luego las huellas, luego las gatas */
+  const tiles = [];
+  for(let k = 0; k <= N; k++){
+    const x = baldX(k), y = GC.SUELO, pa = cae(k, pasillo.a), pb = pasillo.doble && cae(k, pasillo.b), pc = pasillo.tercera && cae(k, m);
+    const cls = 'bald' + (k === 0 ? ' cero' : k % 2 ? ' impar' : '') + (pa && pb ? ' ambas' : '');
+    tiles.push({k, pa, pb, pc});
+    s += `<g class="${cls}" data-k="${k}">
+      <path class="canto" d="M${x} ${y} H${x + GC.TW} V${y + GC.FH} H${x} Z"/>
+      <path class="cara" d="M${x} ${y} L${x + GC.SK} ${y - GC.DP} L${x + GC.TW + GC.SK} ${y - GC.DP} L${x + GC.TW} ${y} Z"/>
+      <path class="lado" d="M${x + GC.TW} ${y} L${x + GC.TW + GC.SK} ${y - GC.DP} L${x + GC.TW + GC.SK} ${y - GC.DP + GC.FH} L${x + GC.TW} ${y + GC.FH} Z"/>
+      <text class="num" x="${x + GC.TW / 2}" y="${y + GC.FH - 3}" text-anchor="middle">${k}</text>
+      <g class="huellas">
+        <use class="huella hA" href="#pataS" x="${x + 9}" y="${y - GC.DP + 3}" width="12" height="12" fill="var(--pataA)" transform="rotate(${k % 4 === 0 ? 11 : -14} ${x + 15} ${y - GC.DP + 9})"/>
+        <use class="huella hB" href="#pataS" x="${x + 29}" y="${y - GC.DP + 8}" width="12" height="12" fill="var(--pataB)" transform="rotate(${k % 4 === 2 ? -12 : 13} ${x + 35} ${y - GC.DP + 14})"/>
+        <use class="huella hC" href="#pataS" x="${x + 20}" y="${y - GC.DP + 2}" width="11" height="11" fill="var(--pataC)" transform="rotate(-9 ${x + 25.5} ${y - GC.DP + 7.5})"/>
+      </g>
+    </g>`;
+  }
+  /* las gatas: Tamiu detrás, luego Miut, luego Nedjem, y cada una un poco
+     desplazada para que en un encuentro se vean las tres */
+  const orden = [];
+  if(pasillo.tercera) orden.push('C');
+  orden.push('A'); if(pasillo.doble) orden.push('B');
+  const desplaza = {A:{dx:-9, dy:-3}, B:{dx:9, dy:3}, C:{dx:0, dy:-7}};
+  orden.forEach(g => {
+    s += `<g class="gata gata${g}" data-gata="${g}">` + ['sentada', 'agachada', 'aire', 'aterriza'].map(c => posturaGata(GATAS[g], 'g' + g + c, c)).join('') + '</g>';
+  });
+  s += '</svg>';
+  suelo.innerHTML = s;
+  const svg = suelo.firstElementChild;
+
+  /* dónde cae cada una */
+  const lista = n => { const v = []; for(let k = n; k <= N; k += n) v.push(k); return v; };
+  const caidas = {A: lista(pasillo.a), B: pasillo.doble ? lista(pasillo.b) : [], C: pasillo.tercera && m ? lista(m) : []};
+  const salto = {A: pasillo.a, B: pasillo.b, C: m};
+
+  /* pintar una gata en una baldosa con una postura, sin animación */
+  const ponGata = (g, k, cual, alto = 0) => {
+    const el = svg.querySelector('.gata' + g); if(!el) return;
+    const c = centroBald(k), d = desplaza[g];
+    el.querySelectorAll('.postura').forEach(p => { p.style.display = p.dataset.pose === cual ? '' : 'none'; });
+    el.setAttribute('transform', `translate(${c.x + d.dx - GC.CW / 2} ${c.y + d.dy - GC.PIES - alto})`);
+  };
+  const pisa = (g, k) => {
+    const t = svg.querySelector(`.bald[data-k="${k}"]`); if(!t) return;
+    const h = t.querySelector('.h' + g); if(h) h.classList.add('puesta');
+    const tile = tiles[k];
+    if(g === 'A') tile.pisadaA = true; if(g === 'B') tile.pisadaB = true;
+    if(tile.pa && tile.pb && tile.pisadaA && tile.pisadaB) t.classList.add('encendida');
+  };
+
+  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches || document.body.dataset.movimiento === 'menos';
+  const yo = carreraId;
+  /* la primera carrera espera a que se vaya el arranque: así lo primero
+     que se ve del templo, después del pasillo pequeño del arranque, es el
+     pasillo de verdad con las gatas saltando */
+  const espera = primerPintado && $('boot') ? 3400 : 0; primerPintado = false;
+  if(quieto){
+    /* sin carrera: todo puesto, cada gata sentada en su última baldosa */
+    orden.forEach(g => { caidas[g].forEach(k => pisa(g, k)); ponGata(g, caidas[g].length ? caidas[g][caidas[g].length - 1] : 0, 'sentada'); });
+    svg.querySelectorAll('.bald.ambas').forEach(t => t.classList.add('encendida', 'yaEstaba'));
+  }else{
+    orden.forEach(g => ponGata(g, 0, 'sentada'));
+    setTimeout(() => { if(carreraId === yo) orden.forEach(g => corre(g)); }, espera);
+  }
+
+  /* LA CARRERA de una gata: cada salto es agachada → aire (en arco) →
+     aterriza (y la huella brota) → sentada. Cuantos más saltos, más rápido
+     cada uno, para que ninguna carrera dure más de tres segundos. */
+  function corre(g){
+    const paradas = caidas[g]; if(!paradas.length) return;
+    const ms = Math.max(170, Math.min(440, 2600 / paradas.length));
+    let desde = 0, i = 0;
+    const caja = suelo.parentElement;
+    const sigue = () => svg.isConnected && carreraId === yo;
+    const paso = () => {
+      if(!sigue() || i >= paradas.length) return;
+      const hasta = paradas[i];
+      ponGata(g, desde, 'agachada');
+      setTimeout(() => {
+        if(!sigue()) return;
+        const t0 = performance.now(), dur = ms * .52, c0 = centroBald(desde), c1 = centroBald(hasta), d = desplaza[g];
+        const ALTO = 34 + Math.min(30, (hasta - desde) * 1.2);
+        const el = svg.querySelector('.gata' + g);
+        el.querySelectorAll('.postura').forEach(p => { p.style.display = p.dataset.pose === 'aire' ? '' : 'none'; });
+        const vuela = t => {
+          if(!sigue()) return;
+          const u = Math.min(1, (t - t0) / dur), y = ALTO * 4 * u * (1 - u);
+          const x = c0.x + (c1.x - c0.x) * u;
+          el.setAttribute('transform', `translate(${x + d.dx - GC.CW / 2} ${c0.y + d.dy - GC.PIES - y})`);
+          /* el corredor sigue a la gata que va delante */
+          const enPantalla = x - caja.scrollLeft;
+          if(enPantalla > caja.clientWidth * .72) caja.scrollTo({left: x - caja.clientWidth * .4, behavior: 'auto'});
+          if(u < 1) requestAnimationFrame(vuela);
+          else {
+            ponGata(g, hasta, 'aterriza'); pisa(g, hasta);
+            setTimeout(() => { if(!sigue()) return; ponGata(g, hasta, 'sentada'); desde = hasta; i++;
+              if(i < paradas.length) setTimeout(paso, ms * .18); else llegada(); }, ms * .2);
+          }
+        };
+        requestAnimationFrame(vuela);
+      }, ms * .28);
+    };
+    setTimeout(paso, g === 'A' ? 120 : g === 'B' ? 260 : 420);
+  }
+  /* al acabar, la baldosa que importa se asoma sola, con calma */
+  let llegadas = 0;
+  function llegada(){
+    llegadas++;
+    if(llegadas < orden.filter(g => caidas[g].length).length) return;
+    const clave = pasillo.doble ? Math.min(m, N) : Math.floor(N / pasillo.a) * pasillo.a;
+    const caja = suelo.parentElement;
+    if(caja.scrollWidth > caja.clientWidth){
+      const destino = centroBald(clave).x - caja.clientWidth / 2;
+      caja.scrollTo({left: Math.max(0, destino), behavior: 'smooth'});
+    }
+  }
+
+  /* la lectura y el veredicto, como siempre */
+  const listaTxt = n => lista(n).join(', ');
   $('lecA').textContent = pasillo.a; $('lecA2').textContent = pasillo.a;
-  $('mulA').textContent = lista(pasillo.a);
+  $('mulA').textContent = listaTxt(pasillo.a);
   $('wrapB').hidden = !pasillo.doble;
   $('filaB').hidden = !pasillo.doble;
   if(pasillo.doble){
     $('lecB').textContent = pasillo.b; $('lecB2').textContent = pasillo.b;
-    $('mulB').textContent = lista(pasillo.b);
+    $('mulB').textContent = listaTxt(pasillo.b);
   }
   const ver = $('verPasillo');
   if(pasillo.tercera){
-    const m = mcm(pasillo.a, pasillo.b);
     ver.className = 'veredicto bien';
-    ver.innerHTML = 'La gata verde salta <b>de ' + m + ' en ' + m + '</b>, y cae <b>exactamente</b> donde '
+    ver.innerHTML = 'Tamiu salta <b>de ' + m + ' en ' + m + '</b>, y cae <b>exactamente</b> donde '
       + 'coinciden las otras dos. Ni una de más ni una de menos: los múltiplos comunes de ' + pasillo.a
       + ' y ' + pasillo.b + ' <b>son</b> los múltiplos de ' + m + '.';
   }else if(!pasillo.doble){
     ver.className = 'veredicto';
-    ver.innerHTML = 'Cae en <b>' + lista(pasillo.a) + '</b>… Esas baldosas son los '
+    ver.innerHTML = 'Miut cae en <b>' + listaTxt(pasillo.a) + '</b>… Esas baldosas son los '
       + '<b>múltiplos de ' + pasillo.a + '</b>.';
   }else{
-    const m = mcm(pasillo.a, pasillo.b);
-    ver.className = 'veredicto' + (m <= pasillo.hasta ? ' bien' : '');
-    ver.innerHTML = m <= pasillo.hasta
-      ? 'Las dos coinciden por primera vez en la <b>' + m + '</b>. Ese es el '
+    ver.className = 'veredicto' + (m <= N ? ' bien' : '');
+    ver.innerHTML = m <= N
+      ? 'Miut y Nedjem coinciden por primera vez en la <b>' + m + '</b>. Ese es el '
         + '<b>mínimo común múltiplo</b> de ' + pasillo.a + ' y ' + pasillo.b + '.'
       : 'Con este pasillo no llegan a coincidir: el primer encuentro está en la <b>'
-        + m + '</b> y el suelo se acaba en la ' + pasillo.hasta + '.';
+        + m + '</b> y el suelo se acaba en la ' + N + '.';
   }
   ponBotones();
-  /* El pasillo es más ancho que un móvil, así que se arrastra. Pero la
-     baldosa que importa —el primer encuentro, o la última huella— puede
-     quedar fuera de la pantalla justo cuando se acaba de responder. Se
-     asoma sola, con calma. */
-  if(primerPintado){ primerPintado = false; return; }
-  const clave = pasillo.doble
-    ? Math.min(mcm(pasillo.a, pasillo.b), pasillo.hasta)
-    : Math.floor(pasillo.hasta / pasillo.a) * pasillo.a;
-  const caja = suelo.parentElement, hijo = suelo.children[clave];
-  if(hijo && caja.scrollWidth > caja.clientWidth){
-    const destino = hijo.offsetLeft - caja.clientWidth / 2 + hijo.offsetWidth / 2;
-    caja.scrollTo({left: Math.max(0, destino), behavior: 'smooth'});
-  }
 }
 function ponBotones(){
   const mk = (cont, cual, val) => {
