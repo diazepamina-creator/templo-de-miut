@@ -951,6 +951,49 @@ body:not([data-libre="si"]) .pistaSala{display:none}
   .granero .f.suelta .g,.escalera svg.hecha .q,.sello1001::after{animation:none}
 }
 
+/* ── EL PAPIRO DEL ESCRIBA, en papel ─────────────────────────────────────
+   La hoja lleva la paleta de papel para que los dibujos copiados de las
+   salas salgan claros, y ninguna animación: en papel todo está quieto. */
+.hoja{--noche:#FBF7EF;--panel:#FFFFFF;--panel2:#F5EFE2;--linea:#C9BBA6;--tinta:#2E2436;--tenue:#6E6076;
+  --morado:#8A6A9E;--moradoF:#6B4E7A;--oro:#B08430;--rojo:#A8442F;--arena:#E6D3B4;--arenaO:#C0A57F;--junta:#A08CB4;
+  --pataA:#4E3565;--pataB:#8A2C1B;--pataC:#31562A;--sombra:none}
+.hoja *{animation:none !important;transition:none !important}
+.hoja .pagina{break-after:page;page-break-after:always;padding:0 0 10px}
+.hoja .pagina:last-child{break-after:auto;page-break-after:auto}
+.hoja .cabFicha{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;
+  border-bottom:2px solid #2E2436;padding-bottom:6px;margin-bottom:10px}
+.hoja .cabFicha b{font-family:'Rokkitt',serif;font-size:22px}
+.hoja .cabFicha span{font-size:12px;color:#666}
+.hoja .idea{font-size:14.5px;line-height:1.5;margin:0 0 10px;border-left:3px solid #B08430;padding-left:10px}
+.hoja .escena{background:#F5EFE2;border:1px solid #C9BBA6;border-radius:8px;padding:8px;margin:0 0 12px}
+.hoja .mural{max-width:370px;margin:0 auto}
+.hoja .criba{max-width:540px;margin:0 auto}
+.hoja li,.hoja p,.hoja .enc,.hoja .hueco{font-family:Georgia,'Times New Roman',serif}
+.hoja .escena svg,.hoja .corredor{width:100% !important;height:auto !important;max-width:100%}
+.hoja .pasillo{overflow:visible;background:none;border:0;padding:0}
+.hoja .mural button,.hoja .escena button{display:inline-block !important;padding:0;border:0;background:none}
+.hoja .fila,.hoja .lectura,.hoja .veredicto,.hoja .pista{display:none !important}
+.hoja h3{font-family:'Rokkitt',serif;font-size:14px;letter-spacing:1.2px;text-transform:uppercase;margin:12px 0 4px;color:#6B4E7A}
+.hoja ol.ejer{padding-left:22px;font-size:14px;line-height:1.7;margin:0}
+.hoja ol.ejer.clave{line-height:1.6;font-size:12.5px}
+.hoja .hueco{border:1px dashed #999;border-radius:6px;min-height:110px;padding:6px 8px;font-size:12.5px;color:#555;margin-top:6px}
+.hoja .tira{display:flex;gap:2px;margin-top:8px}
+.hoja .tira i{flex:1;height:26px;border:1px solid #999;font-size:9px;text-align:center;line-height:26px;font-style:normal;color:#888}
+.hoja .rejilla{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;margin-top:8px;max-width:420px}
+.hoja .rejilla i{aspect-ratio:1;border:1px solid #999;font-size:10px;text-align:center;line-height:2.2;font-style:normal;color:#666}
+.hoja .enc{break-inside:avoid;border-bottom:1px solid #ddd;padding:7px 0;font-size:13.5px;line-height:1.45}
+.hoja .enc .n{font-family:'Space Mono',monospace;font-size:10.5px;color:#666;margin-right:6px;white-space:nowrap}
+.hoja .enc .ops{margin:4px 0 0 18px;font-size:12.5px;line-height:1.7}
+.hoja .enc .resp{margin:6px 0 0 18px;color:#666;font-size:12px}
+.hoja .guia p{font-size:13.5px;line-height:1.55;margin:0 0 8px}
+.hoja .guia ul{font-size:13px;line-height:1.55;padding-left:20px;margin:0 0 8px}
+.hoja .error{font-size:12.5px;line-height:1.45;margin:0 0 7px;padding-left:10px;border-left:2px solid #A8442F;break-inside:avoid}
+.hoja .error b{display:block;color:#A8442F}
+.hoja .pieHoja{font-size:10px;color:#777;margin-top:14px;border-top:1px solid #ccc;padding-top:6px}
+.impLista{display:grid;grid-template-columns:auto 1fr;gap:10px 12px;align-items:center}
+.impLista .etq{min-width:0;text-transform:none;letter-spacing:.3px;font-weight:500;font-size:13px;line-height:1.35}
+@media (max-width:480px){ .impLista{grid-template-columns:1fr;gap:4px 0} .impLista .etq{margin-bottom:8px} }
+
 .boot{position:fixed;inset:0;z-index:9999;background:var(--noche);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
   transition:opacity .5s ease;cursor:pointer;padding:16px}
@@ -1321,6 +1364,31 @@ body[data-aula="si"] .regleta .acciones{justify-content:flex-start;gap:46px;widt
  </div>
 </div>
 
+<!-- ═══ EL PAPIRO DEL ESCRIBA · imprimir ═══
+     Lo que la terminal tiene en el Dossier del Transportista, el templo lo
+     tiene aquí, y sale de la propia app: las fichas usan los mismos
+     generadores que corrige el autodiagnóstico, el cuaderno lleva los
+     encargos tal como están en pantalla, y la guía docente saca los errores
+     frecuentes de las respuestas falsas de cada encargo. Nunca se
+     desactualiza respecto a lo que hay en la app. -->
+<div class="modal" id="mImprimir" hidden>
+ <div class="caja" role="dialog" aria-modal="true" aria-labelledby="impTit">
+  <div class="cab"><i aria-hidden="true"></i><div><b id="impTit">El papiro del escriba</b><small>Lo que se lleva a clase en papel. Sale de la propia app, con sus mismas cuentas</small></div></div>
+  <div class="impLista">
+    <button class="b" id="impFichas">Las diez fichas de sala</button>
+    <span class="etq">una por sala: la idea, el dibujo, seis cuentas y un hueco para dibujar · clave aparte</span>
+    <button class="b" id="impCuaderno">El cuaderno de encargos</button>
+    <span class="etq">los veinticinco encargos en papel, para trabajar sin aparato</span>
+    <button class="b" id="impGuia">La guía docente</button>
+    <span class="etq">el modelo, el viaje, los oficios y los errores frecuentes con su refutación</span>
+    <button class="b" id="impDiez">Una hoja de diez</button>
+    <span class="etq">del taller, cuentas al azar con la clave aparte</span>
+  </div>
+  <p class="pista" style="margin:12px 0 0">Se abre el diálogo de imprimir del navegador: ahí se elige papel o PDF.</p>
+  <div class="pie"><button class="b ok" data-cierra>Volver al templo</button></div>
+ </div>
+</div>
+
 <!-- ═══ EL ÍNDICE DE SALAS ═══ -->
 <div class="modal" id="mIndice" hidden>
  <div class="caja indice" role="dialog" aria-modal="true" aria-labelledby="ixTit">
@@ -1562,6 +1630,9 @@ body[data-aula="si"] .regleta .acciones{justify-content:flex-start;gap:46px;widt
        palabras en vez de seis. Es lo que hace la terminal J&L con el
        «cerrar turno · albarán». -->
   <button class="b ok cierre" id="bActa" aria-pressed="false">Cerrar la sesión · acta</button>
+  <!-- EL PAPIRO DEL ESCRIBA: lo que se lleva a clase en papel. Al pie, donde
+       la terminal pone el panel docente: es cosa del profesor. -->
+  <button class="b cierre" id="bImprimir" aria-pressed="false">El papiro del escriba · imprimir</button>
   <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" rel="license"
      aria-label="Licencia Creative Commons Reconocimiento-NoComercial-CompartirIgual 4.0">
     <svg viewBox="0 0 100 22" aria-hidden="true">
@@ -2722,7 +2793,7 @@ function pintaIndice(){
 
    Al abrir, el foco se va al primer botón del papel; al cerrar, vuelve al
    botón de la regleta que lo abrió, que es donde estaba la mano.        */
-const MODALES = {franja:'mIndice', bGlosario:'mGlosario', bTaller:'mTaller', bAjustes:'mAjustes', bActa:'mActa', elPapiro:'mPapiro'};
+const MODALES = {franja:'mIndice', bGlosario:'mGlosario', bTaller:'mTaller', bAjustes:'mAjustes', bActa:'mActa', elPapiro:'mPapiro', bImprimir:'mImprimir'};
 let modalAbierto = null;
 function cierraModal(){
   if(!modalAbierto) return;
@@ -3029,19 +3100,147 @@ $('otro').addEventListener('click', nuevoEjercicio);
 $('verlo').addEventListener('click', verEnSala);
 
 /* la hoja de diez: diez ejercicios variados, clave en hoja aparte */
-$('hojaDiez').addEventListener('click', () => {
-  const claves = Object.keys(TIPOS); const lista = [];
-  for(let i = 0; i < 10; i++) lista.push(TIPOS[claves[i % claves.length]].gen());
-  const limpia = h => h.replace(/<[^>]+>/g, '');
-  $('hoja').innerHTML = '<h2>El templo de Miut · hoja de práctica</h2>'
-    + '<div class="cab">Divisibilidad, primos, mcd y mcm · Nombre: ____________________ · Fecha: __________</div>'
-    + '<ol>' + lista.map(e => '<li>' + limpia(e.t) + '</li>').join('') + '</ol>'
-    + '<div class="clave"><h2>Clave del profesor</h2><ol>' + lista.map(e => '<li><b>' + e.sol + '</b> — ' + limpia(e.exp) + '</li>').join('') + '</ol></div>';
+/* ── EL PAPIRO DEL ESCRIBA ──────────────────────────────────────────────
+   Todo lo que se imprime pasa por aquí: se monta el papel en #hoja, el
+   cuerpo se pone en modo imprimir (solo se ve la hoja) y se llama a la
+   impresora del navegador, que también sabe hacer un PDF.              */
+function imprime(html){
+  $('hoja').innerHTML = html;
   document.body.classList.add('imprimiendo');
   const fuera = () => { document.body.classList.remove('imprimiendo'); removeEventListener('afterprint', fuera); };
   addEventListener('afterprint', fuera);
   setTimeout(() => { print(); setTimeout(fuera, 800); }, 60);
+}
+const limpiaHtml = h => String(h).replace(/<(?!\/?[bi]>)[^>]+>/g, '');
+const PIE_HOJA = '<div class="pieHoja">El templo de Miut · divisibilidad, primos, mcd y mcm · © 2026 Andrés Asensio · CC BY-NC-SA 4.0 · diazepamina-creator.github.io/templo-de-miut</div>';
+const VIAJE = ['pasillo', 'eng', 'resto', 'sala', 'euclides', 'rect', 'criba', 'red', 'mural', 'collar'];
+
+$('hojaDiez').addEventListener('click', () => {
+  const claves = Object.keys(TIPOS); const lista = [];
+  for(let i = 0; i < 10; i++) lista.push(TIPOS[claves[i % claves.length]].gen());
+  imprime('<h2>El templo de Miut · hoja de práctica</h2>'
+    + '<div class="cab">Divisibilidad, primos, mcd y mcm · Nombre: ____________________ · Fecha: __________</div>'
+    + '<ol>' + lista.map(e => '<li>' + limpiaHtml(e.t) + '</li>').join('') + '</ol>'
+    + '<div class="clave"><h2>Clave del profesor</h2><ol>' + lista.map(e => '<li><b>' + e.sol + '</b> — ' + limpiaHtml(e.exp) + '</li>').join('') + '</ol></div>');
 });
+
+/* LAS FICHAS DE SALA. Una página por sala: la idea en una frase, el dibujo
+   de la sala tal como está en la app —se pinta con un estado de muestra y
+   se copia—, seis cuentas de sus generadores y un hueco para dibujar. La
+   clave, en la última página. */
+const IDEAS = {
+  pasillo:'Las baldosas son la recta numérica. Miut cae en los múltiplos de su salto; donde caen dos gatas a la vez está el mínimo común múltiplo.',
+  eng:'Dos ruedas que engranan. El diente marcado vuelve a su hueco cada mcm dientes, y toca B / mcd huecos distintos: con dientes primos entre sí, los toca todos.',
+  resto:'Repartir en filas: las filas completas son el cociente y lo que sobra, el resto. Resto cero quiere decir que divide.',
+  sala:'La baldosa cuadrada más grande que llena el suelo sin recortar ninguna: eso es el máximo común divisor, un tamaño.',
+  euclides:'Corta el cuadrado más grande que quepa y sigue con lo que sobra. Cuando no sobra nada, el último cuadrado es el mcd. Sin factorizar.',
+  rect:'Con n baldosas, cada rectángulo que sale es una pareja de divisores. Si solo sale la tira, n es primo. Y el lado corto nunca pasa de la raíz.',
+  criba:'Cada primo se queda y sus múltiplos se caen. Basta cribar hasta la raíz: todo lo que quedara por tachar tendría un factor más pequeño.',
+  red:'La red de los divisores: cada escalón multiplica por un primo. El mcd es el punto común más alto por debajo y el mcm el más bajo por encima.',
+  mural:'Cada número es un anillo partido en sus factores primos, un color por primo. Los primos son de un solo color, y no hay dos números con el mismo collar.',
+  collar:'Un amuleto por factor primo. Lo compartido es el mcd; todo lo necesario para armar los dos, el mcm. Y mcd · mcm = a · b.'
+};
+const TIPOS_SALA = {pasillo:['mult', 'mcm'], eng:['mcm', 'mcd'], resto:['resto'], sala:['mcd'], euclides:['mcd'],
+  rect:['primo', 'divs'], criba:['primo'], mural:['desc', 'primo'], red:['mcd', 'mcm', 'divs'], collar:['desc', 'mcd', 'mcm']};
+const tira = (a, b) => '<div class="tira">' + Array.from({length: b - a + 1}, (_, i) => '<i>' + (a + i) + '</i>').join('') + '</div>';
+const rejilla = (a, b) => '<div class="rejilla">' + Array.from({length: b - a + 1}, (_, i) => '<i>' + (a + i) + '</i>').join('') + '</div>';
+const HUECOS = {
+  pasillo: () => 'Dibuja las huellas de una gata que salte de 5 en 5, y las de otra que salte de 3 en 3. Rodea donde se encuentran.' + tira(0, 30),
+  eng:     () => 'Con ruedas de 12 y 8 dientes: ¿cada cuántos dientes se encuentra el diente marcado con su hueco? ¿Cuántos huecos distintos toca? Dibuja las dos ruedas.',
+  resto:   () => 'Reparte 52 granos en filas de 8. Dibuja las filas completas y, aparte, lo que sobra. Escribe la cuenta: 52 = 8 · ___ + ___.' + rejilla(1, 60).replace(/<i>\d+<\/i>/g, '<i></i>'),
+  sala:    () => 'Un suelo de 12 por 20. Dibuja la baldosa cuadrada más grande que lo llene sin recortar, y escribe cuántas hacen falta.',
+  euclides:() => 'Un suelo de 36 por 20. Corta el cuadrado más grande que quepa y sigue con lo que sobre, hasta que no sobre nada. ¿Cuánto mide el último?',
+  rect:    () => 'Con 18 baldosas, dibuja todos los rectángulos que salgan. ¿Y con 19? Escribe por qué.',
+  criba:   () => 'Tacha los múltiplos de 2, de 3, de 5 y de 7. Rodea los que queden en pie: son los primos hasta 50.' + rejilla(2, 50),
+  mural:   () => 'Dibuja el anillo del 36 y el del 45, con un color por primo. ¿Cuál lleva más trozos? ¿Comparten algún color?',
+  red:     () => 'Dibuja la red de los divisores del 20: el 1 abajo, y cada escalón multiplica por un primo.',
+  collar:  () => 'Los collares de 24 y 36: dibuja un amuleto por factor primo y rodea los compartidos. Escribe el mcd y el mcm.'
+};
+function escenaDe(k){
+  const antes = document.body.dataset.movimiento; document.body.dataset.movimiento = 'menos';
+  const DEF = {
+    pasillo(){ Object.assign(pasillo, {a:3, b:4, doble:true, hasta:12, tercera:false}); },   /* corto, para que en papel se vean las gatas */
+    eng(){ eng.A = 20; eng.B = 10; engReset(); },
+    resto(){ granero.n = 36; granero.d = 5; },
+    sala(){ sala.a = 18; sala.b = 24; sala.k = 6; },
+    euclides(){ eu.a0 = 54; eu.b0 = 16; euReset(); },
+    rect(){ rect.n = 12; },
+    criba(){ criba.hechos = [2, 3, 5, 7, 11, 13]; criba.fueraAntes = null; },
+    mural(){ muralSel = 0; },
+    red(){ red.a = 12; red.b = 18; },
+    collar(){ collar.a = 18; collar.b = 24; }
+  };
+  (DEF[k] || (() => {}))();
+  muestraSala(k);
+  const esc = $(SALAS[k]).querySelector('.escena');
+  const html = esc ? esc.outerHTML : '';
+  document.body.dataset.movimiento = antes || 'normal';
+  return html;
+}
+function vuelveAlEncargo(){ if(indice.libre) muestraSala(indice.libre); else pintaEncargo(); }
+function fichasSalas(){
+  let h = '', claves = '';
+  VIAJE.forEach((k, i) => {
+    const [nom, lema] = LEMAS[k], tipos = TIPOS_SALA[k], ej = [];
+    for(let n = 0; n < 6; n++) ej.push(TIPOS[tipos[n % tipos.length]].gen());
+    h += '<div class="pagina"><div class="cabFicha"><b>' + (i + 1) + ' · ' + nom + '</b><span>' + lema + ' · Nombre: ____________________</span></div>'
+      + '<p class="idea">' + IDEAS[k] + '</p>' + escenaDe(k)
+      + '<h3>Seis cuentas</h3><ol class="ejer">' + ej.map(e => '<li>' + limpiaHtml(e.t) + '</li>').join('') + '</ol>'
+      + '<h3>Para dibujar</h3><div class="hueco">' + HUECOS[k]() + '</div>' + PIE_HOJA + '</div>';
+    claves += '<h3>' + (i + 1) + ' · ' + nom + '</h3><ol class="ejer clave">' + ej.map(e => '<li><b>' + e.sol + '</b> — ' + limpiaHtml(e.exp) + '</li>').join('') + '</ol>';
+  });
+  h += '<div class="pagina"><div class="cabFicha"><b>Clave del profesor</b><span>las diez fichas</span></div>' + claves + PIE_HOJA + '</div>';
+  vuelveAlEncargo();
+  imprime(h);
+}
+/* EL CUADERNO: los veinticinco encargos en papel, tal como están en la app. */
+function cuadernoEncargos(){
+  let h = '<div class="pagina"><div class="cabFicha"><b>El cuaderno del escriba</b><span>los veinticinco encargos · Nombre: ____________________</span></div>'
+    + '<p class="idea">Cada encargo dice su sala. Se lee, se piensa con el dibujo de la ficha de esa sala, y se contesta aquí.</p>';
+  ENCARGOS.forEach((e, i) => {
+    h += '<div class="enc"><span class="n">' + String(i + 1).padStart(2, '0') + ' · ' + LEMAS[e.sala][0] + '</span>' + limpiaHtml(e.t)
+      + (e.ops ? '<div class="ops">' + e.ops.map(o => '☐ ' + limpiaHtml(o.t)).join('<br>') + '</div>'
+               : '<div class="resp">Respuesta: ____________________________________________________</div>') + '</div>';
+  });
+  h += PIE_HOJA + '</div>';
+  imprime(h);
+}
+/* LA GUÍA DOCENTE: el modelo, el viaje, los oficios, cómo se usa; y los
+   errores frecuentes con su refutación, que ya estaban escritos en cada
+   respuesta falsa de cada encargo. */
+function guiaDocente(){
+  const porSala = k => ENCARGOS.filter(e => e.sala === k).length;
+  let h = '<div class="pagina guia"><div class="cabFicha"><b>Guía docente</b><span>el templo de Miut · 1.º y 2.º de ESO</span></div>'
+    + '<h3>El modelo</h3><p>Todo el tema cabe en una idea: <b>saltos que caen justos</b>. Las baldosas son la recta numérica.</p>'
+    + '<ul><li><b>Múltiplos de n</b>: las baldosas donde cae quien salta de n en n.</li>'
+    + '<li><b>Divisores de n</b>: los saltos que llegan a n sin pasarse.</li>'
+    + '<li><b>mcm(a, b)</b>: la primera baldosa donde coinciden dos gatas. Un sitio.</li>'
+    + '<li><b>mcd(a, b)</b>: el salto más grande que cae justo en las dos. Un salto.</li></ul>'
+    + '<p>El mcm es un sitio y el mcd es un salto: por eso se confunden en clase, y por eso aquí se ven en el mismo suelo haciendo cosas distintas. '
+    + 'La definición se enuncia y después se usa —«b es múltiplo de a cuando b = a · k»—, y «a divide a b» es la misma frase mirada desde el otro lado. '
+    + 'Las reglas no caen del cielo: «los comunes al menor exponente» se lee en el collar, y mcd · mcm = a · b sale de contar amuletos. '
+    + 'Cada respuesta falsa del alumno es una idea razonable mal aplicada, y se refuta con un contraejemplo, no con un «no».</p>'
+    + '<h3>El viaje</h3><ul>' + VIAJE.map((k, i) => '<li><b>' + (i + 1) + ' · ' + LEMAS[k][0] + '</b> — ' + LEMAS[k][1] + ' · ' + porSala(k) + ' encargo' + (porSala(k) === 1 ? '' : 's') + '</li>').join('') + '</ul>'
+    + '<h3>Los oficios</h3><p>Una huella por encargo hecho, y cada cinco huellas un oficio: '
+    + RANGOS.slice(0, 5).map(r => '<b>' + r.n.toLowerCase() + '</b> (' + r.s + ')').join(', ') + '; con las veinticinco, superior de los misterios.</p>'
+    + '<h3>Cómo se usa en clase</h3><p>Cada encargo se lee, se hace en la sala y se comprueba justo debajo. Con «Aula» la pantalla se reparte en dos: el encargo a la izquierda y la sala a la derecha. '
+    + 'Tocando la franja del oficio se abre el índice, que enseña cualquier sala suelta —sin encargo, con todos sus mandos— para proyectarla. '
+    + 'El taller da práctica libre y una hoja de diez imprimible. El acta, al pie, es lo hecho en la sesión con su sello: se copia y se pega donde haga falta. '
+    + 'El papiro secreto se abre desde el índice, o con la clave 1001, que es el número que abre el 7, el 11 y el 13 de una vez.</p>'
+    + PIE_HOJA + '</div>';
+  h += '<div class="pagina guia"><div class="cabFicha"><b>Errores frecuentes y cómo se refutan</b><span>lo que dice Miut a cada respuesta falsa</span></div>';
+  ENCARGOS.forEach((e, i) => {
+    if(!e.ops) return;
+    h += '<h3>' + String(i + 1).padStart(2, '0') + ' · ' + limpiaHtml(e.t) + '</h3>';
+    e.ops.filter(o => !o.ok).forEach(o => { h += '<div class="error"><b>«' + limpiaHtml(o.t) + '»</b>' + limpiaHtml(o.r) + '</div>'; });
+  });
+  h += PIE_HOJA + '</div>';
+  imprime(h);
+}
+$('impFichas').addEventListener('click', fichasSalas);
+$('impCuaderno').addEventListener('click', cuadernoEncargos);
+$('impGuia').addEventListener('click', guiaDocente);
+$('impDiez').addEventListener('click', () => $('hojaDiez').click());
 
 
 /* ── LA RED DE DIVISORES ────────────────────────────────────────────────
@@ -3190,6 +3389,12 @@ $('cribaPaso').addEventListener('click', () => { if(criba.n) criba.hechos.push(c
 $('cribaReset').addEventListener('click', () => { criba.hechos = []; pintaCriba(); revisa(); });
 
 /* ── LOS ENCARGOS ───────────────────────────────────────────────────────
+   EL VIAJE (fase 5). Veinticinco encargos que recorren el templo en un
+   orden: el pasillo (5: múltiplos, la definición, divisores, el encuentro
+   y Tamiu), el relojero (2), el granero (2), la sala (2), la escalera (2),
+   los rectángulos (2), la criba (2), la red (2), el mural (3: primos, tres
+   colores, el 97 sin mural) y el collar (3, con el horizonte de Bass al
+   final). Antes el pasillo llevaba ocho y la criba y el mural uno.
    El mismo motor que la ciudad: Listahmes pide, se comprueba sobre el
    manipulativo, y Miut contesta. Con el ◀ se vuelve atrás y el
    informe se queda como estaba, que en clase se pregunta mucho «¿qué
@@ -3205,7 +3410,7 @@ const ENCARGOS = [
   t:'Miut ha caído en 4, 8, 12, 16… ¿Cómo lo digo en una frase que valga siempre?',
   ops:[
    {t:'Una baldosa es múltiplo de 4 si se llega a ella dando un número entero de saltos de 4: es 4 · algo.', ok:true,
-    r:'Ya se puede escribir: <b>b es múltiplo de a cuando b = a · k</b>, con k entero: el número de saltos. Todo lo demás sale de ahí.'},
+    r:'<b>b es múltiplo de a cuando b = a · k</b>, con k entero: los saltos. Y «12 es múltiplo de 4» y «4 divide a 12» son la misma frase, mirada desde cada lado.'},
    {t:'Una baldosa es múltiplo de 4 si es mayor que 4.', ok:false,
     r:'La 7 es mayor que 4 y no caigo en ella. Y el 4 es múltiplo de sí mismo, con un solo salto.'},
    {t:'Una baldosa es múltiplo de 4 si acaba en 4, 8, 2, 6 o 0.', ok:false,
@@ -3214,22 +3419,6 @@ const ENCARGOS = [
    {t:'Una baldosa es múltiplo de 4 si se puede dividir entre 4.', ok:false,
     r:'Estás muy cerca, y de hecho es verdad — pero dicho así usas la división para explicar el salto, '
      +'cuando lo que estamos viendo es al revés: primero salto, y por eso la división sale exacta.'}],
-  mal:'Elige una de las cuatro.'},
-
- {sala:'pasillo', pre:() => { pasillo.doble = false; pasillo.a = 4; pasillo.hasta = 24; pasillo.tercera = false; },
-  t:'La misma frase, del revés: si 12 es múltiplo de 4, ¿qué es 4 respecto de 12?',
-  ops:[
-   {t:'Que 4 es divisor de 12. Es lo mismo dicho desde el otro lado.', ok:true,
-    r:'<b>«4 divide a 12» y «12 es múltiplo de 4» son la misma frase</b>: una mira el salto, la otra la baldosa. Una cosa con dos nombres.'},
-   {t:'Que 4 es múltiplo de 12.', ok:false,
-    r:'Al revés: saltando de 12 en 12 caigo en 12, 24, 36… nunca en el 4. El grande es múltiplo del '
-     +'pequeño, no al contrario.'},
-   {t:'Nada, son cosas distintas.', ok:false,
-    r:'Son la misma. Si llego a la 12 saltando de 4 en 4, entonces 12 se reparte en trozos de 4 — y eso '
-     +'es exactamente que 4 la divide.'},
-   {t:'Que 4 y 12 son primos entre sí.', ok:false,
-    r:'Ni mucho menos: comparten el 2 y el 4. Primos entre sí son los que no comparten más que el 1, '
-     +'como 4 y 9.'}],
   mal:'Elige una de las cuatro.'},
 
  {sala:'pasillo', pre:() => { pasillo.doble = false; pasillo.hasta = 24; pasillo.tercera = false; },
@@ -3253,27 +3442,6 @@ const ENCARGOS = [
   ok:() => pasillo.a === 4 && pasillo.b === 6,
   bien:'En la <b>12</b>: la primera que es múltiplo de 4 <i>y</i> de 6. Eso es el <b>mínimo común múltiplo</b>. Luego en la 24, y así cada doce.',
   mal:'Ponlas en 4 y 6 para verlo.'},
-
- {sala:'pasillo', pre:() => { pasillo.doble = true; pasillo.a = 4; pasillo.b = 6; pasillo.hasta = 24; pasillo.tercera = false; },
-  t:'Un aprendiz dice: «en la 24, porque 4 por 6 son 24». ¿Qué le digo?',
-  ops:[
-   {t:'Que en la 24 sí se encuentran, pero antes ya lo habían hecho en la 12.', ok:true,
-    r:'Multiplicar da <i>un</i> múltiplo común, pero no el primero. No está equivocado del todo: se ha pasado de largo.'},
-   {t:'Que se ha equivocado: en la 24 no se encuentran.', ok:false,
-    r:'Sí se encuentran, mira el suelo: 24 es múltiplo de 4 y de 6. Lo que pasa es que no es el primero.'},
-   {t:'Que tiene razón, el mcm es siempre el producto.', ok:false,
-    r:'Con 4 y 6 no: el producto es 24 y ellas ya se habían visto en la 12. Solo coinciden cuando los '
-     +'dos números no comparten nada.'},
-   {t:'Que da igual, cualquier múltiplo común sirve.', ok:false,
-    r:'Para sumar fracciones cualquiera sirve, es verdad — pero salen números enormes. Por eso '
-     +'buscamos el <b>mínimo</b>.'}],
-  mal:'Elige una de las cuatro.'},
-
- {sala:'pasillo', pre:() => { pasillo.doble = true; pasillo.a = 4; pasillo.b = 9; pasillo.hasta = 40; pasillo.tercera = false; },
-  t:'Ahora <b>4</b> y <b>9</b>, con el pasillo más largo. ¿Dónde se encuentran?',
-  ok:() => pasillo.a === 4 && pasillo.b === 9,
-  bien:'En la <b>36</b>, 4 por 9: coincide con el producto porque 4 y 9 <b>no comparten nada</b>. 4 y 6 comparten el 2, y por eso su encuentro se adelantaba.',
-  mal:'Pon a Miut en 4 y a la otra en 9.'},
 
  {sala:'pasillo', pre:() => { pasillo.doble = true; pasillo.a = 4; pasillo.b = 6; pasillo.hasta = 36; pasillo.tercera = true; },
   t:'Suelto a Tamiu, que salta de 12 en 12: justo el mcm. ¿Qué pasa?',
@@ -3386,20 +3554,18 @@ const ENCARGOS = [
   bien:'Después del <b>13</b> no cae nadie nuevo: un número hasta 200 que no sea primo tiene un factor <b>que no pasa de 14</b> (15 · 15 ya son 225), y ese ya lo tachó. Basta llegar a la raíz.',
   mal:'Sigue tachando: 2, 3, 5, 7, 11, 13… hasta que el botón te diga que no queda nada.'},
 
- {sala:'mural', pre:() => { muralSel = 0; },
-  t:'Un color por primo. Toca unos cuantos: ¿qué tienen en común los de un solo color?',
+ {sala:'criba', pre:() => { criba.hechos = [2]; pintaCriba(); },
+  t:'Los múltiplos de 2 se han caído, pero el 2 sigue en pie. ¿Por qué?',
   ops:[
-   {t:'Que son primos: un solo trozo porque no están hechos de nada más pequeño.', ok:true,
-    r:'<b>Un primo solo tiene por divisores el 1 y él mismo.</b> Y <b>no hay dos números con el mismo collar</b>: por eso el 1 no es primo, o el 12 tendría infinitos collares.'},
-   {t:'Que son pares.', ok:false,
-    r:'El 2 es par y es de un color, pero el 4 también es par y tiene dos trozos. Y el 3, el 5 y el 7 son '
-     +'de un color y son impares.'},
-   {t:'Que son pequeños.', ok:false,
-    r:'El 97 es de un solo color y no es pequeño. Y el 4 es pequeño y tiene dos trozos.'},
-   {t:'Que acaban en 1, 3, 7 o 9.', ok:false,
-    r:'Casi todos los primos sí, pero el 21 acaba en 1 y tiene dos trozos (3 · 7). La terminación no basta.'}],
-  mal:'Elige una de las cuatro.'}
-,
+   {t:'Porque el 4, el 6, el 8… tienen al 2 como divisor además del 1 y de sí mismos: ya no son primos. El 2 solo tiene el 1 y el 2.', ok:true,
+    r:'Eso es: cada primo se queda y sus múltiplos se caen. El primo es <b>el primero de su fila</b>: el único que no tiene un divisor más pequeño que él.'},
+   {t:'Porque el 2 es par.', ok:false,
+    r:'El 4 también es par y se ha caído. Ser par es tener al 2 como divisor: le pasa al 2, y también a todos los que ha tachado.'},
+   {t:'Porque el primero de cada fila siempre se salva.', ok:false,
+    r:'No hay filas: se tacha de 2 en 2 por toda la pared. El 2 se salva porque no tiene ningún divisor más pequeño que él, no por dónde está.'},
+   {t:'Porque el 2 ya lo había tachado el 1.', ok:false,
+    r:'El 1 no tacha a nadie: no es primo. Si tachara sus múltiplos, se caerían todos los números, también los primos.'}],
+  mal:'Elige una de las cuatro.'},
 
  {sala:'red', pre:() => { red.a = 12; red.b = 18; pintaRed(); },
   t:'Morado, los divisores de 12; rojo, los de 18. ¿Dónde está el mcd?',
@@ -3428,6 +3594,39 @@ const ENCARGOS = [
    {t:'Porque la red es un cuadrado.', ok:false,
     r:'No siempre lo es: la del 60 es una caja de tres dimensiones. Lo que la hace simétrica es el '
      +'emparejamiento, no la forma.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'mural', pre:() => { muralSel = 0; },
+  t:'Un color por primo. Toca unos cuantos: ¿qué tienen en común los de un solo color?',
+  ops:[
+   {t:'Que son primos: un solo trozo porque no están hechos de nada más pequeño.', ok:true,
+    r:'<b>Un primo solo tiene por divisores el 1 y él mismo.</b> Y <b>no hay dos números con el mismo collar</b>: por eso el 1 no es primo, o el 12 tendría infinitos collares.'},
+   {t:'Que son pares.', ok:false,
+    r:'El 2 es par y es de un color, pero el 4 también es par y tiene dos trozos. Y el 3, el 5 y el 7 son '
+     +'de un color y son impares.'},
+   {t:'Que son pequeños.', ok:false,
+    r:'El 97 es de un solo color y no es pequeño. Y el 4 es pequeño y tiene dos trozos.'},
+   {t:'Que acaban en 1, 3, 7 o 9.', ok:false,
+    r:'Casi todos los primos sí, pero el 21 acaba en 1 y tiene dos trozos (3 · 7). La terminación no basta.'}],
+  mal:'Elige una de las cuatro.'},
+
+ {sala:'mural', pre:() => { muralSel = 0; },
+  t:'Busca en el mural un número hecho de <b>tres colores distintos</b> y tócalo.',
+  ok:() => muralSel > 0 && new Set(primos(muralSel)).size === 3,
+  bien:'Tres primos distintos, como <b>30 = 2 · 3 · 5</b>. Hasta 100 solo hay ocho así; con cuatro colores, ninguno: 2 · 3 · 5 · 7 = 210 ya se pasa.',
+  mal:'Ese no lleva tres colores distintos. Busca uno con trozos de tres colores diferentes: el 30 es uno.'},
+
+ {sala:'mural', pre:() => { muralSel = 97; },
+  t:'Toca el <b>97</b>. Es de un solo color. ¿Cómo lo sabrías sin el mural?',
+  ops:[
+   {t:'Probando a dividirlo entre 2, 3, 5 y 7: ninguno cae justo, y 11 · 11 ya pasa de 97.', ok:true,
+    r:'La criba y los rectángulos juntos: <b>basta probar los primos hasta la raíz</b>. Cuatro divisiones y el 97 está resuelto.'},
+   {t:'Probando todos los números del 2 al 96.', ok:false,
+    r:'Funciona, pero son noventa y cinco divisiones para lo que se hace con cuatro. Si 97 tuviera un divisor, el más pequeño no pasaría de 9.'},
+   {t:'Porque acaba en 7.', ok:false,
+    r:'El 27 y el 77 también acaban en 7 y no son primos. La última cifra solo delata al 2 y al 5.'},
+   {t:'Porque es impar.', ok:false,
+    r:'El 9, el 15 y el 21 son impares y no son primos. Ser impar solo dice que el 2 no divide.'}],
   mal:'Elige una de las cuatro.'},
 
  {sala:'collar', pre:() => { collar.a = 18; collar.b = 24; },
@@ -3472,7 +3671,7 @@ const ENCARGOS = [
    {t:'Para calcular áreas.', ok:false,
     r:'Para embaldosar un suelo sí, que es lo de la sala de antes. Pero lo que más lo usa son las '
      +'fracciones: simplificar y sumar.'}],
-  mal:'Elige una de las cuatro.'}
+  mal:'Elige una de las cuatro.'},
 ];
 
 const SALAS = {pasillo:'pPasillo', sala:'pSala', collar:'pCollar',
@@ -3493,7 +3692,7 @@ const hechos = new Set();
       de cero» del índice de salas borra también esto.                    */
 let papiroVisto = false;          // la clave, una vez dada, no se vuelve a pedir
 let t0 = Date.now();              // cuándo se entró al templo, para el acta
-const GUARDADO = 'miut.turno.v1';
+const GUARDADO = 'miut.turno.v2';   /* v2: el orden de los encargos cambió en la fase 5 */
 const AULA = 'aula.v1';   /* el modo aula es del aparato: llave aparte */
 const CADUCA = 4*60*60*1000;
 
