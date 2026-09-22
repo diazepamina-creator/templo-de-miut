@@ -471,7 +471,7 @@ body[data-movimiento="menos"] .corredor .parpados,body[data-movimiento="menos"] 
   justify-content:center;font-family:'Space Mono',monospace;font-weight:700;font-size:13px;
   background:var(--panel2);border:2px solid var(--linea);color:var(--tenue)}
 .amu.p2{border-color:#6FB7E0;color:#6FB7E0} .amu.p3{border-color:#9BC26A;color:#9BC26A}
-.amu.p5{border-color:#F0C75E;color:#F0C75E} .amu.p7{border-color:#F08A6B;color:#F08A6B}
+.amu.p5{border-color:#B58CF0;color:#B58CF0} .amu.p7{border-color:#F08A6B;color:#F08A6B}
 .amu.p11{border-color:#5FD0C0;color:#5FD0C0} .amu.p13{border-color:#E89AC7;color:#E89AC7}
 .amu.comun{box-shadow:0 0 0 3px rgba(224,178,74,.45)}
 .leyenda{font-size:12.5px;color:var(--tenue);margin:2px 0 0}
@@ -747,7 +747,7 @@ body.imprimiendo > *:not(.hoja){display:none !important}
 .criba i.fuera::after{content:'';position:absolute;inset:22% 8%;border-top:1.5px solid var(--tenue);
   transform:rotate(-45deg);transform-origin:center}
 .criba i.enPie{background:var(--arena);box-shadow:0 0 0 1px var(--arenaO) inset}
-.criba i.p2{background:#6FB7E0} .criba i.p3{background:#9BC26A} .criba i.p5{background:#F0C75E}
+.criba i.p2{background:#6FB7E0} .criba i.p3{background:#9BC26A} .criba i.p5{background:#B58CF0}
 .criba i.p7{background:#F08A6B} .criba i.p11{background:#5FD0C0} .criba i.p13{background:#E89AC7}
 .criba i.primo{background:#E8DCC8;box-shadow:0 0 0 1.5px var(--oro)}
 .cribaPie{font-family:'Space Mono',monospace;font-size:12.5px;margin-top:8px}
@@ -2649,7 +2649,10 @@ function pintaRects(){
    como factores primos tenga, con un color por primo. Es el collar de
    Miut extendido a cien números: los primos son de un color entero y
    se ven de golpe, sin tachar nada. */
-const COLORP = {2:'#6FB7E0', 3:'#9BC26A', 5:'#F0C75E', 7:'#F08A6B', 11:'#5FD0C0', 13:'#E89AC7'};
+/* un color por primo, el mismo en todas las salas. El 5 era amarillo y en
+   la red se confundía con el oro de los nodos comunes (y el oro es, en todo
+   el templo, lo que está elegido o compartido): ahora es violeta. */
+const COLORP = {2:'#6FB7E0', 3:'#9BC26A', 5:'#B58CF0', 7:'#F08A6B', 11:'#5FD0C0', 13:'#E89AC7'};
 const colorDe = p => COLORP[p] || '#E8DCC8';
 let muralSel = 0;
 const cifra = n => '<text x="12" y="12" text-anchor="middle" dominant-baseline="central" '
@@ -3810,7 +3813,7 @@ function pintaCriba(){
      barrer la pared. Los que ya estaban caídos no se mueven. */
   const antes = criba.fueraAntes || new Set();
   const ultimo = criba.hechos[criba.hechos.length - 1];
-  const TINTE = {2:'#6FB7E0', 3:'#9BC26A', 5:'#F0C75E', 7:'#F08A6B', 11:'#5FD0C0', 13:'#E89AC7'};
+  const TINTE = {2:'#6FB7E0', 3:'#9BC26A', 5:'#B58CF0', 7:'#F08A6B', 11:'#5FD0C0', 13:'#E89AC7'};
   for(let k = 2; k <= criba.hasta; k++){
     const i = document.createElement('i');
     const dueño = criba.hechos.find(p => k === p);
