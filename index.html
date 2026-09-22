@@ -471,7 +471,7 @@ body[data-movimiento="menos"] .corredor .parpados,body[data-movimiento="menos"] 
   justify-content:center;font-family:'Space Mono',monospace;font-weight:700;font-size:13px;
   background:var(--panel2);border:2px solid var(--linea);color:var(--tenue)}
 .amu.p2{border-color:#6FB7E0;color:#6FB7E0} .amu.p3{border-color:#9BC26A;color:#9BC26A}
-.amu.p5{border-color:#F0C75E;color:#F0C75E} .amu.p7{border-color:#F08A6B;color:#F08A6B}
+.amu.p5{border-color:#B58CF0;color:#B58CF0} .amu.p7{border-color:#F08A6B;color:#F08A6B}
 .amu.p11{border-color:#5FD0C0;color:#5FD0C0} .amu.p13{border-color:#E89AC7;color:#E89AC7}
 .amu.comun{box-shadow:0 0 0 3px rgba(224,178,74,.45)}
 .leyenda{font-size:12.5px;color:var(--tenue);margin:2px 0 0}
@@ -720,10 +720,10 @@ body.imprimiendo > *:not(.hoja){display:none !important}
    por fin se ve por qué son pareja. ── */
 .red{display:flex;justify-content:center;padding:6px 0}
 .red svg{width:100%;max-width:340px;height:auto}
-.red .arista{stroke:var(--linea);stroke-width:2}
-.red .arista.a{stroke:var(--pataA);stroke-width:3}
-.red .arista.b{stroke:var(--pataB);stroke-width:3}
-.red .arista.dos{stroke:var(--oro);stroke-width:3.4}
+/* el color de cada arista es el de su primo y lo pone el script en línea:
+   una regla con `stroke` aquí pisaba el atributo del SVG y todas salían
+   del gris de las líneas */
+.red .arista{stroke-linecap:round}
 .red .nodo{fill:var(--panel2);stroke:var(--linea);stroke-width:2}
 .red .nodo.a{fill:rgba(91,63,115,.55);stroke:var(--pataA)}
 .red .nodo.b{fill:rgba(158,51,32,.45);stroke:var(--pataB)}
@@ -747,7 +747,7 @@ body.imprimiendo > *:not(.hoja){display:none !important}
 .criba i.fuera::after{content:'';position:absolute;inset:22% 8%;border-top:1.5px solid var(--tenue);
   transform:rotate(-45deg);transform-origin:center}
 .criba i.enPie{background:var(--arena);box-shadow:0 0 0 1px var(--arenaO) inset}
-.criba i.p2{background:#6FB7E0} .criba i.p3{background:#9BC26A} .criba i.p5{background:#F0C75E}
+.criba i.p2{background:#6FB7E0} .criba i.p3{background:#9BC26A} .criba i.p5{background:#B58CF0}
 .criba i.p7{background:#F08A6B} .criba i.p11{background:#5FD0C0} .criba i.p13{background:#E89AC7}
 .criba i.primo{background:#E8DCC8;box-shadow:0 0 0 1.5px var(--oro)}
 .cribaPie{font-family:'Space Mono',monospace;font-size:12.5px;margin-top:8px}
@@ -1744,6 +1744,7 @@ body[data-aula="si"] .regleta .acciones .soloAula{display:inline}
     <button class="b" id="redVa">Montar la red</button>
   </div>
   <div class="red"><svg id="svgRed" viewBox="0 0 340 240" aria-hidden="true"></svg></div>
+  <div class="leyPrimos" id="redLey"></div>
   <p class="pista pistaSala">Cada escalón es multiplicar por un primo. Abajo el 1; arriba, el mcm.</p>
   <div class="veredicto" id="verRed"></div>
 </div>
@@ -2648,7 +2649,10 @@ function pintaRects(){
    como factores primos tenga, con un color por primo. Es el collar de
    Miut extendido a cien números: los primos son de un color entero y
    se ven de golpe, sin tachar nada. */
-const COLORP = {2:'#6FB7E0', 3:'#9BC26A', 5:'#F0C75E', 7:'#F08A6B', 11:'#5FD0C0', 13:'#E89AC7'};
+/* un color por primo, el mismo en todas las salas. El 5 era amarillo y en
+   la red se confundía con el oro de los nodos comunes (y el oro es, en todo
+   el templo, lo que está elegido o compartido): ahora es violeta. */
+const COLORP = {2:'#6FB7E0', 3:'#9BC26A', 5:'#B58CF0', 7:'#F08A6B', 11:'#5FD0C0', 13:'#E89AC7'};
 const colorDe = p => COLORP[p] || '#E8DCC8';
 let muralSel = 0;
 const cifra = n => '<text x="12" y="12" text-anchor="middle" dominant-baseline="central" '
@@ -3748,8 +3752,8 @@ function pintaRed(){
       const fuerte = enA || enB;
       g += '<line class="arista" x1="' + pos[d].x.toFixed(1) + '" y1="' + pos[d].y.toFixed(1)
         + '" x2="' + pos[e].x.toFixed(1) + '" y2="' + pos[e].y.toFixed(1)
-        + '" stroke="' + colorDe(p) + '" stroke-width="' + (fuerte ? 3.2 : 1.6) + '"'
-        + ' opacity="' + (fuerte ? 1 : .3) + '" style="--tarda:' + (nivel(d) * 130 + 70) + 'ms"/>';
+        + '" style="stroke:' + colorDe(p) + ';stroke-width:' + (fuerte ? 3.2 : 1.6) + 'px;--tarda:' + (nivel(d) * 130 + 70) + 'ms"'
+        + ' opacity="' + (fuerte ? 1 : .3) + '"/>';
     }
   }));
   divs.forEach(d => {
@@ -3765,6 +3769,12 @@ function pintaRed(){
   const svg = $('svgRed');
   svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H.toFixed(0));
   svg.innerHTML = g + n;
+  /* la leyenda de los colores, a la vista: el veredicto que la explicaba
+     calla mientras se resuelve un encargo */
+  $('redLey').innerHTML = ps.map(p => '<span><i style="background:' + colorDe(p) + '"></i>arista ×' + p + '</span>').join('')
+    + '<span><i style="background:var(--pataA)"></i>divide a ' + A + '</span>'
+    + '<span><i style="background:var(--pataB)"></i>divide a ' + B + '</span>'
+    + '<span><i style="background:var(--oro)"></i>a los dos</span>';
   /* los que no dividen a ninguno de los dos: hay que decirlo, o el alumno
      se pregunta qué pinta ahí un 12 cuando los números son 20 y 30 */
   const sueltos = divs.filter(d => A % d !== 0 && B % d !== 0);
@@ -3803,7 +3813,7 @@ function pintaCriba(){
      barrer la pared. Los que ya estaban caídos no se mueven. */
   const antes = criba.fueraAntes || new Set();
   const ultimo = criba.hechos[criba.hechos.length - 1];
-  const TINTE = {2:'#6FB7E0', 3:'#9BC26A', 5:'#F0C75E', 7:'#F08A6B', 11:'#5FD0C0', 13:'#E89AC7'};
+  const TINTE = {2:'#6FB7E0', 3:'#9BC26A', 5:'#B58CF0', 7:'#F08A6B', 11:'#5FD0C0', 13:'#E89AC7'};
   for(let k = 2; k <= criba.hasta; k++){
     const i = document.createElement('i');
     const dueño = criba.hechos.find(p => k === p);
