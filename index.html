@@ -724,14 +724,21 @@ body.imprimiendo > *:not(.hoja){display:none !important}
    una regla con `stroke` aquí pisaba el atributo del SVG y todas salían
    del gris de las líneas */
 .red .arista{stroke-linecap:round}
+/* los nodos, OPACOS: con relleno translúcido las aristas se veían a través
+   y cruzaban el número, que en el móvil no se leía. El color se mezcla con
+   el fondo en vez de transparentarse. */
 .red .nodo{fill:var(--panel2);stroke:var(--linea);stroke-width:2}
-.red .nodo.a{fill:rgba(91,63,115,.55);stroke:var(--pataA)}
-.red .nodo.b{fill:rgba(158,51,32,.45);stroke:var(--pataB)}
-.red .nodo.dos{fill:rgba(224,178,74,.45);stroke:var(--oro);stroke-width:3}
-.red .nodo.ni{fill:var(--noche);stroke:var(--linea);opacity:.45}
-.red text.flojo{opacity:.5}
+.red .nodo.a{fill:color-mix(in srgb, var(--pataA) 55%, var(--panel2));stroke:var(--pataA)}
+.red .nodo.b{fill:color-mix(in srgb, var(--pataB) 45%, var(--panel2));stroke:var(--pataB)}
+.red .nodo.dos{fill:color-mix(in srgb, var(--oro) 45%, var(--panel2));stroke:var(--oro);stroke-width:3}
+.red .nodo.ni{fill:var(--noche);stroke:var(--linea)}
+.red text.flojo{opacity:.55}
+/* el mcm no divide a ninguno de los dos, pero no es un «apagado»: es el techo */
 .red .nodo.hito{stroke:var(--oro);stroke-width:3.4}
-.red text{font-family:'Space Mono',monospace;font-size:11px;fill:var(--tinta);text-anchor:middle;dominant-baseline:central}
+.red .nodo.ni.hito{fill:var(--panel2)}
+.red text{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;fill:var(--tinta);text-anchor:middle;dominant-baseline:central;
+  paint-order:stroke;stroke:var(--noche);stroke-width:2.6px;stroke-linejoin:round}
+.red .rot{font-weight:400;stroke-width:2px}
 .red .rot{font-size:9.5px;fill:var(--oro)}
 .red .nodo,.red .arista{transition:opacity .4s;animation:prende .4s ease both;animation-delay:var(--tarda,0s)}
 @media (prefers-reduced-motion:reduce){ .red .nodo,.red .arista{animation:none} }
@@ -3762,7 +3769,7 @@ function pintaRed(){
     const hito = (d === G || d === M) ? ' hito' : '';
     n += '<circle class="nodo ' + cls + hito + '" cx="' + pos[d].x.toFixed(1) + '" cy="' + pos[d].y.toFixed(1)
       + '" r="' + (String(d).length > 2 ? 15 : 13) + '" style="--tarda:' + (nivel(d) * 130) + 'ms"/>'
-      + '<text class="' + (cls === 'ni' ? 'flojo' : '') + '" x="' + pos[d].x.toFixed(1) + '" y="' + pos[d].y.toFixed(1) + '">' + d + '</text>';
+      + '<text class="' + (cls === 'ni' && !hito ? 'flojo' : '') + '" x="' + pos[d].x.toFixed(1) + '" y="' + pos[d].y.toFixed(1) + '">' + d + '</text>';
     if(d === G) n += '<text class="rot" x="' + pos[d].x.toFixed(1) + '" y="' + (pos[d].y + 25).toFixed(1) + '">mcd</text>';
     if(d === M && M !== G) n += '<text class="rot" x="' + pos[d].x.toFixed(1) + '" y="' + (pos[d].y - 25).toFixed(1) + '">mcm</text>';
   });
