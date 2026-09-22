@@ -947,6 +947,9 @@ footer.pie svg circle{fill:var(--tenue)}
    En sala suelta, sin encargo, la sala recupera su rótulo y su pista.  */
 body:not([data-libre="si"]) .salaRot{display:none}
 body:not([data-libre="si"]) .pistaSala{display:none}
+body[data-pregunta="si"] .panel .veredicto:not(.guia),
+body[data-pregunta="si"] #pCollar > .leyenda,
+body[data-pregunta="si"] .potTabla .res{display:none}
 #respuesta{margin-top:12px;padding-top:12px;border-top:1px dashed var(--linea)}
 #respuesta .ops{margin-top:0}
 .panel .informe{background:none;border:0;box-shadow:none;padding:0;margin:12px 0 0}
@@ -1324,7 +1327,7 @@ body[data-aula="si"] .regleta .acciones .soloAula{display:inline}
     <div>
       <h1>El templo de Miut</h1>
       <p class="sub">Divisibilidad · factorización · mcd y mcm</p>
-      <p class="reloj"><span id="reloj" aria-label="Tiempo en el templo">0:00:00</span><span class="ver"> · versión 0.6</span></p>
+      <p class="reloj"><span id="reloj" aria-label="Hora">--:--</span><span class="ver"> · versión 0.6</span></p>
     </div>
   </div>
   <nav class="regleta" id="barra" aria-label="Acciones">
@@ -1741,7 +1744,7 @@ body[data-aula="si"] .regleta .acciones .soloAula{display:inline}
     <button class="b" id="redVa">Montar la red</button>
   </div>
   <div class="red"><svg id="svgRed" viewBox="0 0 340 240" aria-hidden="true"></svg></div>
-  <p class="pista">Cada escalón es multiplicar por un primo. Abajo el 1; arriba, el mcm.</p>
+  <p class="pista pistaSala">Cada escalón es multiplicar por un primo. Abajo el 1; arriba, el mcm.</p>
   <div class="veredicto" id="verRed"></div>
 </div>
 
@@ -1794,7 +1797,7 @@ body[data-aula="si"] .regleta .acciones .soloAula{display:inline}
     <button class="b" id="coTodo">Hasta el final</button>
     <button class="b" id="coReset">Empezar</button>
   </div>
-  <div class="veredicto" id="verCo"></div>
+  <div class="veredicto guia" id="verCo"></div>
 </div>
 <footer class="pie">
   <!-- EL ACTA, al final de la página y no en la regleta: es lo último que
@@ -2406,13 +2409,13 @@ function pintaCollar(){
   }else{
     const cel = (e, cls) => '<td class="' + (e ? cls || '' : 'cero') + '">' + e + '</td>';
     tabla = '<table class="potTabla"><thead><tr><th>primo</th><th>' + collar.a + '</th><th>' + collar.b + '</th>'
-      + '<th>mcd · el menor</th><th>mcm · el mayor</th></tr></thead><tbody>'
+      + '<th class="res">mcd · el menor</th><th class="res">mcm · el mayor</th></tr></thead><tbody>'
       + todos.map(p => { const ea = pa.get(p) || 0, eb = pb.get(p) || 0, lo = Math.min(ea, eb), hi = Math.max(ea, eb);
           return '<tr><td>' + p + '</td>' + cel(ea) + cel(eb)
-            + (lo ? '<td class="mcd">' + p + expo(lo) + '</td>' : '<td class="fuera">no común</td>')
-            + '<td class="mcm">' + p + expo(hi) + '</td></tr>'; }).join('')
+            + (lo ? '<td class="res mcd">' + p + expo(lo) + '</td>' : '<td class="res fuera">no común</td>')
+            + '<td class="res mcm">' + p + expo(hi) + '</td></tr>'; }).join('')
       + '</tbody><tfoot><tr><td colspan="3">' + collar.a + ' = ' + enPotencias(collar.a) + ' · ' + collar.b + ' = ' + enPotencias(collar.b) + '</td>'
-      + '<td>' + g + '</td><td>' + m + '</td></tr></tfoot></table>';
+      + '<td class="res">' + g + '</td><td class="res">' + m + '</td></tr></tfoot></table>';
   }
   $('collares').innerHTML =
     '<div class="collar"><span class="n">' + collar.a + '</span>' + marca(A, B) + '</div>' +
@@ -2531,7 +2534,8 @@ function pintaColumna(anim){
   }
   $('colF').innerHTML = '<div class="esc">' + esc + '</div><div class="prod">' + prod + '</div>';
   const v = $('verCo');
-  v.className = 'veredicto' + (fin ? ' bien' : '');
+  /* guía mientras se divide; terminada, ya es una conclusión y calla como las demás */
+  v.className = 'veredicto' + (fin ? ' bien' : ' guia');
   v.innerHTML = fin
     ? '<b>' + col.n + ' = ' + enPotencias(col.n) + '</b>. <b>El exponente cuenta cuántas veces se multiplica el factor</b>'
       + (potencias(col.n).some(([, e]) => e > 1)
@@ -4095,7 +4099,7 @@ const ENCARGOS = [
   mal:'Elige una de las cuatro.'},
 
  {sala:'collar', pre:() => { collar.a = 60; collar.b = 84; },
-  t:'<b>60 = 2² · 3 · 5</b> y <b>84 = 2² · 3 · 7</b>. Mira la tabla de exponentes: ¿cuál es la regla?',
+  t:'<b>60 = 2² · 3 · 5</b> y <b>84 = 2² · 3 · 7</b>. Su mcd es <b>12 = 2² · 3</b> y su mcm, <b>420 = 2² · 3 · 5 · 7</b>. Compáralos con la tabla: ¿cuál es la regla?',
   ops:[
    {t:'mcd: los factores comunes, con el menor exponente. mcm: comunes y no comunes, con el mayor.', ok:true,
     r:'mcd = 2² · 3 = <b>12</b>: solo el 2 y el 3 están en los dos. mcm = 2² · 3 · 5 · 7 = <b>420</b>: hacen falta todos. Es contar amuletos: el menor exponente es lo compartido; el mayor, lo necesario para armar los dos.'},
@@ -4319,6 +4323,15 @@ function leeTurno(){
 function borraTurno(){ try{ localStorage.removeItem(GUARDADO); }catch(e){} }
 function muestraSala(cual){
   for(const k in SALAS) $(SALAS[k]).hidden = (k !== cual);
+  /* EN UN ENCARGO, EL CUADRO CALLA. Mientras un encargo está sin resolver,
+     el veredicto de debajo de la sala se esconde: decía en voz alta justo
+     lo que se pregunta («el mcd = 6», «los de un solo color son los
+     primos», «el mayor es 6»). Se ve la sala y sus lecturas, que es lo que
+     hay que mirar para pensar; lo que significa lo dice Miut al acertar, y
+     entonces el cuadro vuelve. La columna es la excepción (.guia): su
+     cuadro no dice la respuesta, dice por qué un primo no cae justo. */
+  const e = ENCARGOS[enc];
+  document.body.dataset.pregunta = !indice.libre && e && !hechos.has(enc) && e.sala === cual ? 'si' : 'no';
   if(cual === 'pasillo') pintaPasillo();
   else if(cual === 'sala') pintaSala();
   else if(cual === 'resto') pintaResto();
@@ -4903,15 +4916,13 @@ const ESCENAS = {
 }
 
 /* ── EL RELOJ ───────────────────────────────────────────────────────────
-   Lo que se lleva dentro del templo, contado desde que se entró. La
-   terminal tiene el suyo y sirve para lo mismo: en clase, saber de un
-   vistazo cuánto llevan sin preguntar. Va en el rótulo, y es el mismo
-   número que sale en el acta.                                           */
+   Un reloj de verdad: la hora, no lo que se lleva dentro. Antes contaba
+   desde que se entró al templo, que era un cronómetro con cara de reloj;
+   en clase lo que se mira es cuánto queda para el timbre. El tiempo
+   dentro del templo sigue saliendo en el acta, que es donde sirve.      */
 {
-  const dosCifras = n => String(n).padStart(2, '0');
   const pinta = () => {
-    const seg = Math.max(0, Math.floor((Date.now() - t0) / 1000));
-    $('reloj').textContent = Math.floor(seg / 3600) + ':' + dosCifras(Math.floor(seg / 60) % 60) + ':' + dosCifras(seg % 60);
+    $('reloj').textContent = new Date().toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
   };
   pinta(); setInterval(pinta, 1000);
 }
@@ -4961,7 +4972,7 @@ const PASOS = [
   {sel:'.panel.encargo', t:'El encargo', d:'Listahmes, el escriba, pide. Se hace en la sala y se pulsa Comprobar. Contesta Miut, que se asoma a ver en qué ha quedado. Las flechas de arriba —o las del teclado, o el mando de diapositivas— pasan al encargo anterior o al siguiente.'},
   {sel:'.fila',   t:'Los mandos', d:'Lo que se puede tocar: de cuánto en cuánto salta la gata, cuántas losas tiene la sala, hasta dónde llega el mural. Se toca y la sala cambia.'},
   {sala:true,     t:'La sala', d:'El manipulativo. Doce salas: el pasillo de baldosas, el granero, los sellos de los criterios, los rectángulos, la criba, el mural, la columna de la factorización, el collar, la sala que se enlosa, el taller del relojero, la escalera de Euclides y la red.'},
-  {sel:'.veredicto', t:'Lo que va diciendo', d:'Debajo de cada sala se lee lo que está pasando, con las cuentas escritas. No es la solución: es lo que se ve, contado.'},
+  {sel:'.veredicto', t:'Lo que va diciendo', d:'Debajo de cada sala se lee lo que está pasando, con las cuentas escritas. No es la solución: es lo que se ve, contado. Mientras resuelves un encargo se calla, para no decir la respuesta antes; vuelve al acertar.'},
   {id:'barra',    t:'La regleta', d:'Cinco acciones en letra pequeña, y cada una abre un papel encima que se cierra con su botón, con Escape o tocando fuera: Guía, Glosario con las palabras, Taller para practicar suelto con hoja imprimible, Ajustes y Aula para la pizarra: en el aula todo cabe en una pantalla, el encargo a la izquierda y la sala a la derecha, y aparece un botón para pasar del tema de noche al de papiro. El modo papiro y la vuelta a Materiales están dentro de Ajustes, y el acta para llevarte la sesión está al final de la página, que es cuando se hace.'},
   {id:'cerradura', t:'El papiro', d:'El templo guarda un papiro cerrado con criterios de divisibilidad. Se abre con cuatro cifras, y el último encargo dice cuáles.'}
 ];
