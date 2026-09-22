@@ -863,6 +863,8 @@ button.b.armado{border-color:var(--rojo);color:var(--rojo)}
 /* EL PIE. La licencia va abajo, con su sello dibujado: cuatro medallones
    —CC, BY, NC, SA— en el color tenue, que es de la casa y no del templo. */
 footer.pie .cierre{display:block;margin:0 auto 16px;font-size:13px;padding:11px 20px}
+/* el enlace a las piezas es un botón como los otros dos, no un enlace del pie */
+footer.pie a.b.cierre{display:flex;justify-content:center;text-align:center;width:fit-content;max-width:100%;color:var(--tinta)}
 footer.pie{margin-top:28px;padding-top:14px;border-top:1px solid var(--linea);
   display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;
   font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:1.2px;
@@ -1583,7 +1585,8 @@ body[data-aula="si"] .regleta .acciones .soloAula{display:inline}
          y esta app en su propia carpeta, así que un enlace relativo la
          buscaría aquí dentro y no existe. Entre apps de la casa, siempre
          la URL entera. -->
-    <a class="b" href="https://diazepamina-creator.github.io/">← Volver a Materiales</a></div>
+    <a class="b" href="https://diazepamina-creator.github.io/">← Volver a Materiales</a>
+    <a class="b" href="https://diazepamina-creator.github.io/miut-piezas/">Las piezas de Miut →</a></div>
   <div class="pie"><button class="b ok" data-cierra>Volver al templo</button>
     <span class="etq">El templo de Miut · versión 0.6</span></div>
  </div>
@@ -1816,6 +1819,9 @@ body[data-aula="si"] .regleta .acciones .soloAula{display:inline}
   <!-- EL PAPIRO DEL ESCRIBA: lo que se lleva a clase en papel. Al pie, donde
        la terminal pone el panel docente: es cosa del profesor. -->
   <button class="b cierre" id="bImprimir" aria-pressed="false">El papiro del escriba · imprimir</button>
+  <!-- LAS PIEZAS DE MIUT: la app hermana, el mcd y el mcm con piezas de
+       puzle. Para quien la red o el collar se le hacen cuesta arriba. -->
+  <a class="b cierre" href="https://diazepamina-creator.github.io/miut-piezas/">Las piezas de Miut · mcd y mcm con piezas</a>
   <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" rel="license"
      aria-label="Licencia Creative Commons Reconocimiento-NoComercial-CompartirIgual 4.0">
     <svg viewBox="0 0 100 22" aria-hidden="true">
