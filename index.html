@@ -720,10 +720,10 @@ body.imprimiendo > *:not(.hoja){display:none !important}
    por fin se ve por qué son pareja. ── */
 .red{display:flex;justify-content:center;padding:6px 0}
 .red svg{width:100%;max-width:340px;height:auto}
-.red .arista{stroke:var(--linea);stroke-width:2}
-.red .arista.a{stroke:var(--pataA);stroke-width:3}
-.red .arista.b{stroke:var(--pataB);stroke-width:3}
-.red .arista.dos{stroke:var(--oro);stroke-width:3.4}
+/* el color de cada arista es el de su primo y lo pone el script en línea:
+   una regla con `stroke` aquí pisaba el atributo del SVG y todas salían
+   del gris de las líneas */
+.red .arista{stroke-linecap:round}
 .red .nodo{fill:var(--panel2);stroke:var(--linea);stroke-width:2}
 .red .nodo.a{fill:rgba(91,63,115,.55);stroke:var(--pataA)}
 .red .nodo.b{fill:rgba(158,51,32,.45);stroke:var(--pataB)}
@@ -1744,6 +1744,7 @@ body[data-aula="si"] .regleta .acciones .soloAula{display:inline}
     <button class="b" id="redVa">Montar la red</button>
   </div>
   <div class="red"><svg id="svgRed" viewBox="0 0 340 240" aria-hidden="true"></svg></div>
+  <div class="leyPrimos" id="redLey"></div>
   <p class="pista pistaSala">Cada escalón es multiplicar por un primo. Abajo el 1; arriba, el mcm.</p>
   <div class="veredicto" id="verRed"></div>
 </div>
@@ -3748,8 +3749,8 @@ function pintaRed(){
       const fuerte = enA || enB;
       g += '<line class="arista" x1="' + pos[d].x.toFixed(1) + '" y1="' + pos[d].y.toFixed(1)
         + '" x2="' + pos[e].x.toFixed(1) + '" y2="' + pos[e].y.toFixed(1)
-        + '" stroke="' + colorDe(p) + '" stroke-width="' + (fuerte ? 3.2 : 1.6) + '"'
-        + ' opacity="' + (fuerte ? 1 : .3) + '" style="--tarda:' + (nivel(d) * 130 + 70) + 'ms"/>';
+        + '" style="stroke:' + colorDe(p) + ';stroke-width:' + (fuerte ? 3.2 : 1.6) + 'px;--tarda:' + (nivel(d) * 130 + 70) + 'ms"'
+        + ' opacity="' + (fuerte ? 1 : .3) + '"/>';
     }
   }));
   divs.forEach(d => {
@@ -3765,6 +3766,12 @@ function pintaRed(){
   const svg = $('svgRed');
   svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H.toFixed(0));
   svg.innerHTML = g + n;
+  /* la leyenda de los colores, a la vista: el veredicto que la explicaba
+     calla mientras se resuelve un encargo */
+  $('redLey').innerHTML = ps.map(p => '<span><i style="background:' + colorDe(p) + '"></i>arista ×' + p + '</span>').join('')
+    + '<span><i style="background:var(--pataA)"></i>divide a ' + A + '</span>'
+    + '<span><i style="background:var(--pataB)"></i>divide a ' + B + '</span>'
+    + '<span><i style="background:var(--oro)"></i>a los dos</span>';
   /* los que no dividen a ninguno de los dos: hay que decirlo, o el alumno
      se pregunta qué pinta ahí un 12 cuando los números son 20 y 30 */
   const sueltos = divs.filter(d => A % d !== 0 && B % d !== 0);
