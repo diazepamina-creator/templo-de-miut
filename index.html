@@ -386,9 +386,16 @@ button.b:disabled{opacity:.4;cursor:default}
 .etq{font-family:'Rokkitt',serif;font-weight:700;font-size:12px;letter-spacing:1.8px;
   text-transform:uppercase;color:var(--tenue)}
 .informe{margin-top:11px;position:relative}
-.op{display:block;width:100%;text-align:left;margin-bottom:6px;
-  font-family:inherit;font-size:14.5px;text-transform:none;letter-spacing:0}
-.op.fallada{border-color:var(--rojo);color:var(--rojo)}
+/* las opciones son frases y se leen como frases: en la letra del texto,
+   sin versales. `button.b` pesa más que `.op` sola, y por eso salían en
+   mayúsculas de rótulo, espaciadas y en negrita, que es lo más difícil de
+   leer que hay para una frase entera. */
+button.b.op{display:block;width:100%;text-align:left;margin-bottom:6px;
+  font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-weight:400;font-size:14.5px;
+  line-height:1.35;text-transform:none;letter-spacing:0;padding:8px 12px}
+button.b.op[aria-pressed="true"]{font-weight:700}
+/* la fallada deja de parecer elegida: el oro es de lo que vale */
+button.b.op.fallada{background:rgba(196,85,63,.14);border-color:var(--rojo);color:var(--tinta);box-shadow:none}
 </style>
 <style>
 /* ── EL PASILLO. Una fila de baldosas numeradas: es la recta numérica del
@@ -415,7 +422,7 @@ button.b:disabled{opacity:.4;cursor:default}
 .corredor .bald .canto{fill:var(--arenaO);stroke:var(--junta);stroke-width:1;stroke-linejoin:round}
 .corredor .bald.impar .canto{fill:var(--arena)}
 .corredor .bald .lado{fill:#000;opacity:.22;stroke:var(--junta);stroke-width:.6}
-.corredor .bald .num{font-family:'Space Mono',monospace;font-size:10px;fill:#5A4630}
+.corredor .bald .num{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;fill:#5A4630}
 .corredor .bald.cero .cara,.corredor .bald.cero .canto{fill:var(--panel);stroke:var(--linea)}
 .corredor .bald.cero .num{fill:var(--tenue)}
 /* la huella: escondida hasta que la gata cae; entonces BROTA, con el rebote
@@ -444,7 +451,7 @@ button.b:disabled{opacity:.4;cursor:default}
   .corredor .huella.puesta,.corredor .bald.encendida .cara,.corredor .parpados,.corredor .colaG{animation:none}
 }
 body[data-movimiento="menos"] .corredor .parpados,body[data-movimiento="menos"] .corredor .colaG{animation:none}
-@media (max-width:420px){ .corredor .bald .num{font-size:9.5px} }
+@media (max-width:420px){ .corredor .bald .num{font-size:11px} }
 
 /* ── LA SALA. Un suelo rectangular a·b y una baldosa cuadrada de lado k:
    si sobra recorte, k no vale. La más grande que no deja recorte es el
@@ -1131,33 +1138,106 @@ body:not([data-libre="si"]) .pistaSala{display:none}
 @media (prefers-reduced-motion:reduce){ .tourFoco,.tourGlobo{transition:none} }
 
 /* ── EL MODO AULA ───────────────────────────────────────────────────────
-   Para la pizarra digital. Dos cosas, y ninguna más: todo un tercio más
-   grande, que es lo que se nota desde el fondo de la clase; y, si hay
-   sitio, el encargo a la izquierda y la sala a la derecha, para que se
-   vean a la vez y no haya que rodar con el dedo mientras se explica.
-   El zoom escala TODO a la vez —letra, botones, baldosas, dibujos—, así
-   que no hay que tocar ni un tamaño suelto y nada se descoloca.          */
-@media (min-width:900px){
-  body[data-aula="si"]{zoom:1.32;max-width:1430px}
-}
-@media (min-width:1100px){
-  body[data-aula="si"] .aulaRejilla{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.06fr);
-    gap:0 14px;align-items:start}
-  /* las columnas dejan de ser transparentes SOLO aquí: fuera del modo aula
-     son `display:contents` y la página se lee en fila, como siempre */
-  body[data-aula="si"] .colIzq,
-  body[data-aula="si"] .colDer{display:block;min-width:0}
-  body[data-aula="si"] .colIzq > .panel:first-child,
-  body[data-aula="si"] .colDer > .panel:first-child{margin-top:0}
-  body[data-aula="si"] .colIzq > footer.pie{margin-top:18px}
-}
+   Para la pizarra digital. La regla es UNA PANTALLA: lo que se proyecta
+   cabe entero, sin rodar, porque en la pizarra rodar con el dedo mientras
+   se explica es perder a la clase. Antes el zoom era un 1,32 fijo sobre
+   todo el <body>: en un proyector de 1280 × 720 la cabecera se comía casi
+   la mitad de la pantalla, la sala salía cortada, «Comprobar» quedaba
+   debajo, y el zoom descolocaba los pop-ups y la guía, que se salían por
+   arriba y por abajo. Ahora:
+
+   · EL ZOOM SE CALCULA con el ancho y el alto de la pantalla (--zAula), y
+     solo se aplica al LIENZO —cabecera, salas y pie—, no a los papeles de
+     encima ni a la guía, que se colocan con la pantalla de verdad.
+   · LA CABECERA ES UNA BANDA: rótulo, regleta y franja en una sola fila.
+   · A LA IZQUIERDA LO QUE SE LEE, A LA DERECHA LO QUE SE TOCA: el encargo,
+     sus opciones, «Comprobar» y lo que contesta Miut; enfrente, la sala.
+   · LA SALA SE ENCOGE si no cabe de alto (--zEscena), en vez de cortarse.
+   · El acta y el papiro del escriba se quedan al pie, fuera de la vista:
+     son cosas del final o del profesor, no del ejercicio que se proyecta. */
+body[data-aula="si"]{max-width:none;padding:0 12px 24px}
+body[data-aula="si"] .lienzo{zoom:var(--zAula,1)}
+/* los papeles de encima crecen lo mismo que el templo, pero su alto se
+   corrige: 92vh dentro de un zoom serían más de la pantalla */
+body[data-aula="si"] .modal .caja{zoom:var(--zAula,1);max-height:calc(92vh / var(--zAula,1))}
+body[data-aula="si"] .modal .caja.taller{max-height:none}
+body[data-aula="si"] .glosas{max-height:calc(58vh / var(--zAula,1))}
+
+/* la cabecera, en una banda */
+body[data-aula="si"] header{display:flex;gap:10px;align-items:stretch;margin-top:8px}
+body[data-aula="si"] header > .cenefa{display:none}
+body[data-aula="si"] .rotulo{flex:1 1 auto;display:flex;align-items:center;gap:14px 22px;
+  padding:7px 14px;margin-top:0;min-width:0}
+body[data-aula="si"] .rotulo .cabeza{gap:9px}
+body[data-aula="si"] .rotulo h1{font-size:20px;white-space:nowrap}
+body[data-aula="si"] .rotulo .sub{display:none}
+body[data-aula="si"] .rotulo .reloj{margin:1px 0 0;font-size:11px}
+body[data-aula="si"] .rotulo .ver{display:none}
+body[data-aula="si"] .sello1001{font-size:13px;padding:5px 7px}
+body[data-aula="si"] .regleta{border-top:0;margin:0 0 0 auto;padding:0}
+body[data-aula="si"] .regleta .acciones{justify-content:flex-end;gap:6px 16px;width:auto;flex-wrap:wrap}
+body[data-aula="si"] .regleta .acciones button{font-size:12.5px;letter-spacing:.9px}
+body[data-aula="si"] .franja{flex:0 0 272px;margin-top:0;padding:6px 10px}
+body[data-aula="si"] .franja .linea1{flex-wrap:nowrap;white-space:nowrap}
+body[data-aula="si"] .franja .cuenta{overflow:hidden;text-overflow:ellipsis}
+/* el pie, en voz baja: el acta es del final y el papiro del escriba, del
+   profesor; en la pizarra no le disputan el oro a «Comprobar» */
+body[data-aula="si"] footer.pie{margin-top:40px;opacity:.7}
+body[data-aula="si"] footer.pie .cierre.ok{background:var(--panel);color:var(--tinta);
+  border-color:var(--linea);box-shadow:0 2px 0 rgba(0,0,0,.28)}
+body[data-aula="si"] .fila.mandos > .etq{font-size:11.5px}
+body[data-aula="si"] .franja .rango small{display:none}
+
+/* las dos columnas: solo cuando caben (data-dos lo pone el script) */
+body[data-dos="si"] .aulaRejilla{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+  gap:0 12px;align-items:start;margin-top:10px}
+/* las columnas dejan de ser transparentes SOLO aquí: fuera del modo aula
+   son `display:contents` y la página se lee en fila, como siempre */
+body[data-dos="si"] .colIzq,
+body[data-dos="si"] .colDer{display:block;min-width:0}
+body[data-dos="si"] .colIzq > .panel:first-child,
+body[data-dos="si"] .colDer > .panel:first-child,
+body[data-dos="si"] .colDer > .panel:not([hidden]){margin-top:0}
+/* en sala suelta no hay encargo: la sala se queda con todo el ancho */
+body[data-dos="si"][data-libre="si"] .aulaRejilla{grid-template-columns:minmax(0,1fr)}
+body[data-dos="si"][data-libre="si"] .colIzq{display:none}
+/* la sala se queda quieta si la columna del encargo es más larga */
+body[data-dos="si"] .colDer{position:sticky;top:8px}
+/* encogerla es las dos cosas: el zoom encoge lo que mide en puntos (los
+   granos, las baldosas del pasillo) y el ancho, lo que llena su caja (el
+   mural, la criba, los dibujos). Solo con zoom, lo fluido no bajaba. */
+body[data-dos="si"] .escena{zoom:var(--zEscena,1);width:calc(var(--zEscena,1) * 100%);
+  margin-left:auto;margin-right:auto}
+/* la respuesta, bajo el encargo: la caja se estira para que las opciones
+   se lean enteras sin hacer la columna más ancha */
+body[data-dos="si"] .panel.encargo #respuesta{margin-top:12px}
+/* la lectura va abierta: en la pizarra la lista ES lo que se señala */
+body[data-aula="si"] .lectura:not(.abierta){white-space:normal;overflow:visible}
+body[data-aula="si"] .lectura::after{display:none}
+body[data-aula="si"] .lectura{cursor:default;padding-right:0}
+body[data-aula="si"] .lectura > span{display:block}
 /* fuera del modo aula la rejilla no existe: los paneles siguen en fila,
    uno detrás de otro, exactamente como estaban */
-.aulaRejilla,.colIzq,.colDer{display:contents}
-/* en la pizarra el bloque del rótulo es muy ancho y las seis acciones se
-   quedaban a medio metro unas de otras: se agrupan a la izquierda */
-body[data-aula="si"] .regleta .acciones{justify-content:flex-start;gap:46px;width:auto}
+.aulaRejilla,.colIzq,.colDer,.lienzo{display:contents}
+body[data-aula="si"] .lienzo{display:block}
 .regleta .acciones button.aula[aria-pressed="true"]{color:var(--oro);border-bottom-color:var(--oro)}
+/* el tema, a un toque: en la pizarra se cambia según la luz del aula */
+.regleta .acciones .soloAula{display:none}
+body[data-aula="si"] .regleta .acciones .soloAula{display:inline}
+
+/* ── IR Y VOLVER ────────────────────────────────────────────────────────
+   Las flechas del encargo van arriba, junto a «3 de 25», que es donde se
+   mira para saber dónde se está. Adelante también: en clase el profesor
+   salta al encargo que toca sin resolver los de antes. Y con el teclado
+   —flechas, o Av Pág / Re Pág, que es lo que manda el mando de diapositivas—
+   se pasa de encargo sin tocar la pantalla. */
+.cabEnc .nav{display:inline-flex;align-items:center;gap:6px}
+.cabEnc .nav button{font-family:'Space Mono',monospace;font-size:15px;line-height:1;color:var(--tenue);
+  background:var(--noche);border:1px solid var(--linea);border-radius:8px;min-width:34px;min-height:30px;
+  padding:0 8px;cursor:pointer}
+.cabEnc .nav button:hover:not(:disabled){color:var(--oro);border-color:var(--oro)}
+.cabEnc .nav button:disabled{opacity:.3;cursor:default}
+.cabEnc .nav .paso{min-width:58px;text-align:center}
 </style>
 </head><body>
 <div class="tourCapa" id="tourCapa" hidden>
@@ -1187,7 +1267,7 @@ body[data-aula="si"] .regleta .acciones{justify-content:flex-start;gap:46px;widt
     <div>
       <h1>El templo de Miut</h1>
       <p class="sub">Divisibilidad · primos · mcd y mcm</p>
-      <p class="reloj"><span id="reloj" aria-label="Tiempo en el templo">0:00:00</span><span class="ver"> · prototipo v0.5</span></p>
+      <p class="reloj"><span id="reloj" aria-label="Tiempo en el templo">0:00:00</span><span class="ver"> · prototipo v0.6</span></p>
     </div>
   </div>
   <nav class="regleta" id="barra" aria-label="Acciones">
@@ -1196,6 +1276,7 @@ body[data-aula="si"] .regleta .acciones{justify-content:flex-start;gap:46px;widt
       <button id="bGlosario" aria-pressed="false">Glosario</button>
       <button id="bTaller" aria-pressed="false">Taller</button>
       <button id="bAjustes" aria-pressed="false">Ajustes</button>
+      <button id="bTema" class="soloAula">Papiro</button>
       <button id="bAula" class="aula" aria-pressed="false">Aula</button>
     </span>
   </nav>
@@ -1216,7 +1297,8 @@ body[data-aula="si"] .regleta .acciones{justify-content:flex-start;gap:46px;widt
 </header>
 
 <div class="panel encargo">
-  <div class="cabEnc"><span>El encargo</span><span class="paso" id="cual"></span></div>
+  <div class="cabEnc"><span>El encargo</span>
+    <span class="nav"><button id="atras" aria-label="Encargo anterior">‹</button><span class="paso" id="cual"></span><button id="adelante" aria-label="Encargo siguiente, sin resolver este">›</button></span></div>
   <div class="dialogo">
     <div class="cara" id="cara"></div>
     <div class="quien">Listahmes, escriba</div>
@@ -1228,7 +1310,6 @@ body[data-aula="si"] .regleta .acciones{justify-content:flex-start;gap:46px;widt
   <div id="respuesta">
     <div class="ops" id="ops" hidden></div>
     <div class="fila">
-      <button class="b" id="atras" aria-label="Encargo anterior">◀</button>
       <button class="b ok" id="comprobar">Comprobar</button>
     </div>
   </div>
@@ -1437,7 +1518,7 @@ body[data-aula="si"] .regleta .acciones{justify-content:flex-start;gap:46px;widt
          la URL entera. -->
     <a class="b" href="https://diazepamina-creator.github.io/">← Volver a Materiales</a></div>
   <div class="pie"><button class="b ok" data-cierra>Volver al templo</button>
-    <span class="etq">El templo de Miut · prototipo v0.4</span></div>
+    <span class="etq">El templo de Miut · prototipo v0.6</span></div>
  </div>
 </div>
 
@@ -3861,9 +3942,7 @@ function pintaEncargo(sinPre){
      lo que se ve es lo que el alumno acaba de hacer, y Miut lo repite */
   if(e.pre && !sinPre) e.pre();
   muestraSala(e.sala);
-  /* la respuesta y lo que contesta Miut van DENTRO de la sala, al final: se
-     lee el encargo, se hace en la sala, y justo debajo se comprueba */
-  const pan = $(SALAS[e.sala]); pan.appendChild($('respuesta')); pan.appendChild($('informe'));
+  colocaRespuesta();
   $('respuesta').hidden = false;
   elegida = hecho && e.ops ? e.ops.findIndex(o => o.ok) : null;
   pintaOpciones();
@@ -3875,6 +3954,7 @@ function pintaEncargo(sinPre){
   $('cual').textContent = (ultimo && hecho) ? 'sala cerrada'
     : (enc + 1) + ' de ' + ENCARGOS.length;   // «el encargo» ya lo dice el rótulo de la caja
   $('atras').disabled = enc === 0;
+  $('adelante').disabled = ultimo;
   $('comprobar').textContent = !hecho ? 'Comprobar'
     : (ultimo ? 'Empezar de nuevo' : 'Siguiente encargo →');
   const inf = $('informe');
@@ -3893,7 +3973,34 @@ function pintaEncargo(sinPre){
 function revisa(){ /* al tocar el manipulativo, la respuesta vieja deja de valer */
   if(!hechos.has(enc)) $('informe').hidden = true;
 }
-$('atras').addEventListener('click', () => { if(enc > 0){ enc--; pintaEncargo(); guardaTurno(); } });
+/* la respuesta y lo que contesta Miut van DENTRO de la sala, al final: se
+   lee el encargo, se hace en la sala, y justo debajo se comprueba. En la
+   pizarra a dos columnas van bajo el encargo, en la columna de leer, que
+   si no se quedaba vacía y «Comprobar» caía fuera de la pantalla. */
+function colocaRespuesta(){
+  const e = ENCARGOS[enc];
+  const pan = document.body.dataset.dos === 'si' ? document.querySelector('.panel.encargo') : $(SALAS[e.sala]);
+  if($('respuesta').parentElement !== pan || pan.lastElementChild !== $('informe')){
+    pan.appendChild($('respuesta')); pan.appendChild($('informe'));
+  }
+}
+function vaAEncargo(i){
+  if(i < 0 || i >= ENCARGOS.length || i === enc) return;
+  enc = i; pintaEncargo(); guardaTurno();
+}
+$('atras').addEventListener('click', () => vaAEncargo(enc - 1));
+$('adelante').addEventListener('click', () => vaAEncargo(enc + 1));
+/* el mando de diapositivas manda Av Pág y Re Pág; el teclado, las flechas.
+   No cuando se escribe en un campo, ni con un papel encima, ni en sala
+   suelta, que no tiene encargo */
+addEventListener('keydown', e => {
+  if(e.altKey || e.ctrlKey || e.metaKey || modalAbierto || indice.libre || !$('tourCapa').hidden || $('boot')) return;
+  if(e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
+  const sig = e.key === 'PageDown' || e.key === 'ArrowRight', ant = e.key === 'PageUp' || e.key === 'ArrowLeft';
+  if(!sig && !ant) return;
+  e.preventDefault();
+  vaAEncargo(enc + (sig ? 1 : -1));
+});
 $('comprobar').addEventListener('click', () => {
   const e = ENCARGOS[enc], inf = $('informe');
   if(hechos.has(enc)){
@@ -3922,6 +4029,8 @@ $('comprobar').addEventListener('click', () => {
     guardaTurno();
   }
   asomate(inf, bien);
+  /* que lo que contesta Miut se vea: en un móvil caía por debajo */
+  inf.scrollIntoView({block:'nearest', behavior:'smooth'});
 });
 /* ── LOS AJUSTES ────────────────────────────────────────────────────────
    Todo lo que antes andaba suelto por la barra —el modo papel, el enlace a
@@ -3941,7 +4050,7 @@ function pintaAjustes(){
       b.setAttribute('aria-pressed', String(document.body.dataset[o.dato] === v));
       b.addEventListener('click', () => {
         document.body.dataset[o.dato] = v;
-        if(o.dato === 'aula' && window.pintaAula) pintaAula();
+        if(window.pintaAula) pintaAula();      // el botón del tema dice el otro
         pintaAjustes(); guardaTurno();
       });
       c.appendChild(b);
@@ -3957,6 +4066,8 @@ $('ajSalas').addEventListener('click', () => abreModal('franja'));
 (function(){
   let tecleado = '';
   addEventListener('keydown', e => {
+    /* escribiendo en un campo no: un 1001 en el taller no es la clave */
+    if(e.target.closest && e.target.closest('input, textarea')) return;
     if(e.key >= '0' && e.key <= '9'){
       tecleado = (tecleado + e.key).slice(-4);
       if(tecleado === '1001'){ abrePapiro(); tecleado = ''; }
@@ -4319,11 +4430,11 @@ document.addEventListener('click', e => { const l = e.target.closest('.lectura')
 const PASOS = [
   {id:'franja',   t:'Tu oficio', d:'Empiezas de aguador. Cada cinco cuentas subes: wab, que se lava antes de entrar; lector, que dice el rollo en voz alta; escriba; profeta. Con las veinticinco, superior de los misterios. Las huellas son la moneda de la casa: una por cuenta hecha. Y tocando la franja se abre el índice de las diez salas.'},
 
-  {sel:'.panel.encargo', t:'El encargo', d:'Listahmes, el escriba, pide. Se hace abajo, en la sala, y se pulsa Comprobar. Contesta Miut, que se asoma a ver en qué ha quedado.'},
+  {sel:'.panel.encargo', t:'El encargo', d:'Listahmes, el escriba, pide. Se hace en la sala y se pulsa Comprobar. Contesta Miut, que se asoma a ver en qué ha quedado. Las flechas de arriba —o las del teclado, o el mando de diapositivas— pasan al encargo anterior o al siguiente.'},
   {sel:'.fila',   t:'Los mandos', d:'Lo que se puede tocar: de cuánto en cuánto salta la gata, cuántas losas tiene la sala, hasta dónde llega el mural. Se toca y la sala cambia.'},
   {sala:true,     t:'La sala', d:'El manipulativo. Diez salas: el pasillo de baldosas, la sala que se enlosa, el taller del relojero, el granero, la escalera de Euclides, los rectángulos, la criba, el mural, la red y el collar.'},
   {sel:'.veredicto', t:'Lo que va diciendo', d:'Debajo de cada sala se lee lo que está pasando, con las cuentas escritas. No es la solución: es lo que se ve, contado.'},
-  {id:'barra',    t:'La regleta', d:'Cinco acciones en letra pequeña, y cada una abre un papel encima que se cierra con su botón, con Escape o tocando fuera: Guía, Glosario con las palabras, Taller para practicar suelto con hoja imprimible, Ajustes y Aula para la pizarra. El modo papiro y la vuelta a Materiales están dentro de Ajustes, y el acta para llevarte la sesión está al final de la página, que es cuando se hace.'},
+  {id:'barra',    t:'La regleta', d:'Cinco acciones en letra pequeña, y cada una abre un papel encima que se cierra con su botón, con Escape o tocando fuera: Guía, Glosario con las palabras, Taller para practicar suelto con hoja imprimible, Ajustes y Aula para la pizarra: en el aula todo cabe en una pantalla, el encargo a la izquierda y la sala a la derecha, y aparece un botón para pasar del tema de noche al de papiro. El modo papiro y la vuelta a Materiales están dentro de Ajustes, y el acta para llevarte la sesión está al final de la página, que es cuando se hace.'},
   {id:'cerradura', t:'El papiro', d:'El templo guarda un papiro cerrado con criterios de divisibilidad. Se abre con cuatro cifras, y el encargo veinticinco dice cuáles.'}
 ];
 let paso = 0;
@@ -4367,27 +4478,64 @@ addEventListener('keydown', e => { if(e.key === 'Escape' && !$('tourCapa').hidde
    La rejilla se monta aquí y no en el HTML: se envuelven los paneles que
    ya existen, sin tocar el orden del documento. Fuera del modo aula los
    envoltorios son `display:contents`, o sea que no pintan nada y la página
-   se lee como siempre, también para un lector de pantalla.               */
+   se lee como siempre, también para un lector de pantalla.
+
+   EL LIENZO es lo que crece en la pizarra: la cabecera, las salas y el
+   pie. Los papeles de encima, la guía y el arranque se quedan fuera, que
+   se colocan con la pantalla de verdad y el zoom los descolocaba.       */
 {
+  const lienzo = document.createElement('div'); lienzo.className = 'lienzo';
   const rej = document.createElement('div'); rej.className = 'aulaRejilla';
   const izq = document.createElement('div'); izq.className = 'colIzq';
   const der = document.createElement('div'); der.className = 'colDer';
+  const cab = document.querySelector('header');
   const enc = document.querySelector('.panel.encargo');
-  enc.parentNode.insertBefore(rej, enc);
+  const pie = document.querySelector('footer.pie');
+  cab.before(lienzo);
+  lienzo.appendChild(cab);
+  lienzo.appendChild(rej);
   rej.appendChild(izq); rej.appendChild(der);
   izq.appendChild(enc);
   der.appendChild($('rotuloLibre'));
   Object.values(SALAS).forEach(id => der.appendChild($(id)));
+  lienzo.appendChild(pie);
 
-  /* el papiro y el pie se mudan a la columna de la izquierda, que se queda
-     vacía bajo el encargo: así el alto de la página es el de la columna más
-     alta y no la suma, que es lo que hacía rodar la criba y el granero */
-  const pie = document.querySelector('footer.pie');
-  const marcaF = document.createComment('pie');
-  pie.before(marcaF);
-  const muda = si => {
-    if(si) izq.appendChild(pie); else marcaF.after(pie);
+  /* EL ZOOM, con la pantalla que haya. El templo está pensado para leerse
+     en unos 1000 × 620 puntos: se amplía hasta llenar la pantalla por lo
+     que se quede corto, el ancho o el alto. En 1280 × 720 sale 1,16; en
+     1920 × 1080, 1,7. Por debajo de 900 de ancho no se amplía nada. */
+  const zoomAula = () => innerWidth < 900 ? 1
+    : Math.max(1, Math.min(1.75, innerWidth / 1000, innerHeight / 620));
+
+  /* LA SALA, QUE QUEPA. Si el panel de la sala es más alto que lo que queda
+     de pantalla bajo la cabecera, la escena se encoge lo justo —como mucho
+     a la mitad— en vez de dejar los mandos o el veredicto fuera. La cuenta
+     es lineal: el dibujo, a zoom z, mide z veces lo que mediría a 1. */
+  let ajustando = false;
+  const ajustaEscena = () => {
+    const b = document.body;
+    if(b.dataset.dos !== 'si'){ b.style.removeProperty('--zEscena'); return; }
+    const pan = der.querySelector(':scope > .panel:not([hidden])');
+    const esc = pan && pan.querySelector('.escena');
+    if(!esc || ajustando) return;
+    const zc = parseFloat(b.style.getPropertyValue('--zEscena')) || 1;
+    const rp = pan.getBoundingClientRect(), re = esc.getBoundingClientRect();
+    if(!re.height) return;
+    const arriba = rej.getBoundingClientRect().top + scrollY;           // lo que ocupa la cabecera
+    const cabe = innerHeight - arriba - 10;
+    const sobra = rp.height - cabe;
+    const z = Math.max(.5, Math.min(1, (re.height - sobra) / (re.height / zc)));
+    if(Math.abs(z - zc) < .015) return;
+    ajustando = true;
+    b.style.setProperty('--zEscena', z.toFixed(3));
+    requestAnimationFrame(() => { ajustando = false; });
   };
+  /* se vuelve a medir cada vez que la sala cambia de alto: otro encargo,
+     el detalle del mural, un paso de la criba, un veredicto más largo */
+  if(window.ResizeObserver){
+    const ro = new ResizeObserver(() => requestAnimationFrame(ajustaEscena));
+    Object.values(SALAS).forEach(id => ro.observe($(id)));
+  }
 
   /* La palabra dice a dónde lleva el botón, no dónde estás: «Aula» para
      entrar y «Salir del aula» para volver, que es como lo hace la terminal
@@ -4395,10 +4543,16 @@ addEventListener('keydown', e => { if(e.key === 'Escape' && !$('tourCapa').hidde
      entra y del que se sale, y quien lo toca está de pie ante la pizarra
      con treinta críos mirando. */
   const pinta = () => {
-    const si = document.body.dataset.aula === 'si';
-    muda(si && innerWidth >= 1100);
+    const b = document.body, si = b.dataset.aula === 'si';
+    const z = si ? zoomAula() : 1;
+    b.style.setProperty('--zAula', z.toFixed(3));
+    /* a dos columnas solo si caben: unos 880 puntos después del zoom */
+    b.dataset.dos = si && innerWidth / z >= 880 ? 'si' : 'no';
+    colocaRespuesta();
     $('bAula').setAttribute('aria-pressed', String(si));
     $('bAula').textContent = si ? 'Salir del aula' : 'Aula';
+    $('bTema').textContent = b.dataset.modo === 'papel' ? 'Noche' : 'Papiro';
+    requestAnimationFrame(ajustaEscena);
   };
   $('bAula').addEventListener('click', () => {
     const si = document.body.dataset.aula !== 'si';
@@ -4407,7 +4561,14 @@ addEventListener('keydown', e => { if(e.key === 'Escape' && !$('tourCapa').hidde
     pinta();
     if(!$('tourCapa').hidden) pintaPaso();     // la guía, si estaba abierta, recoloca el foco
   });
+  /* el tema de un toque: la luz del aula cambia a lo largo del día y el
+     proyector con las persianas subidas pide el papiro */
+  $('bTema').addEventListener('click', () => {
+    document.body.dataset.modo = document.body.dataset.modo === 'papel' ? 'pantalla' : 'papel';
+    pintaAjustes(); guardaTurno(); pinta();
+  });
   window.pintaAula = pinta;
+  window.ajustaEscena = ajustaEscena;
   addEventListener('resize', pinta);
   pinta();
 }
